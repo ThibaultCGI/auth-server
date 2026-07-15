@@ -1,404 +1,125 @@
-# Configuration du Build
+# Configuration du build
 
 ## Présentation
 
-Cette page documente les plugins Maven utilisés pour construire l'application.
+Ce document décrit la configuration Maven du projet et le rôle des plugins utilisés pour construire l'application.
 
-Les plugins Maven interviennent durant les différentes phases du cycle de vie Maven :
+Le projet est organisé en **multi-modules Maven** afin de séparer clairement :
 
-```text
-validate
-compile
-test
-package
-verify
-install
-deploy
-```
+- le cœur métier ;
+- la couche d'infrastructure ;
+- le module de démarrage Spring Boot.
 
-Ils permettent d'ajouter des traitements lors du build.
+Cette organisation améliore :
+
+- la lisibilité ;
+- la maintenabilité ;
+- la testabilité ;
+- la séparation des responsabilités.
 
 ---
 
-# Spring Boot Maven Plugin
+# Structure Maven cible
 
-## Plugin
-
-```xml
-<plugin>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-maven-plugin</artifactId>
-</plugin>
+```text
+auth-server
+│
+├── pom.xml
+├── auth-core
+│   └── pom.xml
+├── auth-infrastructure
+│   └── pom.xml
+└── auth-boot
+    └── pom.xml
 ```
+
+---
+
+# Rôle du POM parent
+
+Le `pom.xml` racine joue le rôle de **parent Maven**.
+
+## Responsabilités
+
+- centraliser la version du projet ;
+- déclarer les modules ;
+- partager les propriétés communes ;
+- gérer les versions des dépendances ;
+- gérer la configuration commune des plugins.
+
+## Ce que le parent ne doit pas faire
+
+Le parent ne doit pas transformer tous les modules en applications Spring Boot exécutables.
+
+En particulier :
+
+- `auth-core` doit rester un module bibliothèque ;
+- `auth-infrastructure` doit rester un module technique réutilisable ;
+- seul `auth-boot` doit produire l'application exécutable.
+
+---
+
+# Plugin Spring Boot Maven
 
 ## Outil principal
 
-Spring Boot Maven Plugin
+- Spring Boot Maven Plugin
 
 ## Rôle
 
-Permet à Maven de construire et exécuter une application Spring Boot.
+Ce plugin permet :
 
----
+- de construire un JAR exécutable Spring Boot ;
+- de lancer l'application via Maven ;
+- de préparer le packaging final de l'application.
 
-## Fonctionnalités
+## Utilisation correcte dans ce projet
 
-### Création d'un exécutable autonome
+Le plugin Spring Boot Maven doit être configuré **uniquement dans le module `auth-boot`**, car ce module contient :
 
-Le plugin produit un JAR exécutable contenant :
+- la classe `@SpringBootApplication` ;
+- le point d'entrée de l'application ;
+- l'assemblage final du serveur d'authentification.
 
-- l'application
-- les dépendances
-- le serveur embarqué
+## Pourquoi ne pas le mettre dans le parent ?
 
-L'application peut être démarrée via :
+Si ce plugin est appliqué au parent Maven, il risque d’être exécuté sur tous les sous-modules, y compris :
 
-```bash
-java -jar authserver.jar
-```
+- `auth-core`
+- `auth-infrastructure`
 
----
+Or ces modules n'ont pas vocation à être exécutables en tant qu'application Spring Boot autonome.
 
-### Exécution de l'application
-
-Le plugin fournit également :
-
-```bash
-mvn spring-boot:run
-```
-
-qui démarre l'application directement depuis les sources.
-
----
-
-### Repackaging
-
-Pendant la phase :
+Cela provoque des erreurs du type :
 
 ```text
-package
+Unable to find main class
 ```
-
-le plugin transforme :
-
-```text
-JAR Maven classique
-```
-
-en :
-
-```text
-JAR Spring Boot exécutable
-```
-
----
-
-## Configuration présente dans le projet
-
-```xml
-<configuration>
-    <excludes>
-        <exclude>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </exclude>
-    </excludes>
-</configuration>
-```
-
----
-
-## Pourquoi exclure Lombok ?
-
-Lombok est uniquement utilisé à la compilation.
-
-Il ne doit pas être embarqué dans le JAR final car :
-
-- il n'est plus nécessaire à l'exécution ;
-- cela réduit légèrement la taille du livrable.
 
 ---
 
 # Maven Compiler Plugin
 
-## Plugin
-
-```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-</plugin>
-```
-
 ## Outil principal
 
-Maven Compiler Plugin
+- Maven Compiler Plugin
 
 ## Rôle
 
-Permet à Maven de compiler le code source Java.
+Ce plugin gère la compilation du code Java.
 
----
+Il permet notamment de :
 
-## Fonctionnalités
+- compiler le code source ;
+- compiler les tests ;
+- déclarer la version Java cible ;
+- activer les annotation processors.
 
-### Compilation du code
+## Utilisation dans ce projet
 
-Durant la phase :
+La configuration du compilateur peut être centralisée dans le POM parent afin d’appliquer les mêmes règles à tous les modules.
 
-```text
-compile
-```
+Cela permet de garantir :
 
-le plugin transforme :
-
-```text
-*.java*```
-
-en :
-
-```text
-*.class
-```
-
---*
-
-### Compilation des tests
-
-Duran* la phase :
-
-```text
-test*compile
-```
-
-le plugin compile les*classes de test*
-
----
-
-### Gestion des Annotation *rocessors
-
-Le projet utilise :
-
-``*text
-Project Lombok
-```
-
-qui repos* sur*un mécanisme d'annotation processi*g.
-
-Exem*les :
-
-```java
-@Getter
-@Setter
-@Bu*lder
-*``
-
-Ces annotations génèrent du co*e pendant la compilation.
-
----
-
-##*Configuration*présente*
-### Compilation principale
-
-```xm*
-<execution>
-    <id>default-compi*e*/id>
-</execution>
-```
-
-Cette ex*cution est utilisée pour la compil*tion des sources de production.
-
--*-
-
-### Compilation des tests
-
-```x*l
-<execution>
-    <id>default-test*ompile</id>
-</execution>
-```
-
-Cett* exécution est utilisée pour la co*pilation des tests.
-
----
-
-### Anno*ation Processor Lombok
-
-```xml
-<an*otationProcessorPaths>
-    <path>
-*       <groupId>org.projectlombok<*groupId>
-        <artifactId>lombo*</artifactId>
-    </path>
-</annota*ionProcessorPaths>
-```
-
-Cette conf*guration indique au compilateur :
-*```text
-Utiliser Lombok pendant la*compilation
-```
-
-afin de générer a*tomatiquement :
-
-- Getters
-- Sette*s
-- Builders
-* Constructeurs
-
----
-
-# Cycle de bu*ld du projet
-
-## Compilation
-
-```b*sh
-mvn compile
-*``
-
-Actions :
-
-```text
-- Compilati*n Java
-* Exécution de Lombok
-```
-
-*--
-
-*# Exécution des tests
-
-```bash
-mvn*test
-```
-
-Actions :
-
-```text
-- Com*ilation des tests
-- Exécution*des tests unitaires
-```
-
----
-
-## C*éation*du JAR
-
-```bash
-mvn package
-```
-
-A*tions :
-
-*``text
-- Compilation
-- Tests
-- Gén*ration du*JAR Spring Boot
-```
-
----
-
-## Insta*lation locale
-
-```bash
-mvn install*```
-
-Actions :
-
-```text
-- Package
-* Installation dans le repository M*ven local
-```
-
----
-
-# Faut-il*conserver cette configuration ?
-
-#* Spring Boot Maven Plugin
-
-✅ Oui
-
-*ndispensable pour :
-
-```text
-- Mav*n
-- Spring Boot
-- Création du*JAR*exécutable
-```
-
----
-
-## Maven Comp*ler Plugin
-
-✅ Oui*
-Indispensable pour :
-
-```text
-- J*va 25
-- Lombok
-- Annotation Proces*ing
-```
-
----
-
-#*Évolutions possibles
-
-Lorsque le*projet grandira, il*pourra être pertinent d'ajouter :
-*## Maven Sure*ire Plugin
-
-Tests unitaires.
-
-```t*xt
-mvn test
-```
-
----
-
-## Maven Fai*safe Plugin
-
-Tests d'intégration.
-*```text
-mvn verify*```
-
----
-
-## JaCoCo
-
-Couverture*de code.
-
-```text
-Rap*orts*de couverture
-```
-
----
-
-## Spot**gs
-
-Analyse statique du code.
-
-```*ext
-Détection de bugs potentiels
-`*`
-
----
-
-##*Checkstyle
-
-Contrôle du*respect*des conventions de codage.
-
----
-
-#* PMD
-
-Analyse de qualité du code.
-*---
-
-# Philosophie du projet
-
-L'ob*ectif est*de*conserver un build simple :
-
-```te*t
-Maven
-│
-*── Spring Boot Maven Plugin
-└── Ma*en Compiler Plugin
-*``
-
-et d'ajouter progressivement l*s autres outils lorsque les besoin* appara*tront.
+- une version Java cohérente ;
+- une configuration uniforme ;
