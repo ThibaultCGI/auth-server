@@ -1,0 +1,18 @@
+@startuml
+title Structure Maven multi-modules
+
+skinparam shadowing false
+skinparam roundcorner 10
+
+package "auth-server" {
+    package "auth-core" as core
+    package "auth-infrastructure" as infra
+    package "auth-boot" as boot
+}
+
+boot ..> core : dépend
+boot ..> infra : dépend
+infra ..> core : dépend
+
+@enduml
+``

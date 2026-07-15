@@ -1,0 +1,44 @@
+@startuml
+title Modèle métier - OAuth2 / OpenID Connect
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam roundcorner 10
+
+class OAuthClient {
+    +UUID id
+    +String clientId
+    +String clientSecret
+    +boolean enabled
+    +Instant createdAt
+}
+
+class Scope {
+    +UUID id
+    +String code
+    +String description
+}
+
+class Authorization {
+    +UUID id
+    +String authorizationCode
+    +UUID userId
+    +UUID clientId
+    +Instant issuedAt
+    +Instant expiresAt
+    +boolean revoked
+}
+
+class RefreshToken {
+    +UUID id
+    +String tokenValue
+    +UUID authorizationId
+    +Instant expiresAt
+    +boolean revoked
+}
+
+OAuthClient "*" -- "*" Scope : autorise >
+Authorization "*" -- "*" Scope : contient >
+Authorization "1" -- "0..*" RefreshToken : génère >
+
+@enduml
