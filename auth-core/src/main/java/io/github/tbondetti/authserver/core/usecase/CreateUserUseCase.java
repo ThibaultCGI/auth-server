@@ -6,6 +6,7 @@ import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.port.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.util.Locale.ROOT;
@@ -45,6 +46,8 @@ public class CreateUserUseCase {
                 .id(randomUUID())
                 .username(normalizedUsername)
                 .passwordHash(passwordHash)
+                .enabled(true)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         return this.userRepositoryPort.save(user);
