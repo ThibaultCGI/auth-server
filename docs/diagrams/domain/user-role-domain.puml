@@ -1,0 +1,24 @@
+@startuml
+title Modèle métier - Utilisateur / Rôle
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam roundcorner 10
+
+class User {
+    +UUID id
+    +String username
+    +String passwordHash
+    +boolean enabled
+    +Instant createdAt
+}
+
+class Role {
+    +UUID id
+    +String code
+    +String description
+}
+
+User "*" -- "*" Role : possède >
+
+@enduml

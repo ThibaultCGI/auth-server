@@ -1,0 +1,32 @@
+@startuml
+title Flux d'une requête dans l'architecture hexagonale
+
+skinparam shadowing false
+skinparam roundcorner 10
+
+actor Client
+
+rectangle "auth-boot" {
+    component "Controller REST" as Controller
+}
+
+rectangle "auth-core" {
+    component "Use Case" as UseCase
+    interface "Port entrant" as InPort
+    interface "Port sortant" as OutPort
+}
+
+rectangle "auth-infrastructure" {
+    component "Adapter Web" as WebAdapter
+    component "Adapter Persistence" as PersistenceAdapter
+    database "PostgreSQL" as PostgreSQL
+}
+
+Client --> Controller : HTTP Request
+Controller --> UseCase : appel du cas d'usage
+UseCase --> InPort : utilise
+UseCase --> OutPort : demande d'accès aux données
+OutPort --> PersistenceAdapter : implémentation
+PersistenceAdapter --> PostgreSQL : SQL / JPA
+
+@enduml

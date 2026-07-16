@@ -1,0 +1,32 @@
+@startuml
+title Modèle relationnel V1 - Users / Roles
+
+hide circle
+skinparam shadowing false
+skinparam roundcorner 10
+
+entity "users" as users {
+    * id : UUID <<PK>>
+    --
+    username : VARCHAR(100) <<UQ>>
+    password_hash : VARCHAR(255)
+    enabled : BOOLEAN
+    created_at : TIMESTAMP
+}
+
+entity "roles" as roles {
+    * id : UUID <<PK>>
+    --
+    code : VARCHAR(50) <<UQ>>
+    description : VARCHAR(255)
+}
+
+entity "users_roles" as users_roles {
+    * user_id : UUID <<PK, FK>>
+    * role_id : UUID <<PK, FK>>
+}
+
+users ||--o{ users_roles
+roles ||--o{ users_roles
+
+@enduml
