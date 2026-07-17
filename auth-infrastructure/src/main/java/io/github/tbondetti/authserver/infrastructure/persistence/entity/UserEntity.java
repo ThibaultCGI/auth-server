@@ -36,8 +36,7 @@ public class UserEntity {
 
     @Column(
             name = "password_hash",
-            nullable = false,
-            length = 255
+            nullable = false
     )
     private String passwordHash;
 
