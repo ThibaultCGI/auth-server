@@ -6,6 +6,7 @@ import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.port.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
+import java.time.Clock;
 import java.util.Optional;
 
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validateAndNormalizeUsername;
@@ -19,6 +20,7 @@ public class CreateUserUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoderPort passwordEncoderPort;
+    private final Clock clock;
 
     public User execute(
             final String username,
@@ -36,7 +38,7 @@ public class CreateUserUseCase {
                 .username(normalizedUsername)
                 .passwordHash(passwordHash)
                 .enabled(true)
-                .createdAt(now())
+                .createdAt(now(this.clock))
                 .build();
 
         return this.userRepositoryPort.save(user);

@@ -6,9 +6,9 @@ import org.mockito.MockedStatic;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.TEN_STRING_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.USER_NAME;
-import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_PASSWORD_IS_REQUIRED;
-import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_PASSWORD_TOO_LONG;
-import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_PASSWORD_TOO_SHORT;
+import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_SECRET_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_SECRET_TOO_LONG;
+import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_SECRET_TOO_SHORT;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_USERNAME_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_USERNAME_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.normalizeUsername;
@@ -29,21 +29,21 @@ class UserValidationUtilsTest {
                 () -> validatePassword(null)
         );
 
-        assertEquals(ERROR_PASSWORD_IS_REQUIRED, exception1.getMessage());
+        assertEquals(ERROR_SECRET_IS_REQUIRED, exception1.getMessage());
 
         final AuthServerFunctionalException exception2 = assertThrows(
                 AuthServerFunctionalException.class,
                 () -> validatePassword("   ")
         );
 
-        assertEquals(ERROR_PASSWORD_IS_REQUIRED, exception2.getMessage());
+        assertEquals(ERROR_SECRET_IS_REQUIRED, exception2.getMessage());
 
         final AuthServerFunctionalException exception3 = assertThrows(
                 AuthServerFunctionalException.class,
                 () -> validatePassword("12345678901")
         );
 
-        assertEquals(ERROR_PASSWORD_TOO_SHORT, exception3.getMessage());
+        assertEquals(ERROR_SECRET_TOO_SHORT, exception3.getMessage());
 
         final AuthServerFunctionalException exception4 = assertThrows(
                 AuthServerFunctionalException.class,
@@ -64,7 +64,7 @@ class UserValidationUtilsTest {
                 )
         );
 
-        assertEquals(ERROR_PASSWORD_TOO_LONG, exception4.getMessage());
+        assertEquals(ERROR_SECRET_TOO_LONG, exception4.getMessage());
     }
 
     @Test

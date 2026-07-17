@@ -1,233 +1,264 @@
-# Architecture du projet
+# Architecture
 
 ## Objectif
 
-L'objectif du projet est de mettre en place un serveur d'authentification OAuth2 / OpenID Connect avec :
+Le projet `auth-server` a pour objectif de fournir un serveur d’authentification basé sur Spring Boot, PostgreSQL, Liquibase et une architecture hexagonale.
 
-- Java 25
-- Spring Boot 4
-- Spring Security
-- Spring Authorization Server
-- PostgreSQL
-- Liquibase
+L’objectif architectural principal est de maintenir une séparation claire entre :
 
-Le projet a également un objectif pédagogique fort :
-
-- apprendre OAuth2 ;
-- comprendre OpenID Connect ;
-- mettre en œuvre Spring Security ;
-- pratiquer une architecture hexagonale ;
-- structurer proprement un projet Maven multi-modules.
+- le **domaine métier** ;
+- les **cas d’usage** ;
+- les **ports** ;
+- les **adaptateurs techniques** ;
+- la **configuration Spring** ;
+- la **persistance** ;
+- la **sécurité**.
 
 ---
 
-# Architecture cible
+## Découpage multi-modules
 
-```text
-                    +------------------+
-                    |   auth-boot      |
-                    |------------------|
-                    | Spring Boot      |
-                    | Point d'entrée   |
-                    | Configuration    |
-                    +--------+---------+
-                             |
-              +--------------+--------------+
-              |                             |
-              v                             v
+Le projet est organisé en plusieurs modules Maven :
 
-+----------------------+     +---------------------------+
-|      auth-core       |     |   auth-infrastructure     |
-|----------------------|     |---------------------------|
-| Domaine métier       |     | REST Controllers          |
-| Cas d'utilisation    |     | Spring Security           |
-| Ports                |     | OAuth2 Authorization      |
-| Exceptions métier    |     | JPA / Hibernate           |
-+----------------------+     | PostgreSQL               |
-                             | Liquibase                |
-                             +-------------+------------+
-                                           |
-                                           v
+- `auth-core`
+- `auth-infrastructure`
+- `auth-boot`
 
-                             +---------------------------+
-                             |        PostgreSQL         |
-                             +---------------------------+
-```
+### Rôle de `auth-core`
 
----
+Le module `auth-core` contient :
 
-# Modules
+- le modèle métier ;
+- les ports ;
+- les cas d’usage ;
+- les exceptions métier ;
+- les règles métier partagées.
 
-## auth-core
+Le module `auth-core` ne dépend pas de Spring, de JPA, ni de PostgreSQL.
 
-Le module `auth-core` contient le cœur métier du projet.
+### Rôle de `auth-infrastructure`
 
-### Responsabilités
+Le module `auth-infrastructure` contient :
 
-- des modèles métier ;
-- des cas d'utilisation ;
-- des ports d’entrée ;
-- des ports de sortie ;
-- des exceptions métier.
+- les entités JPA ;
+- les repositories Spring Data JPA ;
+- les adapters qui implémentent les ports ;
+- les configurations Spring ;
+- l’implémentation technique du `PasswordEncoderPort` ;
+- la persistance PostgreSQL ;
+- les mappers domaine ↔ entity.
 
-### Ce qu’il ne doit pas contenir
+### Rôle de `auth-boot`
 
-- Spring ;
-- JPA ;
-- PostgreSQL ;
-- HTTP ;
-- OAuth2 technique ;
-- configuration d’infrastructure.
-
-### Exemple de contenu futur
-
-```text
-domain/
-application/
-port/
-exception/
-```
-
----
-
-## auth-infrastructure
-
-Le module `auth-infrastructure` contient les détails techniques.
-
-### Responsabilités
-
-- exposition HTTP ;
-- configuration de sécurité ;
-- configuration OAuth2 ;
-- persistance JPA ;
-- intégration PostgreSQL ;
-- migrations Liquibase.
-
-### Exemple de contenu futur
-
-```text
-controller/
-security/
-oauth/
-persistence/
-config/
-```
-
----
-
-## auth-boot
-
-Le module `auth-boot` est le module de démarrage.
-
-### Responsabilités
-
-- contenir la classe principale Spring Boot ;
-- assembler les modules ;
-- charger les propriétés de configuration ;
-- permettre le démarrage de l’application.
-
-### Exemple de contenu futur
-
-```text
-AuthServerApplication.java
-application.properties
-application-local.properties
-```
-
----
-
-# Principes retenus
-
-## Séparation des responsabilités
-
-Chaque module a un rôle précis :
-
-- `auth-core` = métier ;
-- `auth-infrastructure` = technique ;
-- `auth-boot` = démarrage.
-
----
-
-## Inversion des dépendances
-
-Le domaine ne doit pas dépendre des détails techniques.
-
-La règle cible est :
-
-```text
-Infrastructure -> Core
-Boot -> Core + Infrastructure
-```
-
-et jamais l’inverse.
-
----
-
-## Testabilité
-
-Le module `auth-core` doit rester testable sans :
-
-- Spring ;
-- base de données ;
-- serveur HTTP.
-
----
-
-# Répartition des dépendances
-
-## `auth-core`
-
-Doit contenir uniquement le métier.
-
-Aucune dépendance Spring n’est souhaitée au départ.
-
----
-
-## `auth-infrastructure`
-
-Contient les dépendances techniques :
-
-- Spring Web MVC ;
-- Spring Security ;
-- Spring Authorization Server ;
-- Spring Data JPA ;
-- PostgreSQL ;
-- Liquibase.
-
----
-
-## `auth-boot`
-
-Contient :
+Le module `auth-boot` contient :
 
 - le point d’entrée Spring Boot ;
-- le packaging exécutable ;
-- les fichiers de configuration.
-
-C’est également le seul module qui doit être packagé comme application Spring Boot autonome.
+- l’assemblage de l’application ;
+- les propriétés applicatives ;
+- les profils ;
+- les besoins d’exécution.
 
 ---
 
-# État actuel
+## Principes d’architecture
 
-## Réalisé
+### 1. Le domaine ne dépend d’aucune technologie
 
-- Projet initialisé ;
-- Dépôt GitHub créé ;
-- Documentation technique démarrée ;
-- Choix d’une architecture hexagonale ;
-- Choix d’un découpage multi-modules Maven.
+Le domaine métier est isolé de tout détail technique :
 
-## En cours
+- pas d’annotation JPA ;
+- pas d’annotation Spring ;
+- pas de dépendance à BCrypt ;
+- pas de dépendance à PostgreSQL.
 
-- Séparation effective en modules Maven ;
-- Mise en place du rôle de chaque module ;
-- Ajustement du build Maven.
+### 2. Les règles métier sont centralisées
 
-## À venir
+Les règles métier liées à l’utilisateur sont centralisées dans :
 
-- Corriger la configuration des plugins Maven ;
-- Déplacer la classe principale dans `auth-boot` ;
-- Vérifier le démarrage de l’application ;
-- Commencer la configuration Liquibase ;
-- Créer les premiers éléments métier.
+- `UserValidationUtils`
+- `UserRules`
+
+Cela permet de réutiliser la logique entre plusieurs use cases sans dupliquer les règles.
+
+### 3. Les use cases orchestrent le métier
+
+Les use cases sont responsables de :
+
+- valider les entrées ;
+- appliquer les règles métier ;
+- appeler les ports ;
+- construire les objets métier ;
+- retourner le résultat métier.
+
+### 4. Les adapters réalisent le pont technique
+
+Les adapters sont responsables de relier :
+
+- le core métier ;
+- et les technologies concrètes.
+
+Exemples :
+
+- `UserRepositoryAdapter` ↔ `UserJpaRepository`
+- `PasswordEncoderAdapter` ↔ `BCryptPasswordEncoder`
+
+---
+
+## Modèle métier actuel
+
+Le premier socle métier repose sur les entités suivantes :
+
+- `User`
+- `Role`
+
+À ce stade, `User` est la brique principale déjà exploitée par le système.
+
+---
+
+## Règles métier retenues
+
+### Username
+
+Le `username` est :
+
+- obligatoire ;
+- normalisé en lowercase ;
+- trimé ;
+- unique ;
+- limité à une longueur maximale de 100 caractères.
+
+### Password
+
+Le mot de passe est :
+
+- obligatoire ;
+- non vide ;
+- non blanc ;
+- limité à une longueur minimale de 12 caractères ;
+- limité à une longueur maximale de 128 caractères.
+
+### Création d’un utilisateur
+
+Lors de la création d’un utilisateur :
+
+- le `username` est normalisé ;
+- le mot de passe est encodé via `PasswordEncoderPort` ;
+- l’utilisateur est marqué comme `enabled = true` ;
+- la date de création est positionnée via `Clock`.
+
+---
+
+## Décisions techniques prises
+
+### 1. Encodage des mots de passe
+
+Le core ne connaît pas l’algorithme d’encodage concret.
+
+Le hashage est abstrait derrière :
+
+- `PasswordEncoderPort`
+
+L’implémentation technique actuelle utilise BCrypt côté infrastructure.
+
+### 2. Gestion du temps
+
+Le temps courant n’est pas obtenu via `LocalDateTime.now()` directement.
+
+L’application injecte un :
+
+- `Clock`
+
+et utilise :
+
+- `LocalDateTime.now(clock)`
+
+Le clock est configuré en :
+
+- `Clock.systemUTC()`
+
+Cela améliore la testabilité et évite les dépendances implicites au fuseau système.
+
+### 3. Stockage des dates
+
+Le champ `createdAt` est géré comme une date technique de création, tout en restant simple dans le modèle actuel.
+
+### 4. Identifiants
+
+Les identifiants métier sont de type :
+
+- `UUID`
+
+### 5. Schéma de base de données
+
+La base utilisée est :
+
+- `local`
+
+Le schéma applicatif est :
+
+- `auth_server`
+
+Liquibase crée et maintient les tables dans ce schéma.
+
+---
+
+## Structure logique du core
+
+### Domaine
+
+- `User`
+- `Role`
+
+### Ports
+
+- `UserRepositoryPort`
+- `PasswordEncoderPort`
+
+### Use cases
+
+- `CreateUserUseCase`
+- `GetUserUseCase`
+
+### Helpers métier
+
+- `UserValidationUtils`
+- `UserRules`
+
+### Exceptions
+
+- `AuthServerException`
+- `AuthServerFunctionalException`
+
+---
+
+## Structure logique de l’infrastructure
+
+### Persistance
+
+- `UserEntity`
+- `UserJpaRepository`
+- `UserRepositoryAdapter`
+- `UserMapper`
+
+### Sécurité
+
+- `PasswordEncoderAdapter`
+- configuration BCrypt
+
+### Configuration
+
+- `PersistenceConfiguration`
+- `PasswordEncoderConfiguration`
+- `UserUseCaseConfiguration`
+- `SpringConfiguration`
+
+---
+
+## Liquibase
+
+Les migrations sont gérées par Liquibase XML.
+
+### Emplacement
+
+```text
+auth-infrastructure/src/main/resources/db/changelog
