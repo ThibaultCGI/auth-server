@@ -1,10 +1,10 @@
 package io.github.tbondetti.authserver.core.utils;
 
-import io.github.tbondetti.authserver.core.constants.RoleRules;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
 import lombok.experimental.UtilityClass;
 
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.CODE_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.NAME_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.utils.DataValidationUtils.normalizeNullableString;
 import static java.util.Locale.ROOT;
@@ -60,7 +60,7 @@ public class ApplicationValidationUtils {
             return null;
         }
 
-        if (normalizedDescription.length() > RoleRules.DESCRIPTION_MAX_LENGTH) {
+        if (normalizedDescription.length() > DESCRIPTION_MAX_LENGTH) {
             throw new AuthServerFunctionalException(ERROR_DESCRIPTION_TOO_LONG);
         }
 
