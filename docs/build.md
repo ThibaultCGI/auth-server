@@ -1,125 +1,292 @@
-# Configuration du build
+# Build
 
-## Présentation
+## Objectif
 
-Ce document décrit la configuration Maven du projet et le rôle des plugins utilisés pour construire l'application.
+Ce document décrit :
 
-Le projet est organisé en **multi-modules Maven** afin de séparer clairement :
-
-- le cœur métier ;
-- la couche d'infrastructure ;
-- le module de démarrage Spring Boot.
-
-Cette organisation améliore :
-
-- la lisibilité ;
-- la maintenabilité ;
-- la testabilité ;
-- la séparation des responsabilités.
+- les prérequis nécessaires au développement ;
+- la structure Maven du projet ;
+- les commandes de build ;
+- les commandes de lancement ;
+- les bonnes pratiques associées.
 
 ---
 
-# Structure Maven cible
+# Prérequis
+
+Les outils suivants doivent être installés :
+
+- Java 21
+- Maven 3.9+
+- PostgreSQL
+- Git
+
+---
+
+# Organisation Maven
+
+Le projet est organisé sous la forme d'un projet Maven multi-modules.
 
 ```text
 auth-server
-│
-├── pom.xml
 ├── auth-core
-│   └── pom.xml
 ├── auth-infrastructure
-│   └── pom.xml
 └── auth-boot
-    └── pom.xml
+```
+
+Le `pom.xml` racine référence l'ensemble des modules.
+
+---
+
+# Modules
+
+## auth-core
+
+Contient :
+
+- le domaine ;
+- les use cases ;
+- les ports ;
+- les exceptions métier ;
+- les utilitaires métier.
+
+Le module ne dépend d'aucune technologie d'infrastructure.
+
+---
+
+## auth-infrastructure
+
+Contient :
+
+- les entités JPA ;
+- les repositories Spring Data ;
+- les adapters ;
+- Liquibase ;
+- les configurations Spring ;
+- les implémentations techniques des ports.
+
+---
+
+## auth-boot
+
+Contient :
+
+- la classe de démarrage Spring Boot ;
+- les fichiers de configuration ;
+- l'assemblage final de l'application.
+
+C'est le module exécutable.
+
+---
+
+# Construction du projet
+
+Depuis la racine :
+
+```bash
+mvn clean install
+```
+
+Cette commande :
+
+- compile tous les modules ;
+- exécute les tests ;
+- construit les artefacts Maven.
+
+---
+
+# Construction sans les tests
+
+```bash
+mvn clean install -DskipTests
+```
+
+Cette commande est réservée aux besoins ponctuels.
+
+Les tests doivent normalement être exécutés dans la CI et avant chaque merge.
+
+---
+
+# Exécution des tests
+
+## Tous les modules
+
+```bash
+mvn test
 ```
 
 ---
 
-# Rôle du POM parent
+## Module spécifique
 
-Le `pom.xml` racine joue le rôle de **parent Maven**.
+Exemple :
 
-## Responsabilités
-
-- centraliser la version du projet ;
-- déclarer les modules ;
-- partager les propriétés communes ;
-- gérer les versions des dépendances ;
-- gérer la configuration commune des plugins.
-
-## Ce que le parent ne doit pas faire
-
-Le parent ne doit pas transformer tous les modules en applications Spring Boot exécutables.
-
-En particulier :
-
-- `auth-core` doit rester un module bibliothèque ;
-- `auth-infrastructure` doit rester un module technique réutilisable ;
-- seul `auth-boot` doit produire l'application exécutable.
+```bash
+mvn test -pl auth-core
+```
 
 ---
 
-# Plugin Spring Boot Maven
+# Lancement de l'application
 
-## Outil principal
+Depuis la racine :
 
-- Spring Boot Maven Plugin
+```bash
+mvn spring-boot:run -pl auth-boot
+```
 
-## Rôle
+ou :
 
-Ce plugin permet :
+```bash
+cd auth-boot
+mvn spring-boot:run
+```
 
-- de construire un JAR exécutable Spring Boot ;
-- de lancer l'application via Maven ;
-- de préparer le packaging final de l'application.
+---
 
-## Utilisation correcte dans ce projet
+# Gestion de la base de données
 
-Le plugin Spring Boot Maven doit être configuré **uniquement dans le module `auth-boot`**, car ce module contient :
+## Base utilisée
 
-- la classe `@SpringBootApplication` ;
-- le point d'entrée de l'application ;
-- l'assemblage final du serveur d'authentification.
+PostgreSQL
 
-## Pourquoi ne pas le mettre dans le parent ?
+---
 
-Si ce plugin est appliqué au parent Maven, il risque d’être exécuté sur tous les sous-modules, y compris :
-
-- `auth-core`
-- `auth-infrastructure`
-
-Or ces modules n'ont pas vocation à être exécutables en tant qu'application Spring Boot autonome.
-
-Cela provoque des erreurs du type :
+## Schéma applicatif
 
 ```text
-Unable to find main class
+auth_server
 ```
 
 ---
 
-# Maven Compiler Plugin
+## Migrations
 
-## Outil principal
+Les migrations sont gérées par Liquibase.
 
-- Maven Compiler Plugin
+Au démarrage de l'application :
 
-## Rôle
+1. Spring Boot démarre ;
+2. Liquibase vérifie l'historique des migrations ;
+3. les migrations manquantes sont appliquées ;
+4. l'application poursuit son démarrage.
 
-Ce plugin gère la compilation du code Java.
+---
 
-Il permet notamment de :
+# Intégration continue
 
-- compiler le code source ;
-- compiler les tests ;
-- déclarer la version Java cible ;
-- activer les annotation processors.
+À terme, le pipeline CI devra exécuter :
 
-## Utilisation dans ce projet
+```bash
+mvn clean verify
+```
 
-La configuration du compilateur peut être centralisée dans le POM parent afin d’appliquer les mêmes règles à tous les modules.
+Cette commande permettra :
 
-Cela permet de garantir :
+- la compilation ;
+- l'exécution des tests ;
+- les contrôles de qualité ;
+- l'analyse Sonar ;
+- la génération du rapport de couverture.
 
-- une version Java cohérente ;
-- une configuration uniforme ;
+---
+
+# Sonar
+
+Le projet utilise Sonar pour :
+
+- la qualité du code ;
+- la détection de bugs potentiels ;
+- l'identification des problèmes de maintenabilité ;
+- le suivi de la dette technique.
+
+Les remontées Sonar doivent être analysées au cas par cas.
+
+Un warning Sonar ne doit pas être appliqué aveuglément s'il dégrade la lisibilité ou ne correspond pas à un risque réel.
+
+---
+
+# Gestion du temps
+
+Le projet utilise :
+
+```
+Clock
+```
+
+injecté par Spring.
+
+Configuration actuelle :
+
+```
+Clock.systemUTC()
+```
+
+Cela garantit :
+
+- des comportements prévisibles ;
+- une meilleure testabilité ;
+- l'indépendance vis-à-vis du fuseau horaire de la machine.
+
+---
+
+# Couverture de tests
+
+Les tests unitaires utilisent :
+
+- JUnit 5 ;
+- Mockito.
+
+Les tests du core :
+
+- ne démarrent pas Spring ;
+- mockent les ports ;
+- vérifient la logique métier des use cases.
+
+---
+
+# Convention de build
+
+Avant toute Pull Request :
+
+```bash
+mvn clean verify
+```
+
+doit être exécuté avec succès.
+
+Les conditions minimum pour ouvrir une Pull Request sont :
+
+- compilation réussie ;
+- tests verts ;
+- analyse Sonar acceptable ;
+- documentation mise à jour si nécessaire.
+
+---
+
+# Artefact principal
+
+L'application exécutable est produite par :
+
+```text
+auth-boot
+```
+
+Ce module assemble :
+
+- le domaine ;
+- l'infrastructure ;
+- la configuration Spring.
+
+---
+
+# Évolution future
+
+À terme, le build pourra être enrichi avec :
+
+- GitHub Actions ;
+- SonarCloud ;
+- JaCoCo ;
+- vérification des dépendances ;
+- génération automatique de documentation ;
+- build Docker.

@@ -2,23 +2,29 @@
 
 ## Objectif
 
-Le projet `auth-server` a pour objectif de fournir un serveur d’authentification basé sur Spring Boot, PostgreSQL, Liquibase et une architecture hexagonale.
+Le projet `auth-server` a pour objectif de fournir un serveur d’authentification moderne basé sur :
 
-L’objectif architectural principal est de maintenir une séparation claire entre :
+- Spring Boot
+- PostgreSQL
+- Liquibase
+- Spring Security
+- OAuth2 / OpenID Connect à terme
 
-- le **domaine métier** ;
-- les **cas d’usage** ;
-- les **ports** ;
-- les **adaptateurs techniques** ;
-- la **configuration Spring** ;
-- la **persistance** ;
-- la **sécurité**.
+L’architecture retenue est une architecture hexagonale afin de séparer clairement :
+
+- le métier ;
+- les cas d’usage ;
+- les ports ;
+- les adaptateurs techniques ;
+- la configuration Spring ;
+- la persistance ;
+- la sécurité.
 
 ---
 
 ## Découpage multi-modules
 
-Le projet est organisé en plusieurs modules Maven :
+Le projet est organisé sous la forme de plusieurs modules Maven :
 
 - `auth-core`
 - `auth-infrastructure`
@@ -26,104 +32,96 @@ Le projet est organisé en plusieurs modules Maven :
 
 ### Rôle de `auth-core`
 
-Le module `auth-core` contient :
+Le module `auth-core` contient exclusivement les éléments métier.
 
-- le modèle métier ;
-- les ports ;
-- les cas d’usage ;
-- les exceptions métier ;
-- les règles métier partagées.
+Il ne dépend :
 
-Le module `auth-core` ne dépend pas de Spring, de JPA, ni de PostgreSQL.
+- ni de Spring ;
+- ni de JPA ;
+- ni de PostgreSQL ;
+- ni de Spring Security.
+
+#### Contenu
+
+- domaine métier ;
+- ports ;
+- use cases ;
+- exceptions métier ;
+- règles métier partagées.
+
+---
 
 ### Rôle de `auth-infrastructure`
 
-Le module `auth-infrastructure` contient :
+Le module `auth-infrastructure` contient tous les détails techniques.
 
-- les entités JPA ;
-- les repositories Spring Data JPA ;
-- les adapters qui implémentent les ports ;
-- les configurations Spring ;
-- l’implémentation technique du `PasswordEncoderPort` ;
-- la persistance PostgreSQL ;
-- les mappers domaine ↔ entity.
+Il dépend :
+
+- de Spring ;
+- de Spring Data JPA ;
+- de PostgreSQL ;
+- de Liquibase ;
+- de Spring Security.
+
+#### Contenu
+
+- entités JPA ;
+- repositories Spring Data ;
+- adapters qui implémentent les ports ;
+- configurations Spring ;
+- implémentation technique de l’encodage des mots de passe ;
+- persistance PostgreSQL ;
+- mappers entre domaine et entités.
+
+---
 
 ### Rôle de `auth-boot`
 
 Le module `auth-boot` contient :
 
-- le point d’entrée Spring Boot ;
-- l’assemblage de l’application ;
+- la classe de démarrage Spring Boot ;
 - les propriétés applicatives ;
-- les profils ;
-- les besoins d’exécution.
+- l’assemblage final de l’application.
 
 ---
 
-## Principes d’architecture
+## Architecture hexagonale
 
-### 1. Le domaine ne dépend d’aucune technologie
+### Ports
 
-Le domaine métier est isolé de tout détail technique :
-
-- pas d’annotation JPA ;
-- pas d’annotation Spring ;
-- pas de dépendance à BCrypt ;
-- pas de dépendance à PostgreSQL.
-
-### 2. Les règles métier sont centralisées
-
-Les règles métier liées à l’utilisateur sont centralisées dans :
-
-- `UserValidationUtils`
-- `UserRules`
-
-Cela permet de réutiliser la logique entre plusieurs use cases sans dupliquer les règles.
-
-### 3. Les use cases orchestrent le métier
-
-Les use cases sont responsables de :
-
-- valider les entrées ;
-- appliquer les règles métier ;
-- appeler les ports ;
-- construire les objets métier ;
-- retourner le résultat métier.
-
-### 4. Les adapters réalisent le pont technique
-
-Les adapters sont responsables de relier :
-
-- le core métier ;
-- et les technologies concrètes.
+Les ports représentent les besoins du métier.
 
 Exemples :
 
-- `UserRepositoryAdapter` ↔ `UserJpaRepository`
-- `PasswordEncoderAdapter` ↔ `BCryptPasswordEncoder`
+- `UserRepositoryPort`
+- `PasswordEncoderPort`
+
+Les ports sont définis dans le module `auth-core`.
 
 ---
 
-## Modèle métier actuel
+### Adapters
 
-Le premier socle métier repose sur les entités suivantes :
+Les adapters implémentent les ports et relient le core aux technologies concrètes.
 
-- `User`
-- `Role`
+Exemples :
 
-À ce stade, `User` est la brique principale déjà exploitée par le système.
+- `UserRepositoryAdapter`
+- `PasswordEncoderAdapter`
+
+Les adapters sont situés dans `auth-infrastructure`.
 
 ---
 
-## Règles métier retenues
+## Gestion des utilisateurs
 
 ### Username
 
 Le `username` est :
 
 - obligatoire ;
-- normalisé en lowercase ;
 - trimé ;
+- normalisé en lowercase ;
 - unique ;
 - limité à une longueur maximale de 100 caractères.
 
@@ -143,14 +141,14 @@ Lors de la création d’un utilisateur :
 
 - le `username` est normalisé ;
 - le mot de passe est encodé via `PasswordEncoderPort` ;
-- l’utilisateur est marqué comme `enabled = true` ;
-- la date de création est positionnée via `Clock`.
+- l’utilisateur est créé avec `enabled = true` ;
+- la date de création est injectée via un `Clock`.
 
 ---
 
 ## Décisions techniques prises
 
-### 1. Encodage des mots de passe
+### Encodage des mots de passe
 
 Le core ne connaît pas l’algorithme d’encodage concret.
 
@@ -160,45 +158,65 @@ Le hashage est abstrait derrière :
 
 L’implémentation technique actuelle utilise BCrypt côté infrastructure.
 
-### 2. Gestion du temps
+---
 
-Le temps courant n’est pas obtenu via `LocalDateTime.now()` directement.
+### Gestion du temps
 
-L’application injecte un :
+Le temps courant n’est pas obtenu directement via `LocalDateTime.now()`.
+
+Les use cases reçoivent un :
 
 - `Clock`
 
-et utilise :
+injecté par Spring.
 
-- `LocalDateTime.now(clock)`
-
-Le clock est configuré en :
+L’application utilise :
 
 - `Clock.systemUTC()`
 
 Cela améliore la testabilité et évite les dépendances implicites au fuseau système.
 
-### 3. Stockage des dates
+---
 
-Le champ `createdAt` est géré comme une date technique de création, tout en restant simple dans le modèle actuel.
-
-### 4. Identifiants
+### Identifiants
 
 Les identifiants métier sont de type :
 
 - `UUID`
 
-### 5. Schéma de base de données
+---
 
-La base utilisée est :
+### Schéma de base de données
 
-- `local`
-
-Le schéma applicatif est :
+Les tables applicatives sont créées dans le schéma :
 
 - `auth_server`
 
-Liquibase crée et maintient les tables dans ce schéma.
+La base PostgreSQL utilisée est :
+
+- `local`
+
+---
+
+## Persistance
+
+### Outil de migration
+
+Les migrations sont gérées via :
+
+- Liquibase
+
+### Format des migrations
+
+Les migrations sont écrites en :
+
+- XML
+
+### Tables actuellement présentes
+
+- `users`
+- `roles`
+- `users_roles`
 
 ---
 
@@ -219,7 +237,7 @@ Liquibase crée et maintient les tables dans ce schéma.
 - `CreateUserUseCase`
 - `GetUserUseCase`
 
-### Helpers métier
+### Utilitaires métier
 
 - `UserValidationUtils`
 - `UserRules`
@@ -247,18 +265,55 @@ Liquibase crée et maintient les tables dans ce schéma.
 
 ### Configuration
 
+- `SpringConfiguration`
 - `PersistenceConfiguration`
 - `PasswordEncoderConfiguration`
 - `UserUseCaseConfiguration`
-- `SpringConfiguration`
 
 ---
 
-## Liquibase
+## Tests
 
-Les migrations sont gérées par Liquibase XML.
+Les tests unitaires utilisent :
 
-### Emplacement
+- JUnit 5
+- Mockito
 
-```text
-auth-infrastructure/src/main/resources/db/changelog
+### Philosophie retenue
+
+Les tests sont organisés en plusieurs niveaux :
+
+1. tests des sous-méthodes métier ;
+2. tests d’orchestration des use cases ;
+3. tests comportementaux plus globaux lorsque nécessaire.
+
+---
+
+## État actuel du métier
+
+Les use cases actuellement implémentés sont :
+
+- `CreateUserUseCase`
+- `GetUserUseCase`
+
+Les prochaines étapes prévues sont :
+
+- `AuthenticateUserUseCase`
+- gestion des rôles
+- intégration Spring Security
+- OAuth2 / OpenID Connect
+
+---
+
+## Principes directeurs
+
+Les principes suivants guident le développement du projet :
+
+1. Le métier ne dépend pas du framework.
+2. Les règles métier sont centralisées.
+3. Le mot de passe n’est jamais stocké en clair.
+4. Les détails techniques restent dans l’infrastructure.
+5. Les use cases contiennent l’orchestration métier.
+6. La base de données est versionnée via Liquibase.
+7. Le temps est injecté via un `Clock`.
+8. Les tests doivent rester simples, lisibles et maintenables.
