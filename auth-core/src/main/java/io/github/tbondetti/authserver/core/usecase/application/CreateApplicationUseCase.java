@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.normalizeDescription;
+import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.validateAndNormalizeCode;
 import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.validateAndNormalizeName;
 import static java.util.UUID.randomUUID;
@@ -25,7 +25,7 @@ public class CreateApplicationUseCase {
     ) {
         final String normalizedCode = validateAndNormalizeCode(code);
         final String normalizedName = validateAndNormalizeName(name);
-        final String normalizedDescription = normalizeDescription(description);
+        final String normalizedDescription = normalizeAndValidateDescription(description);
 
         this.ensureCodeIsUnique(normalizedCode);
 

@@ -1,10 +1,12 @@
 package io.github.tbondetti.authserver.core.utils;
 
+import io.github.tbondetti.authserver.core.constants.RoleRules;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
 import lombok.experimental.UtilityClass;
 
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.utils.DataValidationUtils.normalizeNullableString;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.isNull;
 
@@ -15,6 +17,8 @@ public class ApplicationValidationUtils {
 
     static final String ERROR_NAME_IS_REQUIRED = "Le nom est obligatoire et ne peut pas être vide.";
     static final String ERROR_NAME_TOO_LONG = "Le nom ne doit pas dépasser les 100 caractères.";
+
+    static final String ERROR_DESCRIPTION_TOO_LONG = "La description ne doit pas dépasser les 500 caractères.";
 
 
     public static String validateAndNormalizeCode(final String code) {
@@ -49,11 +53,17 @@ public class ApplicationValidationUtils {
         return normalizedName;
     }
 
-    public static String normalizeDescription(final String description) {
-        if (isNull(description) || description.isBlank()) {
+    public static String normalizeAndValidateDescription(final String description) {
+        final String normalizedDescription = normalizeNullableString(description);
+
+        if (isNull(normalizedDescription)) {
             return null;
         }
 
-        return description.trim();
+        if (normalizedDescription.length() > RoleRules.DESCRIPTION_MAX_LENGTH) {
+            throw new AuthServerFunctionalException(ERROR_DESCRIPTION_TOO_LONG);
+        }
+
+        return normalizedDescription;
     }
 }

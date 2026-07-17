@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-import static io.github.tbondetti.authserver.core.utils.RoleValidationUtils.normalizeDescription;
+import static io.github.tbondetti.authserver.core.utils.RoleValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.RoleValidationUtils.validateAndNormalizeCode;
 import static io.github.tbondetti.authserver.core.utils.RoleValidationUtils.validateAndNormalizeName;
 import static java.util.UUID.randomUUID;
@@ -29,7 +29,7 @@ public class CreateRoleUseCase {
     ) {
         final String normalizedCode = validateAndNormalizeCode(code);
         final String normalizedName = validateAndNormalizeName(name);
-        final String normalizedDescription = normalizeDescription(description);
+        final String normalizedDescription = normalizeAndValidateDescription(description);
 
         final Application application = this.getApplicationUseCase.execute(applicationCode);
 
