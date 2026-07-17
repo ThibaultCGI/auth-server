@@ -33,7 +33,7 @@ public class UserValidationUtils {
         return normalizedUsername;
     }
 
-    static String normalizeUsername(final String username) {
+    public static String normalizeUsername(final String username) {
         return username.trim().toLowerCase(ROOT);
     }
 
