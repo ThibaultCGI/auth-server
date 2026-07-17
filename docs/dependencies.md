@@ -1,388 +1,517 @@
-# Dépendances du projet Auth Server
+# Dependencies
 
-## Présentation
+## Objectif
 
-Ce projet a pour objectif de mettre en œuvre un serveur d'authentification OAuth2/OpenID Connect avec Spring Boot.
+Ce document décrit les principales dépendances utilisées par le projet ainsi que leur rôle.
 
-Les dépendances ci-dessous constituent le socle technique de l'application.
+L'objectif est de comprendre rapidement :
 
----
-
-# Dépendances de production
-
-## Spring Data JPA
-
-### Dépendance
-
-```xml
-<artifactId>spring-boot-starter-data-jpa</artifactId>
-```
-
-### Outil principal
-
-- Spring Data JPA
-- Hibernate
-
-### Rôle
-
-Permet l'accès à la base de données via le paradigme ORM (Object Relational Mapping).
-
-### Utilisation
-
-- Déclaration des entités JPA
-- Repositories
-- Gestion des transactions
-- Génération des requêtes SQL
-
-### Concepts à maîtriser
-
-- `@Entity`
-- `@Id`
-- `@OneToMany`
-- `@ManyToOne`
-- `JpaRepository`
+- pourquoi une dépendance est présente ;
+- dans quel module elle est utilisée ;
+- quel problème elle résout ;
+- quelles sont les dépendances autorisées dans chaque module.
 
 ---
 
-## Spring Security
+# Dépendances globales
 
-### Dépendance
+## Java
 
-```xml
-<artifactId>spring-boot-starter-security</artifactId>
-```
-
-### Outil principal
-
-- Spring Security
-
-### Rôle
-
-Fournit les mécanismes de sécurité de l'application.
-
-### Utilisation
-
-- Authentification
-- Autorisation
-- Gestion des rôles
-- Protection des endpoints HTTP
-
-### Concepts à maîtriser
-
-- `SecurityFilterChain`
-- `Authentication`
-- `AuthenticationProvider`
-- `SecurityContext`
-
----
-
-## Spring Authorization Server
-
-### Dépendance
-
-```xml
-<artifactId>spring-boot-starter-security-oauth2-authorization-server</artifactId>
-```
-
-### Outil principal
-
-- Spring Authorization Server
-
-### Rôle
-
-Implémentation du serveur OAuth2/OpenID Connect.
-
-### Utilisation
-
-- Émission de JWT
-- Gestion des clients OAuth2
-- Gestion des scopes
-- OpenID Connect
-
-### Endpoints fournis
+### Version
 
 ```text
-/oauth2/authorize
-/oauth2/token
-/oauth2/jwks
-/oauth2/revoke
-/oauth2/introspect
+Java 21
 ```
 
-### Concepts à maîtriser
+### Motivation
 
-- OAuth2
-- OpenID Connect
-- JWT
-- Client Credentials
-- Authorization Code
-- PKCE
+Utiliser une version LTS récente fournissant :
+
+- les records ;
+- les améliorations de performances ;
+- les API modernes ;
+- un support long terme.
 
 ---
 
-## Spring Validation
+## Maven
 
-### Dépendance
+### Version
 
-```xml
-<artifactId>spring-boot-starter-validation</artifactId>
+```text
+Maven 3.9+
 ```
 
-### Outil principal
+### Motivation
 
-- Jakarta Validation
-- Hibernate Validator
+Gestion :
+
+- du build ;
+- des modules ;
+- des dépendances ;
+- des tests ;
+- de l'intégration continue.
+
+---
+
+# Spring Boot
+
+## Dépendance
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+</dependency>
+```
+
+### Module
+
+```text
+parent
+```
 
 ### Rôle
 
-Valide automatiquement les données reçues par l'application.
+Fournit :
 
-### Utilisation
+- le dependency management ;
+- la gestion cohérente des versions ;
+- les réglages recommandés par Spring Boot.
 
-- Validation de DTO
-- Vérification des formats
-- Contrôle des données utilisateur
+---
 
-### Annotations courantes
+# Spring Framework
 
-```java
-@NotNull
-@NotBlank
-@Email
-@Size
+## Dépendance
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+</dependency>
+```
+
+### Modules
+
+```text
+auth-boot
+auth-infrastructure
+```
+
+### Rôle
+
+Fournit :
+
+- l'injection de dépendances ;
+- le conteneur Spring ;
+- la gestion des beans ;
+- la configuration applicative.
+
+---
+
+# Spring Data JPA
+
+## Dépendance
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+```
+
+### Module
+
+```text
+auth-infrastructure
+```
+
+### Rôle
+
+Permet :
+
+- le mapping JPA ;
+- l'utilisation des repositories Spring Data ;
+- l'intégration Hibernate.
+
+### Utilisation actuelle
+
+Exemples :
+
+- UserEntity
+- UserJpaRepository
+
+---
+
+# PostgreSQL
+
+## Dépendance
+
+```xml
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+</dependency>
+```
+
+### Module
+
+```text
+auth-infrastructure
+```
+
+### Rôle
+
+Driver JDBC PostgreSQL.
+
+Permet :
+
+- la connexion à la base ;
+- l'utilisation des UUID PostgreSQL ;
+- l'exécution des requêtes SQL.
+
+---
+
+# Liquibase
+
+## Dépendance
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-liquibase</artifactId>
+</dependency>
+```
+
+### Module
+
+```text
+auth-infrastructure
+```
+
+### Rôle
+
+Intégration de Liquibase avec Spring Boot.
+
+Permet :
+
+- l'exécution automatique des migrations au démarrage ;
+- la gestion du changelog ;
+- le suivi des migrations déjà exécutées ;
+- la synchronisation du schéma de base de données.
+
+### Utilisation actuelle
+
+Les migrations sont écrites au format XML.
+
+Exemples :
+
+```text
+changelog.xml
+V001-create-users-roles.xml
+```
+
+### Règle du projet
+
+Toute modification du schéma doit être réalisée via Liquibase.
+
+Les bases de données partagées ne doivent jamais être modifiées manuellement.
+
+---
+
+# Spring Security
+
+## Dépendance
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+
+### Module
+
+```text
+auth-infrastructure
+```
+
+### Rôle
+
+Fournit :
+
+- PasswordEncoder ;
+- BCrypt ;
+- les briques nécessaires aux futures évolutions de sécurité.
+
+### Utilisation actuelle
+
+Principalement :
+
+```
+BCryptPasswordEncoder
+```
+
+via :
+
+```
+PasswordEncoderAdapter
 ```
 
 ---
 
-## Spring MVC
+# Lombok
 
-### Dépendance
+## Dépendance
 
 ```xml
-<artifactId>spring-boot-starter-webmvc</artifactId>
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+</dependency>
 ```
 
-### Outil principal
+### Modules
 
-- Spring MVC
+```text
+auth-core
+auth-infrastructure
+auth-boot
+```
 
 ### Rôle
 
-Expose les APIs HTTP de l'application.
+Réduction du code répétitif.
 
-### Utilisation
+### Utilisation actuelle
 
-- Contrôleurs REST
-- Mapping HTTP
-- Sérialisation JSON
+Exemples :
 
-### Annotations courantes
-
-```java
-@RestController
-@RequestMapping
-@GetMapping
-@PostMapping
 ```
-
----
-
-## PostgreSQL Driver
-
-### Dépendance
-
-```xml
-<artifactId>postgresql</artifactId>
-```
-
-### Outil principal
-
-- PostgreSQL JDBC Driver
-
-### Rôle
-
-Permet à l'application de communiquer avec PostgreSQL.
-
-### Utilisation
-
-- Connexion à la base
-- Exécution des requêtes SQL
-- Communication avec Hibernate
-
----
-
-## Liquibase
-
-### Dépendance
-
-```xml
-<artifactId>liquibase-core</artifactId>
-```
-
-### Outil principal
-
-- Liquibase
-
-### Rôle
-
-Gère le versionnement du schéma de base de données.
-
-### Utilisation
-
-- Création des tables
-- Évolution du schéma
-- Historisation des migrations
-
-### Concepts à maîtriser
-
-- Changelog
-- Changeset
-- Migration
-- Rollback
-
-### Pourquoi est-il utilisé ?
-
-Remplace l'utilisation de :
-
-```properties
-spring.jpa.hibernate.ddl-auto=update
-```
-
-Les évolutions du schéma deviennent traçables et reproductibles.
-
----
-
-## Lombok
-
-### Dépendance
-
-```xml
-<artifactId>lombok</artifactId>
-```
-
-### Outil principal
-
-- Project Lombok
-
-### Rôle
-
-Réduit le code répétitif.
-
-### Utilisation
-
-- Getters / Setters
-- Builders
-- Constructeurs
-
-### Annotations courantes
-
-```java
+@RequiredArgsConstructor
 @Getter
 @Setter
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@UtilityClass
 ```
 
 ### Remarque
 
-Lombok est utilisé principalement pour accélérer le développement.
-Les Records Java peuvent parfois constituer une alternative plus moderne pour les DTO.
+Lombok doit améliorer la lisibilité du code.
+
+La logique métier ne doit jamais être masquée derrière Lombok.
 
 ---
 
-# Dépendances de test
+# Tests
 
-## Tests JPA
+## Spring Boot Test
 
-Permettent de tester :
+### Dépendance
 
-- Entités
-- Repositories
-- Persistance
-
----
-
-## Tests Spring Security
-
-Permettent de tester :
-
-- Authentification
-- Autorisation
-- Règles de sécurité
-
-Annotations utiles :
-
-```java
-@WithMockUser
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
 ```
 
----
+### Rôle
 
-## Tests Authorization Server
+Fournit :
 
-Permettent de vérifier :
-
-- Génération des tokens
-- Flows OAuth2
-- Configuration OIDC
-
----
-
-## Tests Validation
-
-Permettent de vérifier :
-
-- Contraintes Jakarta Validation
-- Cohérence des DTO
+- JUnit 5 ;
+- Mockito ;
+- AssertJ ;
+- Spring Test ;
+- Hamcrest.
 
 ---
 
-## Tests Web MVC
+## JUnit 5
 
-Permettent de simuler des requêtes HTTP.
+### Utilisation
 
-Outil principal :
-
-```java
-MockMvc
-```
+Les tests unitaires sont écrits avec JUnit Jupiter.
 
 Exemples :
 
-```http
-GET /users
-POST /oauth2/token
+```
+@Test
+@ExtendWith(...)
+assertThrows(...)
 ```
 
 ---
 
-# Architecture cible
+## Mockito
+
+### Utilisation
+
+Mockito est utilisé pour :
+
+- mocker les ports ;
+- réaliser des spies ;
+- simuler des comportements techniques.
+
+Exemples :
+
+```
+@Mock
+@InjectMocks
+@Spy
+MockedStatic
+```
+
+---
+
+# Dépendances du module auth-core
+
+## Objectif
+
+Le module auth-core doit rester indépendant de tout framework technique.
+
+### Dépendances autorisées
+
+- Lombok
+- Mockito (tests)
+- JUnit (tests)
+
+### Dépendances interdites
+
+- Spring Framework
+- Spring Data JPA
+- Hibernate
+- PostgreSQL
+- Liquibase
+- Spring Security
+
+---
+
+# Dépendances du module auth-infrastructure
+
+## Objectif
+
+Implémenter les détails techniques du système.
+
+### Dépendances principales
+
+- Spring Boot
+- Spring Data JPA
+- PostgreSQL
+- Liquibase
+- Spring Security
+- Lombok
+
+---
+
+# Dépendances du module auth-boot
+
+## Objectif
+
+Assembler l'application finale.
+
+### Dépendances principales
+
+- auth-core
+- auth-infrastructure
+- Spring Boot
+
+---
+
+# Gestion du temps
+
+Le projet utilise :
+
+```
+java.time.Clock
+```
+
+injecté par Spring.
+
+### Configuration actuelle
+
+```
+Clock.systemUTC()
+```
+
+### Motivation
+
+Éviter l'utilisation directe de :
+
+```
+LocalDateTime.now()
+```
+
+afin d'améliorer :
+
+- la testabilité ;
+- la reproductibilité ;
+- l'indépendance vis-à-vis du fuseau horaire de la machine.
+
+---
+
+# Dépendances futures envisagées
+
+## OAuth2 Authorization Server
+
+Dépendance envisagée :
+
+```
+spring-security-oauth2-authorization-server
+```
+
+### Usage prévu
+
+Implémentation :
+
+- d'un Authorization Server OAuth2 ;
+- de la gestion des clients ;
+- des tokens ;
+- des scopes ;
+- des refresh tokens.
+
+---
+
+## OpenID Connect
+
+Support envisagé à terme :
 
 ```text
-Client
-    │
-    ▼
-Authorization Server
-    │
-    ├── Spring Security
-    ├── OAuth2 Authorization Server
-    ├── Spring MVC
-    ├── Validation
-    ├── JPA / Hibernate
-    ├── PostgreSQL
-    └── Liquibase
+OIDC
 ```
+
+afin de fournir :
+
+- l'identité utilisateur ;
+- les claims standard ;
+- les endpoints OIDC.
 
 ---
 
-# Ordre d'apprentissage recommandé
+# Politique d'ajout de dépendances
 
-1. Spring MVC
-2. Spring Security
-3. JPA / Hibernate
-4. PostgreSQL
-5. Liquibase
-6. OAuth2
-7. OpenID Connect
-8. JWT
-9. Spring Authorization Server
+Avant d'ajouter une dépendance, il convient de vérifier :
+
+1. si Java fournit déjà une solution adaptée ;
+2. si Spring fournit déjà cette fonctionnalité ;
+3. si la dépendance répond à un besoin réel ;
+4. si elle n'alourdit pas inutilement le projet.
+
+---
+
+# Philosophie générale
+
+Le projet privilégie :
+
+- la simplicité ;
+- les bibliothèques éprouvées ;
+- le faible couplage ;
+- une architecture explicite ;
+- la maîtrise du code produit.
+
+L'introduction d'une bibliothèque doit toujours être justifiée par une réelle valeur ajoutée.

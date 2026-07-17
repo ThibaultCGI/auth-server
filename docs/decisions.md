@@ -1,201 +1,447 @@
-# Decisions Log
+# Decisions
 
-## Présentation
+Ce document recense les principales décisions d'architecture et de conception prises au cours du projet.
 
-Ce document recense les principales décisions d'architecture prises au cours du projet.
-
-Chaque décision doit répondre aux questions :
-
-- Quel problème cherchons-nous à résoudre ?
-- Quelles étaient les alternatives ?
-- Pourquoi ce choix a-t-il été retenu ?
-- Quelles conséquences ce choix implique-t-il ?
+L'objectif est de conserver une trace des choix effectués ainsi que de leurs motivations.
 
 ---
 
-# ADR-001 - Utilisation de Spring Boot
-
-## Date
-
-2026-07-15
+# ADR-001 - Architecture hexagonale
 
 ## Décision
 
-Utiliser Spring Boot comme socle applicatif.
+Le projet adopte une architecture hexagonale.
 
-## Alternatives envisagées
+## Motivation
 
-- Jakarta EE
-- Micronaut
-- Quarkus
+Nous souhaitons :
 
-## Justification
-
-Le projet est centré sur l'apprentissage de :
-
-- Spring Security
-- OAuth2
-- OpenID Connect
-- Spring Authorization Server
-
-Spring Boot constitue aujourd'hui l'écosystème le plus mature pour ces usages.
-
----
-
-# ADR-002 - Utilisation de Java 25
-
-## Date
-
-2026-07-15
-
-## Décision
-
-Utiliser Java 25.
-
-## Alternatives envisagées
-
-- Java 21
-- Java 24
-
-## Justification
-
-Projet personnel destiné à explorer les fonctionnalités les plus récentes du JDK.
-
----
-
-# ADR-003 - Utilisation de PostgreSQL
-
-## Date
-
-2026-07-15
-
-## Décision
-
-Utiliser PostgreSQL comme base de données principale.
-
-## Alternatives envisagées
-
-- H2
-- MySQL
-- MariaDB
-
-## Justification
-
-PostgreSQL est largement utilisé en contexte professionnel et permet de travailler dans un environnement proche de la production.
-
----
-
-# ADR-004 - Utilisation de Liquibase
-
-## Date
-
-2026-07-15
-
-## Décision
-
-Utiliser Liquibase pour gérer les évolutions de schéma.
-
-## Alternatives envisagées
-
-- Hibernate ddl-auto
-- Flyway
-
-## Justification
-
-Les évolutions du schéma doivent être :
-
-- versionnées
-- historiques
-- reproductibles
+- isoler le métier de la technique ;
+- limiter les dépendances envers les frameworks ;
+- faciliter les tests unitaires ;
+- permettre l'évolution des choix techniques sans impacter le métier.
 
 ## Conséquences
 
-Les migrations devront être créées explicitement.
+Le domaine dépend uniquement :
+
+- des objets métier ;
+- des use cases ;
+- des ports.
+
+Les détails techniques sont implémentés dans le module infrastructure.
 
 ---
 
-# ADR-005 - Utilisation de Spring Authorization Server
-
-## Date
-
-2026-07-15
+# ADR-002 - Architecture multi-modules
 
 ## Décision
 
-Utiliser Spring Authorization Server.
+Le projet est découpé en plusieurs modules Maven :
 
-## Alternatives envisagées
+- auth-core
+- auth-infrastructure
+- auth-boot
 
-- Développement complet maison
-- Keycloak
-- Auth0
-- Okta
+## Motivation
 
-## Justification
+Séparer clairement :
 
-Apprendre les mécanismes OAuth2 tout en conservant une implémentation conforme aux standards.
+- le métier ;
+- l'infrastructure ;
+- le bootstrap Spring Boot.
+
+## Conséquences
+
+Le core ne dépend pas de Spring.
 
 ---
 
-# ADR-006 - Utilisation de JWT
-
-## Date
-
-2026-07-15
+# ADR-003 - PostgreSQL
 
 ## Décision
 
-Utiliser des Access Tokens au format JWT.
+La persistance repose sur PostgreSQL.
 
-## Alternatives envisagées
+## Motivation
 
-- Tokens opaques
+PostgreSQL fournit :
 
-## Justification
+- une excellente stabilité ;
+- un support avancé des types ;
+- une gestion native des UUID ;
+- un excellent support avec Spring Boot.
 
-Format largement adopté dans les architectures modernes et distribué.
+## Conséquences
+
+Les entités sont stockées dans une base PostgreSQL locale durant le développement.
 
 ---
 
-# ADR-007 - Utilisation des profils Spring
-
-## Date
-
-2026-07-15
+# ADR-004 - Liquibase
 
 ## Décision
 
-Utiliser des profils Spring.
+Les migrations de base de données sont gérées via Liquibase.
 
-## Alternatives envisagées
+## Motivation
 
-- Configuration unique
+Nous souhaitons :
 
-## Justification
+- versionner le schéma ;
+- reproduire facilement un environnement ;
+- suivre l'historique des évolutions.
 
-Séparer les environnements :
+## Conséquences
 
-- local
-- dev
-- recette
-- production
+Toute modification de base doit être réalisée via un changelog Liquibase.
 
 ---
 
-# ADR-008 - Utilisation de Lombok
-
-## Date
-
-2026-07-15
+# ADR-005 - Format XML pour Liquibase
 
 ## Décision
 
-Utiliser Lombok pour réduire le code répétitif.
+Les changelogs Liquibase sont écrits en XML.
 
-## Alternatives envisagées
+## Motivation
 
-- Génération manuelle
-- Records uniquement
+Le format XML :
 
-## Justification
+- est bien supporté par IntelliJ ;
+- offre une bonne lisibilité ;
+- fournit une validation XSD.
 
+## Conséquences
+
+Les migrations SQL pures ne sont utilisées qu'en cas de besoin spécifique.
+
+---
+
+# ADR-006 - Schéma dédié
+
+## Décision
+
+Les objets applicatifs sont créés dans le schéma :
+
+```text
+auth_server
+```
+
+## Motivation
+
+Isoler les objets applicatifs du reste de la base.
+
+## Conséquences
+
+Toutes les tables métier sont créées dans ce schéma.
+
+---
+
+# ADR-007 - Utilisation des UUID
+
+## Décision
+
+Les identifiants métier sont de type UUID.
+
+## Motivation
+
+Les UUID :
+
+- évitent l'exposition d'identifiants séquentiels ;
+- facilitent les futures évolutions distribuées ;
+- sont bien supportés par PostgreSQL.
+
+## Conséquences
+
+Les entités User et Role utilisent des UUID.
+
+---
+
+# ADR-008 - PasswordEncoderPort
+
+## Décision
+
+Le mécanisme d'encodage des mots de passe est abstrait derrière un port :
+
+```
+PasswordEncoderPort
+```
+
+## Motivation
+
+Le métier ne doit pas dépendre directement :
+
+- de BCrypt ;
+- de Spring Security ;
+- d'un algorithme particulier.
+
+## Conséquences
+
+L'infrastructure choisit l'implémentation concrète.
+
+---
+
+# ADR-009 - BCrypt
+
+## Décision
+
+L'implémentation actuelle du PasswordEncoderPort repose sur BCrypt.
+
+## Motivation
+
+BCrypt constitue une solution éprouvée et largement utilisée.
+
+## Conséquences
+
+Le domaine n'est pas couplé à BCrypt.
+
+---
+
+# ADR-010 - Le mot de passe n'est jamais stocké en clair
+
+## Décision
+
+Le domaine manipule un attribut :
+
+```
+passwordHash
+```
+
+## Motivation
+
+Un mot de passe ne doit jamais être stocké en clair.
+
+## Conséquences
+
+Le hash est calculé avant la création du User.
+
+---
+
+# ADR-011 - Username normalisé
+
+## Décision
+
+Les usernames sont normalisés :
+
+- trim ;
+- lowercase.
+
+## Motivation
+
+Éviter les doublons fonctionnels.
+
+Exemple :
+
+```text
+John.Doe
+john.doe
+JOHN.DOE
+```
+
+représentent le même utilisateur.
+
+## Conséquences
+
+Les recherches sont systématiquement réalisées sur le username normalisé.
+
+---
+
+# ADR-012 - Centralisation des règles utilisateur
+
+## Décision
+
+Les règles de validation utilisateur sont centralisées dans :
+
+```text
+UserValidationUtils
+```
+
+et
+
+```text
+UserRules
+```
+
+## Motivation
+
+Éviter la duplication entre les use cases.
+
+## Conséquences
+
+Les validations de username et password sont réutilisées par plusieurs cas d'usage.
+
+---
+
+# ADR-013 - Mappers dédiés
+
+## Décision
+
+Les conversions entre domaine et persistance passent par des mappers.
+
+Exemple :
+
+```
+UserMapper
+```
+
+## Motivation
+
+Éviter d'exposer les entités JPA dans le domaine.
+
+## Conséquences
+
+Le domaine reste indépendant de la persistance.
+
+---
+
+# ADR-014 - Assemblage Spring via configuration
+
+## Décision
+
+Les use cases et adapters sont assemblés dans des classes de configuration Spring.
+
+## Motivation
+
+Conserver des classes métier indépendantes du framework.
+
+## Conséquences
+
+Les use cases ne sont pas annotés :
+
+```
+@Component
+@Service
+```
+
+---
+
+# ADR-015 - Gestion du temps via Clock
+
+## Décision
+
+L'application utilise :
+
+```
+Clock
+```
+
+injecté par Spring.
+
+## Motivation
+
+Améliorer :
+
+- la testabilité ;
+- la reproductibilité ;
+- la maîtrise de la notion de temps.
+
+## Conséquences
+
+Les use cases utilisent :
+
+```
+LocalDateTime.now(clock)
+```
+
+et non :
+
+```
+LocalDateTime.now()
+```
+
+---
+
+# ADR-016 - UTC comme référence technique
+
+## Décision
+
+Le Clock fourni par Spring utilise :
+
+```
+Clock.systemUTC()
+```
+
+## Motivation
+
+Éviter les comportements dépendants de la timezone de la machine.
+
+## Conséquences
+
+Les dates techniques sont produites en UTC.
+
+Les conversions de timezone éventuelles seront réalisées aux frontières du système.
+
+---
+
+# ADR-017 - Mockito pour les tests unitaires
+
+## Décision
+
+Mockito est utilisé pour tester les use cases.
+
+## Motivation
+
+Isoler la logique métier.
+
+## Conséquences
+
+Les ports sont mockés dans les tests unitaires.
+
+---
+
+# ADR-018 - Stratégie de tests
+
+## Décision
+
+Les tests sont organisés en plusieurs niveaux :
+
+1. validation des règles métier ;
+2. tests d'orchestration ;
+3. tests comportementaux lorsque nécessaire.
+
+## Motivation
+
+Limiter la duplication tout en conservant une bonne couverture.
+
+## Conséquences
+
+Les sous-comportements peuvent être testés indépendamment des use cases complets.
+
+---
+
+# ADR-019 - Pas de module de test partagé pour le moment
+
+## Décision
+
+Les constantes et utilitaires de test restent dans chaque module.
+
+## Motivation
+
+La taille actuelle du projet ne justifie pas l'introduction d'un module supplémentaire.
+
+## Conséquences
+
+Chaque module possède ses propres classes de test.
+
+---
+
+# ADR-020 - Conformité Sonar pragmatique
+
+## Décision
+
+Les recommandations Sonar sont étudiées au cas par cas.
+
+## Motivation
+
+Un warning Sonar n'est pas forcément synonyme d'erreur.
+
+## Conséquences
+
+Nous privilégions :
+
+- la pertinence métier ;
+- la lisibilité ;
+- la maintenabilité.
+
+plutôt qu'une suppression systématique de tous les warnings.
