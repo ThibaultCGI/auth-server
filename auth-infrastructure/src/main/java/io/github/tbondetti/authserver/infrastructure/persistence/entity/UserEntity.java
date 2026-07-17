@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -17,11 +16,14 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
+@Table(name = "iam_user")
 public class UserEntity {
 
     @Id
-    @Column(nullable = false)
+    @Column(
+            name = "id_iam_user",
+            nullable = false
+    )
     private UUID id;
 
     @Column(
@@ -44,11 +46,4 @@ public class UserEntity {
             nullable = false
     )
     private boolean enabled = true;
-
-    @Column(
-            name = "created_at",
-            nullable = false
-    )
-    private LocalDateTime createdAt;
-
 }

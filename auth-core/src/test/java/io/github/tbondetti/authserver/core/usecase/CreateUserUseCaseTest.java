@@ -13,8 +13,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,7 +20,6 @@ import static io.github.tbondetti.authserver.core.constants.TestConstants.USER_N
 import static io.github.tbondetti.authserver.core.usecase.CreateUserUseCase.ERROR_USERNAME_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validateAndNormalizeUsername;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validatePassword;
-import static java.time.LocalDateTime.now;
 import static java.util.Locale.ROOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -46,10 +43,6 @@ class CreateUserUseCaseTest {
 
     @Mock
     private PasswordEncoderPort passwordEncoderPort;
-
-    @Mock
-    private Clock clock;
-
 
     @Test
     void shouldThrowExceptionWhenUsernameAlreadyExistsDuringUsernameUniquenessCheck() {
@@ -88,22 +81,18 @@ class CreateUserUseCaseTest {
         when(this.passwordEncoderPort.encode(givenPassword)).thenReturn(passwordHash);
 
         final UUID expectedId = UUID.randomUUID();
-        final LocalDateTime expectedCreatedAt = now();
 
         try (final MockedStatic<UserValidationUtils> userUtilities = mockStatic(UserValidationUtils.class);
-             final MockedStatic<UUID> uUIDUtilities = mockStatic(UUID.class);
-             final MockedStatic<LocalDateTime> localDateTimeUtilities = mockStatic(LocalDateTime.class)
+             final MockedStatic<UUID> uUIDUtilities = mockStatic(UUID.class)
         ) {
             userUtilities.when(() -> validateAndNormalizeUsername(givenUsername)).thenReturn(normalizedUsername);
             uUIDUtilities.when(UUID::randomUUID).thenReturn(expectedId);
-            localDateTimeUtilities.when(() -> now(this.clock)).thenReturn(expectedCreatedAt);
 
             final User expected = User.builder()
                     .id(expectedId)
                     .username(normalizedUsername)
                     .passwordHash(passwordHash)
                     .enabled(true)
-                    .createdAt(expectedCreatedAt)
                     .build();
 
             when(this.userRepositoryPort.save(expected)).thenReturn(expected);

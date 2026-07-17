@@ -4,13 +4,13 @@ import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserEntity;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.UserMapper.toDomain;
 import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.UserMapper.toEntity;
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 class UserMapperTest {
 
@@ -20,14 +20,12 @@ class UserMapperTest {
         final String username = "username";
         final String passwordHash = "passwordHash";
         final boolean enabled = true;
-        final LocalDateTime createdAt = LocalDateTime.now();
 
         final UserEntity userEntity = new UserEntity(
                 id,
                 username,
                 passwordHash,
-                enabled,
-                createdAt
+                enabled
         );
 
         final User expected = User.builder()
@@ -35,7 +33,6 @@ class UserMapperTest {
                 .username(username)
                 .passwordHash(passwordHash)
                 .enabled(enabled)
-                .createdAt(createdAt)
                 .build();
 
         assertEquals(expected, toDomain(userEntity));
@@ -47,14 +44,12 @@ class UserMapperTest {
         final String username = "username";
         final String passwordHash = "passwordHash";
         final boolean enabled = true;
-        final LocalDateTime createdAt = LocalDateTime.now();
 
         final User user = User.builder()
                 .id(id)
                 .username(username)
                 .passwordHash(passwordHash)
                 .enabled(enabled)
-                .createdAt(createdAt)
                 .build();
 
         final UserEntity actual = toEntity(user);
@@ -63,6 +58,5 @@ class UserMapperTest {
         assertSame(username, actual.getUsername());
         assertSame(passwordHash, actual.getPasswordHash());
         assertSame(enabled, actual.isEnabled());
-        assertSame(createdAt, actual.getCreatedAt());
     }
 }

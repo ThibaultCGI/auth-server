@@ -10,18 +10,18 @@
 >
 
     <changeSet
-            id="001-create-users-table"
+            id="V001-01-create-user-table"
             author="thibault.bondetti"
     >
 
-        <createTable tableName="users" >
+        <createTable tableName="iam_user" >
             <column
-                    name="id"
+                    name="id_iam_user"
                     type="UUID"
             >
                 <constraints
                         primaryKey="true"
-                        primaryKeyName="pk_users"
+                        primaryKeyName="pk_iam_user"
                         nullable="false"
                 />
             </column>
@@ -30,11 +30,7 @@
                     name="username"
                     type="VARCHAR(100)"
             >
-                <constraints
-                        nullable="false"
-                        unique="true"
-                        uniqueConstraintName="ux_users_username"
-                />
+                <constraints nullable="false" />
             </column>
 
             <column
@@ -51,75 +47,151 @@
             >
                 <constraints nullable="false" />
             </column>
-
-            <column
-                    name="created_at"
-                    type="TIMESTAMP"
-            >
-                <constraints nullable="false" />
-            </column>
         </createTable>
 
         <createIndex
-                indexName="ix_users_created_at"
-                tableName="users"
+                indexName="ux_iam_user_username"
+                tableName="iam_user"
+                unique="true"
         >
-            <column name="created_at" />
+            <column name="username" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet
+            id="V001-02-create-application-table"
+            author="thibault.bondetti"
+    >
+
+        <createTable tableName="application" >
+            <column
+                    name="id_application"
+                    type="UUID"
+            >
+                <constraints
+                        nullable="false"
+                        primaryKey="true"
+                        primaryKeyName="pk_application"
+                />
+            </column>
+
+            <column
+                    name="code"
+                    type="VARCHAR(20)"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="name"
+                    type="VARCHAR(100)"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="description"
+                    type="VARCHAR(500)"
+            />
+
+        </createTable>
+
+        <createIndex
+                tableName="application"
+                indexName="ux_application_code"
+                unique="true"
+        >
+            <column name="code" />
         </createIndex>
 
     </changeSet>
 
     <changeSet
-            id="002-create-roles-table"
+            id="V001-03-create-role-table"
             author="thibault.bondetti"
     >
 
-        <createTable tableName="roles" >
+        <createTable tableName="role" >
+
             <column
-                    name="id"
+                    name="id_role"
                     type="UUID"
             >
                 <constraints
                         primaryKey="true"
-                        primaryKeyName="pk_roles"
+                        primaryKeyName="pk_role"
                         nullable="false"
                 />
+            </column>
+
+            <column
+                    name="id_application"
+                    type="UUID"
+            >
+                <constraints nullable="false" />
             </column>
 
             <column
                     name="code"
                     type="VARCHAR(50)"
             >
-                <constraints
-                        nullable="false"
-                        unique="true"
-                        uniqueConstraintName="ux_roles_code"
-                />
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="name"
+                    type="VARCHAR(100)"
+            >
+                <constraints nullable="false" />
             </column>
 
             <column
                     name="description"
-                    type="VARCHAR(255)"
+                    type="VARCHAR(500)"
             />
         </createTable>
 
+        <createIndex
+                tableName="role"
+                indexName="ix_role_id_application"
+        >
+
+            <column name="id_application" />
+        </createIndex>
+
+        <addForeignKeyConstraint
+                baseTableName="role"
+                baseColumnNames="id_application"
+                referencedTableName="application"
+                referencedColumnNames="id_application"
+                constraintName="fk_role_application"
+        />
+
+        <createIndex
+                unique="true"
+                tableName="role"
+                indexName="ux_role_id_application_code"
+        >
+            <column name="id_application" />
+            <column name="code" />
+        </createIndex>
     </changeSet>
 
     <changeSet
-            id="003-create-users-roles-table"
+            id="V001-04-create-iam-user-role-table"
             author="thibault.bondetti"
     >
 
-        <createTable tableName="users_roles" >
+        <createTable tableName="iam_user_role" >
             <column
-                    name="user_id"
+                    name="id_iam_user"
                     type="UUID"
             >
                 <constraints nullable="false" />
             </column>
 
             <column
-                    name="role_id"
+                    name="id_role"
                     type="UUID"
             >
                 <constraints nullable="false" />
@@ -127,43 +199,41 @@
         </createTable>
 
         <addPrimaryKey
-                tableName="users_roles"
-                columnNames="user_id, role_id"
-                constraintName="pk_users_roles"
+                tableName="iam_user_role"
+                columnNames="id_iam_user, id_role"
+                constraintName="pk_iam_user_role"
         />
 
         <addForeignKeyConstraint
-                baseTableName="users_roles"
-                baseColumnNames="user_id"
-                referencedTableName="users"
-                referencedColumnNames="id"
-                constraintName="fk_users_roles_users"
+                baseTableName="iam_user_role"
+                baseColumnNames="id_iam_user"
+                referencedTableName="iam_user"
+                referencedColumnNames="id_iam_user"
+                constraintName="fk_iam_user_role_user"
                 onDelete="CASCADE"
         />
 
         <addForeignKeyConstraint
-                baseTableName="users_roles"
-                baseColumnNames="role_id"
-                referencedTableName="roles"
-                referencedColumnNames="id"
-                constraintName="fk_users_roles_roles"
+                baseTableName="iam_user_role"
+                baseColumnNames="id_role"
+                referencedTableName="role"
+                referencedColumnNames="id_role"
+                constraintName="fk_iam_user_role_role"
                 onDelete="CASCADE"
         />
 
         <createIndex
-                indexName="ix_users_roles_user_id"
-                tableName="users_roles"
+                indexName="ix_iam_user_role_id_iam_user"
+                tableName="iam_user_role"
         >
-            <column name="user_id" />
+            <column name="id_iam_user" />
         </createIndex>
 
         <createIndex
-                indexName="ix_users_roles_role_id"
-                tableName="users_roles"
+                indexName="ix_iam_user_role_id_role"
+                tableName="iam_user_role"
         >
-            <column name="role_id" />
+            <column name="id_role" />
         </createIndex>
-
     </changeSet>
-
 </databaseChangeLog>

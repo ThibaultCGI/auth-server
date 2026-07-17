@@ -13,7 +13,6 @@ public class UserMapper {
                 .username(userEntity.getUsername())
                 .passwordHash(userEntity.getPasswordHash())
                 .enabled(userEntity.isEnabled())
-                .createdAt(userEntity.getCreatedAt())
                 .build();
     }
 
@@ -22,8 +21,7 @@ public class UserMapper {
                 user.id(),
                 user.username(),
                 user.passwordHash(),
-                user.enabled(),
-                user.createdAt()
+                user.enabled()
         );
     }
 }
