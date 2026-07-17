@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.USER_NAME;
 import static io.github.tbondetti.authserver.core.usecase.GetUserUseCase.ERROR_USER_NOT_FOUND;
-import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validateAndNormalizeUsername;
+import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.normalizeUsername;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,7 +37,7 @@ class GetUserUseCaseTest {
         final String normalizedUsername = "normalizedUsername";
 
         try(final MockedStatic<UserValidationUtils> userUtilities = mockStatic(UserValidationUtils.class)) {
-            userUtilities.when(() -> validateAndNormalizeUsername(USER_NAME)).thenReturn(normalizedUsername); // déjà testé
+            userUtilities.when(() -> normalizeUsername(USER_NAME)).thenReturn(normalizedUsername); // déjà testé
             when(this.userRepositoryPort.findByUsername(normalizedUsername)).thenReturn(Optional.empty());
 
             final AuthServerFunctionalException exception = assertThrows(
@@ -55,7 +55,7 @@ class GetUserUseCaseTest {
         final User expectedUser = User.builder().build();
 
         try(final MockedStatic<UserValidationUtils> userUtilities = mockStatic(UserValidationUtils.class)) {
-            userUtilities.when(() -> validateAndNormalizeUsername(USER_NAME)).thenReturn(normalizedUsername); // déjà testé
+            userUtilities.when(() -> normalizeUsername(USER_NAME)).thenReturn(normalizedUsername); // déjà testé
             when(this.userRepositoryPort.findByUsername(normalizedUsername)).thenReturn(Optional.of(expectedUser));
 
             assertSame(expectedUser, this.subject.execute(USER_NAME));
