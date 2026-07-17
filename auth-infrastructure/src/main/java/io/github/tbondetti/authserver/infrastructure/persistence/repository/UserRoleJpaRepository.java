@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRoleJpaRepository extends JpaRepository<UserRoleEntity, UserRoleId> {
 
@@ -25,4 +26,21 @@ public interface UserRoleJpaRepository extends JpaRepository<UserRoleEntity, Use
     )
     List<RoleEntity> findAllByUserAndApplication(@Param("user") final UserEntity userEntity,
                                                  @Param("application") final ApplicationEntity applicationEntity);
+
+
+    @Query(
+            """
+            SELECT r
+            FROM UserRoleEntity ur
+            JOIN ur.role r
+            WHERE r.code = :roleCode
+                AND ur.user = :user
+                AND r.application = :application
+            """
+    )
+    Optional<RoleEntity> findByCodeAndApplicationAndUser(
+            @Param("roleCode") final String roleCode,
+            @Param("application") final ApplicationEntity applicationEntity,
+            @Param("user") final UserEntity userEntity
+    );
 }

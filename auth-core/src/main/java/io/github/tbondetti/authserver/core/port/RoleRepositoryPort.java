@@ -12,4 +12,10 @@ public interface RoleRepositoryPort {
     );
 
     Role save(final Role role);
+
+    Optional<Role> findByCodeAndApplicationCodeAndUsername(
+            final String code,
+            final String applicationCode,
+            final String username
+    );
 }

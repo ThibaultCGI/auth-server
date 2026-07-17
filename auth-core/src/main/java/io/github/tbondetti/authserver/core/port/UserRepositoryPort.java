@@ -1,6 +1,5 @@
 package io.github.tbondetti.authserver.core.port;
 
-import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.domain.User;
 
@@ -13,12 +12,12 @@ public interface UserRepositoryPort {
 
     User save(final User user);
 
-    void addRoleToUser(final User user,
-                       final Application application,
-                       final Role role
+    void addRoleToUser(final String username,
+                       final String applicationCode,
+                       final String roleCode
     );
 
-    List<Role> getUserRolesForApplication(final User user,
-                                          final Application application
+    List<Role> getUserRolesForApplication(final String username,
+                                          final String applicationCode
     );
 }

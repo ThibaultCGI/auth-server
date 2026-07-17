@@ -1,6 +1,5 @@
 package io.github.tbondetti.authserver.infrastructure.persistence.adapter;
 
-import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.port.UserRepositoryPort;
@@ -9,9 +8,10 @@ import io.github.tbondetti.authserver.infrastructure.persistence.entity.RoleEnti
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRoleEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRoleId;
-import io.github.tbondetti.authserver.infrastructure.persistence.mapper.ApplicationMapper;
 import io.github.tbondetti.authserver.infrastructure.persistence.mapper.RoleMapper;
 import io.github.tbondetti.authserver.infrastructure.persistence.mapper.UserMapper;
+import io.github.tbondetti.authserver.infrastructure.persistence.repository.ApplicationJpaRepository;
+import io.github.tbondetti.authserver.infrastructure.persistence.repository.RoleJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserRoleJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,8 @@ import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.U
 public class UserRepositoryAdapter implements UserRepositoryPort {
 
     private final UserJpaRepository userJpaRepository;
+    private final ApplicationJpaRepository applicationJpaRepository;
+    private final RoleJpaRepository roleJpaRepository;
     private final UserRoleJpaRepository userRoleJpaRepository;
 
     @Override
@@ -40,11 +42,12 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
-    public List<Role> getUserRolesForApplication(final User user,
-                                                 final Application application
+    public List<Role> getUserRolesForApplication(final String username,
+                                                 final String applicationCode
     ) {
-        final UserEntity userEntity = toEntity(user);
-        final ApplicationEntity applicationEntity = ApplicationMapper.toEntity(application);
+        final UserEntity userEntity = this.userJpaRepository.getByUsername(username);
+        final ApplicationEntity applicationEntity = this.applicationJpaRepository.getByCode(applicationCode);
+
         return this.userRoleJpaRepository.findAllByUserAndApplication(
                 userEntity,
                 applicationEntity
@@ -52,13 +55,13 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
-    public void addRoleToUser(final User user,
-                              final Application application,
-                              final Role role
+    public void addRoleToUser(final String username,
+                              final String applicationCode,
+                              final String roleCode
     ) {
-        final UserEntity userEntity = toEntity(user);
-        final ApplicationEntity applicationEntity = ApplicationMapper.toEntity(application);
-        final RoleEntity roleEntity = RoleMapper.toEntity(role, applicationEntity);
+        final UserEntity userEntity = this.userJpaRepository.getByUsername(username);
+        final ApplicationEntity applicationEntity = this.applicationJpaRepository.getByCode(applicationCode);
+        final RoleEntity roleEntity = this.roleJpaRepository.getByApplicationAndCode(applicationEntity, roleCode);
 
         final UserRoleId userRoleId = new UserRoleId(
                 userEntity.getId(),

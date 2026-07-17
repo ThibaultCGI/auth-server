@@ -22,6 +22,6 @@ public class GetUserRolesForApplicationUseCase {
         final User user = this.getUserUseCase.execute(username);
         final Application application = this.getApplicationUseCase.execute(applicationCode);
 
-        return this.userRepositoryPort.getUserRolesForApplication(user, application);
+        return this.userRepositoryPort.getUserRolesForApplication(user.username(), application.code());
     }
 }

@@ -9,8 +9,14 @@ import java.util.UUID;
 
 public interface RoleJpaRepository extends JpaRepository<RoleEntity, UUID> {
 
+    RoleEntity getByApplicationAndCode(
+            final ApplicationEntity application,
+            final String code
+    );
+
     Optional<RoleEntity> findByCodeAndApplication(
             final String code,
             final ApplicationEntity applicationEntity
     );
+
 }
