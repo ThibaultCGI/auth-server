@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.core.usecase;
+package io.github.tbondetti.authserver.core.usecase.user;
 
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.USER_NAME;
-import static io.github.tbondetti.authserver.core.usecase.CreateUserUseCase.ERROR_USERNAME_MUST_BE_UNIQUE;
+import static io.github.tbondetti.authserver.core.usecase.user.CreateUserUseCase.ERROR_USERNAME_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validateAndNormalizeUsername;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validatePassword;
 import static java.util.Locale.ROOT;

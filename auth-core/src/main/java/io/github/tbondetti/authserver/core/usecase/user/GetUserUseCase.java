@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.core.usecase;
+package io.github.tbondetti.authserver.core.usecase.user;
 
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;

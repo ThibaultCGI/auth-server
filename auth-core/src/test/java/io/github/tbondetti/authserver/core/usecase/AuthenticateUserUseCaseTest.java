@@ -3,6 +3,7 @@ package io.github.tbondetti.authserver.core.usecase;
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
 import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
+import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

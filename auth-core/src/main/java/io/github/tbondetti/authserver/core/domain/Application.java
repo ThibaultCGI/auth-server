@@ -5,10 +5,9 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record Role (
+public record Application(
         UUID id,
         String code,
         String name,
-        String description,
-        String codeApplication
+        String description
 ) { }

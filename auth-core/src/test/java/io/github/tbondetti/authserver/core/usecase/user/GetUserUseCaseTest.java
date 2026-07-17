@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.core.usecase;
+package io.github.tbondetti.authserver.core.usecase.user;
 
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.USER_NAME;
-import static io.github.tbondetti.authserver.core.usecase.GetUserUseCase.ERROR_USER_NOT_FOUND;
+import static io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase.ERROR_USER_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.normalizeUsername;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
