@@ -8,5 +8,7 @@ import java.util.UUID;
 public record Role (
         UUID id,
         String code,
-        String description
+        String name,
+        String description,
+        String codeApplication
 ) { }

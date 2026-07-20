@@ -16,33 +16,34 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "iam_user")
-public class UserEntity {
+@Table(name = "application")
+public class ApplicationEntity {
 
     @Id
     @Column(
-            name = "id_iam_user",
+            name = "id_application",
             nullable = false
     )
     private UUID id;
 
     @Column(
-            name = "username",
+            name = "code",
             nullable = false,
             unique = true,
+            length = 20
+    )
+    private String code;
+
+    @Column(
+            name = "name",
+            nullable = false,
             length = 100
     )
-    private String username;
+    private String name;
 
     @Column(
-            name = "password_hash",
-            nullable = false
+            name = "description",
+            length = 500
     )
-    private String passwordHash;
-
-    @Column(
-            name = "enabled",
-            nullable = false
-    )
-    private boolean enabled = true;
+    private String description;
 }

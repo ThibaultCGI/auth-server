@@ -5,9 +5,9 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record User (
+public record Application(
         UUID id,
-        String username,
-        String passwordHash,
-        boolean enabled
+        String code,
+        String name,
+        String description
 ) { }

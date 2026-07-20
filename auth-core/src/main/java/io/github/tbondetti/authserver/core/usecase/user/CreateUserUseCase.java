@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.core.usecase;
+package io.github.tbondetti.authserver.core.usecase.user;
 
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
@@ -6,12 +6,10 @@ import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.port.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
-import java.time.Clock;
 import java.util.Optional;
 
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validateAndNormalizeUsername;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validatePassword;
-import static java.time.LocalDateTime.now;
 import static java.util.UUID.randomUUID;
 
 @RequiredArgsConstructor
@@ -20,7 +18,6 @@ public class CreateUserUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoderPort passwordEncoderPort;
-    private final Clock clock;
 
     public User execute(
             final String username,
@@ -38,7 +35,6 @@ public class CreateUserUseCase {
                 .username(normalizedUsername)
                 .passwordHash(passwordHash)
                 .enabled(true)
-                .createdAt(now(this.clock))
                 .build();
 
         return this.userRepositoryPort.save(user);
