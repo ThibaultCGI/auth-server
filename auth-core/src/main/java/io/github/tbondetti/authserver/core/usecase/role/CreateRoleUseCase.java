@@ -9,9 +9,12 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-import static io.github.tbondetti.authserver.core.utils.RoleValidationUtils.normalizeAndValidateDescription;
-import static io.github.tbondetti.authserver.core.utils.RoleValidationUtils.validateAndNormalizeCode;
-import static io.github.tbondetti.authserver.core.utils.RoleValidationUtils.validateAndNormalizeName;
+import static io.github.tbondetti.authserver.core.constants.RoleRules.CODE_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.RoleRules.DESCRIPTION_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.RoleRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
+import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
+import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeName;
 import static java.util.UUID.randomUUID;
 
 @RequiredArgsConstructor
@@ -27,9 +30,9 @@ public class CreateRoleUseCase {
             final String description,
             final String applicationCode
     ) {
-        final String normalizedCode = validateAndNormalizeCode(code);
-        final String normalizedName = validateAndNormalizeName(name);
-        final String normalizedDescription = normalizeAndValidateDescription(description);
+        final String normalizedCode = validateAndNormalizeCode(code, CODE_MAX_LENGTH);
+        final String normalizedName = validateAndNormalizeName(name, NAME_MAX_LENGTH);
+        final String normalizedDescription = normalizeAndValidateDescription(description, DESCRIPTION_MAX_LENGTH);
 
         final Application application = this.getApplicationUseCase.execute(applicationCode);
 
@@ -46,8 +49,9 @@ public class CreateRoleUseCase {
         return this.roleRepositoryPort.save(role);
     }
 
-    void ensureCodeIsUniqueForApplication(final String normalizedCode,
-                                          final String applicationCode
+    void ensureCodeIsUniqueForApplication(
+            final String normalizedCode,
+            final String applicationCode
     ) {
         final Optional<Role> optionalRole = this.roleRepositoryPort.findByCodeAndApplicationCode(
                 normalizedCode,

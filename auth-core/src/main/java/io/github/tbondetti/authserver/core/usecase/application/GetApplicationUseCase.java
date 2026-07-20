@@ -5,7 +5,7 @@ import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalExcepti
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
-import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.normalizeCode;
+import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
 
 @RequiredArgsConstructor
 public class GetApplicationUseCase {

@@ -7,7 +7,7 @@ import io.github.tbondetti.authserver.core.port.RoleRepositoryPort;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
 import lombok.RequiredArgsConstructor;
 
-import static io.github.tbondetti.authserver.core.utils.RoleValidationUtils.normalizeCode;
+import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
 
 @RequiredArgsConstructor
 public class GetRoleUseCase {
