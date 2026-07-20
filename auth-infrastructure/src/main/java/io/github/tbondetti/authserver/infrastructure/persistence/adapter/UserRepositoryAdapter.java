@@ -68,10 +68,22 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
                 roleEntity.getId()
         );
 
-        this.userRoleJpaRepository.save(new UserRoleEntity(
+        this.userRoleJpaRepository.save(newUserRoleEntity(
                 userRoleId,
                 userEntity,
                 roleEntity
         ));
+    }
+
+    static UserRoleEntity newUserRoleEntity(
+            final UserRoleId userRoleId,
+            final UserEntity userEntity,
+            final RoleEntity roleEntity
+    ) {
+        return new UserRoleEntity(
+                userRoleId,
+                userEntity,
+                roleEntity
+        );
     }
 }
