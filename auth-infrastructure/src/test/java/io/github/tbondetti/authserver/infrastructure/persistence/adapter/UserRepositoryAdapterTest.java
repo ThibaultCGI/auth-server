@@ -120,6 +120,35 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
+    void getUserRolesOk() {
+        final String givenUsername = "givenUsername";
+
+        final UserEntity foundUser = new UserEntity();
+
+        final RoleEntity foundRole1 = new RoleEntity();
+        final RoleEntity foundRole2 = new RoleEntity();
+
+        final Role mappedRole1 = Role.builder().build();
+        final Role mappedRole2 = Role.builder().build();
+
+        when(this.userJpaRepository.getByUsername(givenUsername)).thenReturn(foundUser);
+        when(this.userRoleJpaRepository.findAllByUser(foundUser)).thenReturn(List.of(
+                foundRole1,
+                foundRole2
+        ));
+
+        try (final MockedStatic<RoleMapper> utilities = mockStatic(RoleMapper.class)) {
+            utilities.when(() -> RoleMapper.toDomain(foundRole1)).thenReturn(mappedRole1); // déjà testé
+            utilities.when(() -> RoleMapper.toDomain(foundRole2)).thenReturn(mappedRole2); // déjà testé
+
+            assertEquals(List.of(
+                    mappedRole1,
+                    mappedRole2
+            ), this.subject.getAllUserRoles(givenUsername));
+        }
+    }
+
+    @Test
     void newUserRoleEntityOk() {
         final UUID userUuid = randomUUID();
         final UUID roleUuid = randomUUID();

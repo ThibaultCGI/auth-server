@@ -55,6 +55,13 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public List<Role> getAllUserRoles(final String username) {
+        final UserEntity userEntity = this.userJpaRepository.getByUsername(username);
+
+        return this.userRoleJpaRepository.findAllByUser(userEntity).stream().map(RoleMapper::toDomain).toList();
+    }
+
+    @Override
     public void addRoleToUser(final String username,
                               final String applicationCode,
                               final String roleCode

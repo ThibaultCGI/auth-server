@@ -1,0 +1,42 @@
+package io.github.tbondetti.authserver.infrastructure.security;
+
+import io.github.tbondetti.authserver.core.domain.Role;
+import io.github.tbondetti.authserver.core.domain.User;
+import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
+import io.github.tbondetti.authserver.core.usecase.user.GetAllUserRolesUseCase;
+import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.List;
+
+import static io.github.tbondetti.authserver.infrastructure.security.RoleGrantedAuthorityMapper.toGrantedAuthorities;
+
+@RequiredArgsConstructor
+public class AuthServerUserDetailsService implements UserDetailsService {
+
+    static final String ERROR_GET_USER = "Impossible de charger l'utilisateur %s.";
+
+    private final GetUserUseCase getUserUseCase;
+    private final GetAllUserRolesUseCase getAllUserRolesUseCase;
+
+    @Override
+    public UserDetails loadUserByUsername(final String username) {
+        final User user = this.getUser(username);
+        final List<Role> userRoles = this.getAllUserRolesUseCase.execute(user.username());
+
+        final List<AuthServerGrantedAuthority> authorities = toGrantedAuthorities(userRoles);
+
+        return new AuthServerUserDetails(user, authorities);
+    }
+
+    private User getUser(final String username) {
+        try {
+            return this.getUserUseCase.execute(username);
+        } catch (final AuthServerFunctionalException e) {
+            throw new UsernameNotFoundException(ERROR_GET_USER.formatted(username), e);
+        }
+    }
+}

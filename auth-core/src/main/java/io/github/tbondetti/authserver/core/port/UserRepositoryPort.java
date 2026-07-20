@@ -20,4 +20,6 @@ public interface UserRepositoryPort {
     List<Role> getUserRolesForApplication(final String username,
                                           final String applicationCode
     );
+
+    List<Role> getAllUserRoles(final String username);
 }

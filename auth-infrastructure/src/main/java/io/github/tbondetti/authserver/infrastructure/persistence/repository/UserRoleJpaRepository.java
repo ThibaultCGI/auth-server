@@ -43,4 +43,16 @@ public interface UserRoleJpaRepository extends JpaRepository<UserRoleEntity, Use
             @Param("application") final ApplicationEntity applicationEntity,
             @Param("user") final UserEntity userEntity
     );
+
+    @Query(
+            """
+            SELECT
+                r
+            FROM UserRoleEntity ur
+            JOIN ur.role r
+            WHERE ur.user = :user
+            """
+    )
+    List<RoleEntity> findAllByUser(@Param("user") final UserEntity userEntity);
+
 }

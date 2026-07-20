@@ -45,13 +45,21 @@ public class RoleRepositoryAdapter implements RoleRepositoryPort {
         final ApplicationEntity applicationEntity = this.applicationJpaRepository.getByCode(applicationCode);
         final UserEntity userEntity = this.userJpaRepository.getByUsername(username);
 
-        return this.userRoleJpaRepository.findByCodeAndApplicationAndUser(code, applicationEntity, userEntity).map(RoleMapper::toDomain);
+        return this.userRoleJpaRepository.findByCodeAndApplicationAndUser(code, applicationEntity, userEntity)
+                .map(RoleMapper::toDomain);
     }
 
     @Override
     public Role save(final Role role) {
         final ApplicationEntity application = this.applicationJpaRepository.getByCode(role.codeApplication());
         final RoleEntity newRole = toEntity(role, application);
-        return toDomain(this.roleJpaRepository.save(newRole));
+        final RoleEntity savedRole = this.roleJpaRepository.save(newRole);
+
+        final RoleEntity savedRoleWithApplication = this.roleJpaRepository.getByApplicationAndCode(
+                savedRole.getApplication(),
+                savedRole.getCode()
+        );
+
+        return toDomain(savedRoleWithApplication);
     }
 }

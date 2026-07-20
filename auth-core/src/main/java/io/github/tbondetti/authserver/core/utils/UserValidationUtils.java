@@ -15,7 +15,7 @@ public class UserValidationUtils {
     static final String ERROR_USERNAME_TOO_LONG = "Le username ne doit pas dépasser les 100 caractères.";
 
     static final String ERROR_SECRET_IS_REQUIRED = "Le mot de passe est obligatoire et ne peut pas être vide.";
-    static final String ERROR_SECRET_TOO_SHORT = "Le mot de passe doit contenir au minimum 12 caractères.";
+    static final String ERROR_SECRET_TOO_SHORT = "Le mot de passe doit contenir au minimum 5 caractères.";
     static final String ERROR_SECRET_TOO_LONG = "Le mot de passe ne doit pas dépasser les 128 caractères.";
 
 
