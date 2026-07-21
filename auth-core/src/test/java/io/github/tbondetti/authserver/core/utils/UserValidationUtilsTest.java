@@ -40,7 +40,7 @@ class UserValidationUtilsTest {
 
         final AuthServerFunctionalException exception3 = assertThrows(
                 AuthServerFunctionalException.class,
-                () -> validatePassword("12345678901")
+                () -> validatePassword("1234")
         );
 
         assertEquals(ERROR_SECRET_TOO_SHORT, exception3.getMessage());

@@ -7,8 +7,8 @@ import java.util.UUID;
 @Builder
 public record RoleResponse(
         UUID id,
+        String codeApplication,
         String code,
         String name,
-        String description,
-        String codeApplication
+        String description
 ) { }

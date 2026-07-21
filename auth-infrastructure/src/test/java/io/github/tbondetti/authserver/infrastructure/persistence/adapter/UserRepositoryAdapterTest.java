@@ -2,7 +2,6 @@ package io.github.tbondetti.authserver.infrastructure.persistence.adapter;
 
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.domain.User;
-import io.github.tbondetti.authserver.infrastructure.persistence.entity.ApplicationEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.RoleEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRoleEntity;
@@ -92,18 +91,13 @@ class UserRepositoryAdapterTest {
         final String givenUsername = "givenUsername";
         final String givenApplicationCode = "givenApplicationCode";
 
-        final UserEntity foundUser = new UserEntity();
-        final ApplicationEntity foundApplication = new ApplicationEntity();
-
         final RoleEntity foundRole1 = new RoleEntity();
         final RoleEntity foundRole2 = new RoleEntity();
 
         final Role mappedRole1 = Role.builder().build();
         final Role mappedRole2 = Role.builder().build();
 
-        when(this.userJpaRepository.getByUsername(givenUsername)).thenReturn(foundUser);
-        when(this.applicationJpaRepository.getByCode(givenApplicationCode)).thenReturn(foundApplication);
-        when(this.userRoleJpaRepository.findAllByUserAndApplication(foundUser, foundApplication)).thenReturn(List.of(
+        when(this.userRoleJpaRepository.findAllByUsernameAndApplicationCode(givenUsername, givenApplicationCode)).thenReturn(List.of(
                 foundRole1,
                 foundRole2
         ));
@@ -123,16 +117,13 @@ class UserRepositoryAdapterTest {
     void getUserRolesOk() {
         final String givenUsername = "givenUsername";
 
-        final UserEntity foundUser = new UserEntity();
-
         final RoleEntity foundRole1 = new RoleEntity();
         final RoleEntity foundRole2 = new RoleEntity();
 
         final Role mappedRole1 = Role.builder().build();
         final Role mappedRole2 = Role.builder().build();
 
-        when(this.userJpaRepository.getByUsername(givenUsername)).thenReturn(foundUser);
-        when(this.userRoleJpaRepository.findAllByUser(foundUser)).thenReturn(List.of(
+        when(this.userRoleJpaRepository.findAllByUsername(givenUsername)).thenReturn(List.of(
                 foundRole1,
                 foundRole2
         ));
@@ -174,8 +165,6 @@ class UserRepositoryAdapterTest {
         final UserEntity foundUser = new UserEntity();
         foundUser.setId(userUuid);
 
-        final ApplicationEntity foundApplication = new ApplicationEntity();
-
         final UUID roleUuid = randomUUID();
         final RoleEntity foundRole = new RoleEntity();
         foundRole.setId(roleUuid);
@@ -192,8 +181,7 @@ class UserRepositoryAdapterTest {
         );
 
         when(this.userJpaRepository.getByUsername(givenUsername)).thenReturn(foundUser);
-        when(this.applicationJpaRepository.getByCode(givenApplicationCode)).thenReturn(foundApplication);
-        when(this.roleJpaRepository.getByApplicationAndCode(foundApplication, givenRoleCode)).thenReturn(foundRole);
+        when(this.roleJpaRepository.getByApplicationCodeAndCode(givenApplicationCode, givenRoleCode)).thenReturn(foundRole);
 
         try (final MockedStatic<UserRepositoryAdapter> utilities = mockStatic(UserRepositoryAdapter.class)) {
             utilities.when(() -> newUserRoleEntity(userRoleId, foundUser, foundRole)).thenReturn(userRoleToSave); // déjà testé

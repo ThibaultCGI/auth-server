@@ -1,9 +1,6 @@
 package io.github.tbondetti.authserver.infrastructure.web.controller;
 
-import io.github.tbondetti.authserver.core.domain.User;
-import io.github.tbondetti.authserver.core.usecase.user.AssignRoleToUserUseCase;
-import io.github.tbondetti.authserver.core.usecase.user.CreateUserUseCase;
-import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
+import io.github.tbondetti.authserver.infrastructure.service.UserService;
 import io.github.tbondetti.authserver.infrastructure.web.dto.AssignRoleRequest;
 import io.github.tbondetti.authserver.infrastructure.web.dto.CreateUserRequest;
 import io.github.tbondetti.authserver.infrastructure.web.response.UserResponse;
@@ -25,24 +22,20 @@ import static io.github.tbondetti.authserver.infrastructure.web.mapper.UserWebMa
 @RequiredArgsConstructor
 public class UserController {
 
-    private final GetUserUseCase getUserUseCase;
-    private final CreateUserUseCase createUserUseCase;
-    private final AssignRoleToUserUseCase assignRoleToUserUseCase;
+    private final UserService userService;
 
     @GetMapping("/{username}")
     public UserResponse getUser(@PathVariable final String username) {
-        return toResponse(this.getUserUseCase.execute(username));
+        return toResponse(this.userService.getUser(username));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse createUser(@RequestBody final CreateUserRequest request) {
-        final User user = this.createUserUseCase.execute(
+        return toResponse(this.userService.createUser(
                 request.username(),
                 request.password()
-        );
-
-        return toResponse(user);
+        ));
     }
 
 
@@ -52,10 +45,10 @@ public class UserController {
             @PathVariable final String username,
             @RequestBody final AssignRoleRequest request
     ) {
-        this.assignRoleToUserUseCase.execute(
+        this.userService.assignUserRole(
                 username,
-                request.roleCode(),
-                request.applicationCode()
+                request.applicationCode(),
+                request.roleCode()
         );
     }
 }

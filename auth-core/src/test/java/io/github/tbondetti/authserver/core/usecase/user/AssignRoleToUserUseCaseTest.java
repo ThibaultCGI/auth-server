@@ -49,72 +49,62 @@ class AssignRoleToUserUseCaseTest {
 
     @Test
     void ensureRoleIsNotAlreadyAsignedKo() {
-        final String username = "username";
-        final User givenUser = User.builder().username(username).build();
-
-        final String codeApplication = "codeApplication";
-        final Application givenApplication = Application.builder().code(codeApplication).build();
-
-        final String codeRole = "codeRole";
-        final Role givenRole = Role.builder().code(codeRole).build();
+        final String givenUsername = "givenUsername";
+        final String givenApplicationCode = "givenCodeApplication";
+        final String givenRoleCode = "givenRoleCode";
 
         final Role foundRole = Role.builder().build();
         when(this.roleRepositoryPort.findByCodeAndApplicationCodeAndUsername(
-                codeRole,
-                codeApplication,
-                username
+                givenRoleCode,
+                givenApplicationCode,
+                givenUsername
         )).thenReturn(Optional.of(foundRole));
 
         final AuthServerFunctionalException exception = assertThrows(
                 AuthServerFunctionalException.class,
                 () -> this.subject.ensureRoleIsNotAlreadyAsigned(
-                        givenUser,
-                        givenApplication,
-                        givenRole
+                        givenUsername,
+                        givenApplicationCode,
+                        givenRoleCode
                 )
         );
         assertEquals(ERROR_ROLE_ALREADY_ASSIGNED.formatted(
-                codeRole,
-                codeApplication,
-                username
+                givenRoleCode,
+                givenUsername,
+                givenApplicationCode
         ), exception.getMessage());
     }
 
     @Test
     void ensureRoleIsNotAlreadyAsignedOk() {
-        final String username = "username";
-        final User givenUser = User.builder().username(username).build();
-
-        final String codeApplication = "codeApplication";
-        final Application givenApplication = Application.builder().code(codeApplication).build();
-
-        final String codeRole = "codeRole";
-        final Role givenRole = Role.builder().code(codeRole).build();
+        final String givenUsername = "givenUsername";
+        final String givenApplicationCode = "givenCodeApplication";
+        final String givenRoleCode = "givenRoleCode";
 
         when(this.roleRepositoryPort.findByCodeAndApplicationCodeAndUsername(
-                codeRole,
-                codeApplication,
-                username
+                givenRoleCode,
+                givenApplicationCode,
+                givenUsername
         )).thenReturn(Optional.empty());
 
         this.subject.ensureRoleIsNotAlreadyAsigned(
-                givenUser,
-                givenApplication,
-                givenRole
+                givenUsername,
+                givenApplicationCode,
+                givenRoleCode
         );
 
         verify(this.roleRepositoryPort, times(1)).findByCodeAndApplicationCodeAndUsername(
-                codeRole,
-                codeApplication,
-                username
+                givenRoleCode,
+                givenApplicationCode,
+                givenUsername
         );
     }
 
     @Test
     void executeOk() {
         final String givenUsername = "givenUsername";
-        final String givenRoleCode = "givenRoleCode";
         final String givenApplicationCode = "givenApplicationCode";
+        final String givenRoleCode = "givenRoleCode";
 
         final String username = "username";
         final User user = User.builder().username(username).build();
@@ -126,15 +116,15 @@ class AssignRoleToUserUseCaseTest {
 
         final String codeRole = "codeRole";
         final Role role = Role.builder().code(codeRole).build();
-        when(this.getRoleUseCase.execute(givenRoleCode, givenApplicationCode)).thenReturn(role);
+        when(this.getRoleUseCase.execute(givenApplicationCode, givenRoleCode)).thenReturn(role);
 
-        doNothing().when(this.subject).ensureRoleIsNotAlreadyAsigned(user, application, role); // déjà testé
+        doNothing().when(this.subject).ensureRoleIsNotAlreadyAsigned(username, codeApplication, codeRole); // déjà testé
 
         doNothing().when(this.userRepositoryPort).addRoleToUser(username, codeApplication, codeRole);
 
-        this.subject.execute(givenUsername, givenRoleCode, givenApplicationCode);
+        this.subject.execute(givenUsername, givenApplicationCode, givenRoleCode);
 
-        verify(this.subject, times(1)).ensureRoleIsNotAlreadyAsigned(user, application, role);
+        verify(this.subject, times(1)).ensureRoleIsNotAlreadyAsigned(username, codeApplication, codeRole);
         verify(this.userRepositoryPort, times(1)).addRoleToUser(username, codeApplication, codeRole);
     }
 }

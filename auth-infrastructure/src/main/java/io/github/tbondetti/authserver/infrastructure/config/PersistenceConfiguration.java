@@ -19,13 +19,11 @@ public class PersistenceConfiguration {
     @Bean
     UserRepositoryPort userRepositoryPort(
             final UserJpaRepository userJpaRepository,
-            final ApplicationJpaRepository applicationJpaRepository,
             final RoleJpaRepository roleJpaRepository,
             final UserRoleJpaRepository userRoleJpaRepository
     ) {
         return new UserRepositoryAdapter(
                 userJpaRepository,
-                applicationJpaRepository,
                 roleJpaRepository,
                 userRoleJpaRepository
         );
@@ -38,13 +36,11 @@ public class PersistenceConfiguration {
 
     @Bean
     RoleRepositoryPort roleRepositoryPort(
-            final UserJpaRepository userJpaRepository,
             final ApplicationJpaRepository applicationJpaRepository,
             final RoleJpaRepository roleJpaRepository,
             final UserRoleJpaRepository userRoleJpaRepository
     ) {
         return new RoleRepositoryAdapter(
-                userJpaRepository,
                 applicationJpaRepository,
                 roleJpaRepository,
                 userRoleJpaRepository

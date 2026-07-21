@@ -1,7 +1,6 @@
 package io.github.tbondetti.authserver.infrastructure.web.controller;
 
-import io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase;
-import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
+import io.github.tbondetti.authserver.infrastructure.service.ApplicationService;
 import io.github.tbondetti.authserver.infrastructure.web.dto.CreateApplicationRequest;
 import io.github.tbondetti.authserver.infrastructure.web.response.ApplicationResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,21 +20,20 @@ import static io.github.tbondetti.authserver.infrastructure.web.mapper.Applicati
 @RequiredArgsConstructor
 public class ApplicationController {
 
-    private final CreateApplicationUseCase createApplicationUseCase;
-    private final GetApplicationUseCase getApplicationUseCase;
+    private final ApplicationService applicationService;
+
+    @GetMapping("/{code}")
+    public ApplicationResponse getApplication(@PathVariable final String code) {
+        return toResponse(this.applicationService.getApplication(code));
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApplicationResponse createApplication(@RequestBody final CreateApplicationRequest request) {
-        return toResponse(this.createApplicationUseCase.execute(
+        return toResponse(this.applicationService.createApplication(
                 request.code(),
                 request.name(),
                 request.description()
         ));
-    }
-
-    @GetMapping("/{code}")
-    public ApplicationResponse getApplication(@PathVariable final String code) {
-        return toResponse(this.getApplicationUseCase.execute(code));
     }
 }

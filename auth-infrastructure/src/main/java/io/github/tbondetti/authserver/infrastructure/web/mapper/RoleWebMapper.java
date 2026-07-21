@@ -10,11 +10,11 @@ public class RoleWebMapper {
     public static RoleResponse toResponse(final Role role) {
         return RoleResponse
                 .builder()
+                .codeApplication(role.codeApplication())
                 .id(role.id())
                 .code(role.code())
                 .name(role.name())
                 .description(role.description())
-                .codeApplication(role.codeApplication())
                 .build();
     }
 }

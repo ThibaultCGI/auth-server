@@ -16,13 +16,14 @@ public class GetRoleUseCase {
     private final RoleRepositoryPort roleRepositoryPort;
     private final GetApplicationUseCase getApplicationUseCase;
 
-    public Role execute(final String code,
-                        final String applicationCode
+    public Role execute(
+            final String applicationCode,
+            final String code
     ) {
         final String normalizedCode = normalizeCode(code);
         final Application application = this.getApplicationUseCase.execute(applicationCode);
 
-        return this.roleRepositoryPort.findByCodeAndApplicationCode(normalizedCode, application.code()).orElseThrow(
+        return this.roleRepositoryPort.findByApplicationCodeAndCode(application.code(), normalizedCode).orElseThrow(
                 () -> new AuthServerFunctionalException(ERROR_ROLE_NOT_FOUND.formatted(normalizedCode, application.code()))
         );
     }
