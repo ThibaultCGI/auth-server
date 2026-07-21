@@ -25,14 +25,11 @@ jobs:
           java-version: 25
           cache: maven
 
-      - name: Build, test, coverage and Sonar analysis
-        run: mvn clean verify sonar:sonar
+      - name: Build, test and generate coverage
+        run: mvn clean verify
+
+      - name: Sonar analysis
+        if: github.actor != 'dependabot[bot]'
+        run: mvn sonar:sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Debug Maven repository
-        run: |
-          echo $HOME
-          ls -la $HOME
-          ls -la $HOME/.m2 || true
-          ls -la $HOME/.m2/repository || true
