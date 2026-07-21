@@ -8,7 +8,6 @@ import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRole
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRoleId;
 import io.github.tbondetti.authserver.infrastructure.persistence.mapper.RoleMapper;
 import io.github.tbondetti.authserver.infrastructure.persistence.mapper.UserMapper;
-import io.github.tbondetti.authserver.infrastructure.persistence.repository.ApplicationJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.RoleJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserRoleJpaRepository;
@@ -43,9 +42,6 @@ class UserRepositoryAdapterTest {
 
     @Mock
     private UserJpaRepository userJpaRepository;
-
-    @Mock
-    private ApplicationJpaRepository applicationJpaRepository;
 
     @Mock
     private RoleJpaRepository roleJpaRepository;
