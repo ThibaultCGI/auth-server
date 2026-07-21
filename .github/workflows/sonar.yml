@@ -1,0 +1,38 @@
+name: Build and Sonar
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: maven
+
+      - name: Build, test, coverage and Sonar analysis
+        run: mvn clean verify sonar:sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      
+      - name: Debug Maven repository
+        run: |
+          echo "HOME=$HOME"
+          ls -la $HOME/.m2
+          ls -la $HOME/.m2/repository
+      
