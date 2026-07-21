@@ -26,11 +26,6 @@ jobs:
           cache: maven
 
       - name: Build, test, coverage and Sonar analysis
-        run: >
-          mvn clean verify sonar:sonar
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.organization=thibaultcgi
-          -Dsonar.projectKey=ThibaultCGI_auth-server
-          -Dsonar.coverage.jacoco.aggregateXmlReportPaths=auth-coverage-report/target/site/jacoco-aggregate/jacoco.xml
+        run: mvn clean verify sonar:sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
