@@ -47,6 +47,7 @@
 	<properties>
 		<java.version>25</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<lombok.version>1.18.42</lombok.version>
 
 		<!-- Pour générer des rapport de couverture de TU pour SONAR -->
 		<jacoco.version>0.8.15</jacoco.version>
@@ -54,9 +55,15 @@
 		<sonar.organization>thibaultcgi</sonar.organization>
 		<sonar.projectKey>ThibaultCGI_auth-server</sonar.projectKey>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			auth-coverage-report/target/site/jacoco-aggregate/jacoco.xml
+		</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.coverage.jacoco.aggregateXmlReportPaths>
 			${maven.multiModuleProjectDirectory}/auth-coverage-report/target/site/jacoco-aggregate/jacoco.xml
 		</sonar.coverage.jacoco.aggregateXmlReportPaths>
+
+		<!-- non obligatoire, mais pour éviter les WARNING au build -->
+		<sonar.tests>src/test/java</sonar.tests>
 	</properties>
 
 	<dependencyManagement>
@@ -83,6 +90,12 @@
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.22.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
