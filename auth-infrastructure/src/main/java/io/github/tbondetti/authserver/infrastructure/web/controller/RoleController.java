@@ -23,6 +23,14 @@ public class RoleController {
 
     private final RoleService roleService;
 
+    @GetMapping("/{applicationCode}/{code}")
+    public RoleResponse getRole(
+            @PathVariable final String applicationCode,
+            @PathVariable final String code
+    ) {
+        return toResponse(this.roleService.getRole(applicationCode, code));
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RoleResponse createRole(@RequestBody final CreateRoleRequest request) {
@@ -32,14 +40,6 @@ public class RoleController {
                 request.name(),
                 request.description()
         ));
-    }
-
-    @GetMapping("/{applicationCode}/{code}")
-    public RoleResponse getRole(
-            @PathVariable final String applicationCode,
-            @PathVariable final String code
-    ) {
-        return toResponse(this.roleService.getRole(applicationCode, code));
     }
 
     @DeleteMapping("/{applicationCode}/{code}")
