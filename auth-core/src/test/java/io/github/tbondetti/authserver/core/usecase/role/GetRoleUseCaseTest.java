@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.usecase.role.GetRoleUseCase.ERROR_ROLE_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,8 +38,8 @@ class GetRoleUseCaseTest {
 
     @Test
     void executeKo() {
-        final String givenCode = "givenCode";
         final String givenApplicationCode = "givenApplicationCode";
+        final String givenCode = "givenCode";
 
 
         try(final MockedStatic<CommonValidationUtils> utilities = mockStatic(CommonValidationUtils.class)) {
@@ -49,13 +50,14 @@ class GetRoleUseCaseTest {
             final Application application = Application.builder().code(codeApplication).build();
             when(this.getApplicationUseCase.execute(givenApplicationCode)).thenReturn(application);
 
-            when(this.roleRepositoryPort.findByCodeAndApplicationCode(normalizedCode, codeApplication)).thenReturn(Optional.empty());
+            when(this.roleRepositoryPort.findByApplicationCodeAndCode(codeApplication, normalizedCode)).thenReturn(Optional.empty());
 
             final AuthServerFunctionalException exception = assertThrows(
                     AuthServerFunctionalException.class,
-                    () -> this.subject.execute(givenCode, givenApplicationCode)
+                    () -> this.subject.execute(givenApplicationCode, givenCode)
             );
 
+            assertSame(ROLE_NOT_FOUND, exception.getCode());
             assertEquals(ERROR_ROLE_NOT_FOUND.formatted(normalizedCode, codeApplication), exception.getMessage());
         }
 
@@ -63,8 +65,8 @@ class GetRoleUseCaseTest {
 
     @Test
     void executeOk() {
-        final String givenCode = "givenCode";
         final String givenApplicationCode = "givenApplicationCode";
+        final String givenCode = "givenCode";
 
         try(final MockedStatic<CommonValidationUtils> utilities = mockStatic(CommonValidationUtils.class)) {
             final String normalizedCode = "normalizedCode";
@@ -75,9 +77,9 @@ class GetRoleUseCaseTest {
             when(this.getApplicationUseCase.execute(givenApplicationCode)).thenReturn(application);
 
             final Role role = Role.builder().build();
-            when(this.roleRepositoryPort.findByCodeAndApplicationCode(normalizedCode, codeApplication)).thenReturn(Optional.of(role));
+            when(this.roleRepositoryPort.findByApplicationCodeAndCode(codeApplication, normalizedCode)).thenReturn(Optional.of(role));
 
-            assertSame(role, this.subject.execute(givenCode, givenApplicationCode));
+            assertSame(role, this.subject.execute(givenApplicationCode, givenCode));
         }
     }
 }

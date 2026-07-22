@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_ALREADY_ASSIGNED;
+
 @RequiredArgsConstructor
 public class AssignRoleToUserUseCase {
 
@@ -25,36 +27,35 @@ public class AssignRoleToUserUseCase {
 
     public void execute(
             final String username,
-            final String roleCode,
-            final String applicationCode
+            final String applicationCode,
+            final String roleCode
     ) {
         final User user = this.getUserUseCase.execute(username);
         final Application application = this.getApplicationUseCase.execute(applicationCode);
-        final Role role = this.getRoleUseCase.execute(roleCode, applicationCode);
+        final Role role = this.getRoleUseCase.execute(applicationCode, roleCode);
 
-        this.ensureRoleIsNotAlreadyAsigned(user, application, role);
+        this.ensureRoleIsNotAlreadyAsigned(user.username(), application.code(), role.code());
 
         this.userRepositoryPort.addRoleToUser(user.username(), application.code(), role.code());
     }
 
     void ensureRoleIsNotAlreadyAsigned(
-            final User user,
-            final Application application,
-            final Role role
+            final String username,
+            final String applicationCode,
+            final String roleCode
     ) {
 
         final Optional<Role> optionalRole = this.roleRepositoryPort.findByCodeAndApplicationCodeAndUsername(
-                role.code(),
-                application.code(),
-                user.username()
+                roleCode,
+                applicationCode,
+                username
         );
 
         if (optionalRole.isPresent()) {
-            throw new AuthServerFunctionalException(ERROR_ROLE_ALREADY_ASSIGNED.formatted(
-                    role.code(),
-                    application.code(),
-                    user.username()
-            ));
+            throw new AuthServerFunctionalException(
+                    ROLE_ALREADY_ASSIGNED,
+                    ERROR_ROLE_ALREADY_ASSIGNED.formatted(roleCode, username, applicationCode)
+            );
         }
 
     }

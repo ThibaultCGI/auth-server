@@ -6,6 +6,11 @@ import org.mockito.MockedStatic;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.TEN_STRING_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.USER_NAME;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.PASSWORD_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.PASSWORD_IS_TOO_LONG;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.PASSWORD_IS_TOO_SHORT;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USERNAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USERNAME_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_SECRET_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_SECRET_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.ERROR_SECRET_TOO_SHORT;
@@ -16,6 +21,7 @@ import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.vali
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validatePassword;
 import static java.util.Locale.ROOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mockStatic;
@@ -29,6 +35,7 @@ class UserValidationUtilsTest {
                 () -> validatePassword(null)
         );
 
+        assertSame(PASSWORD_IS_REQUIRED, exception1.getCode());
         assertEquals(ERROR_SECRET_IS_REQUIRED, exception1.getMessage());
 
         final AuthServerFunctionalException exception2 = assertThrows(
@@ -36,13 +43,15 @@ class UserValidationUtilsTest {
                 () -> validatePassword("   ")
         );
 
+        assertSame(PASSWORD_IS_REQUIRED, exception2.getCode());
         assertEquals(ERROR_SECRET_IS_REQUIRED, exception2.getMessage());
 
         final AuthServerFunctionalException exception3 = assertThrows(
                 AuthServerFunctionalException.class,
-                () -> validatePassword("12345678901")
+                () -> validatePassword("1234")
         );
 
+        assertSame(PASSWORD_IS_TOO_SHORT, exception3.getCode());
         assertEquals(ERROR_SECRET_TOO_SHORT, exception3.getMessage());
 
         final AuthServerFunctionalException exception4 = assertThrows(
@@ -64,6 +73,7 @@ class UserValidationUtilsTest {
                 )
         );
 
+        assertSame(PASSWORD_IS_TOO_LONG, exception4.getCode());
         assertEquals(ERROR_SECRET_TOO_LONG, exception4.getMessage());
     }
 
@@ -84,6 +94,7 @@ class UserValidationUtilsTest {
                 () -> validateAndNormalizeUsername(null)
         );
 
+        assertSame(USERNAME_IS_REQUIRED, exception1.getCode());
         assertEquals(ERROR_USERNAME_IS_REQUIRED, exception1.getMessage());
 
         final AuthServerFunctionalException exception2 = assertThrows(
@@ -91,6 +102,7 @@ class UserValidationUtilsTest {
                 () -> validateAndNormalizeUsername("   ")
         );
 
+        assertSame(USERNAME_IS_REQUIRED, exception2.getCode());
         assertEquals(ERROR_USERNAME_IS_REQUIRED, exception2.getMessage());
 
         final String string101 = TEN_STRING_LENGTH +
@@ -113,6 +125,7 @@ class UserValidationUtilsTest {
                     () -> validateAndNormalizeUsername(USER_NAME)
             );
 
+            assertSame(USERNAME_IS_TOO_LONG, exception3.getCode());
             assertEquals(ERROR_USERNAME_TOO_LONG, exception3.getMessage());
         }
     }

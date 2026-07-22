@@ -6,12 +6,14 @@ import java.util.Optional;
 
 public interface RoleRepositoryPort {
 
-    Optional<Role> findByCodeAndApplicationCode(
-            final String code,
-            final String applicationCode
+    Optional<Role> findByApplicationCodeAndCode(
+            final String applicationCode,
+            final String code
     );
 
     Role save(final Role role);
+
+    void delete(final Role role);
 
     Optional<Role> findByCodeAndApplicationCodeAndUsername(
             final String code,

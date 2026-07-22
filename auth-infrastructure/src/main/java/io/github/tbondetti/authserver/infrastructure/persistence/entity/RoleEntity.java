@@ -55,4 +55,5 @@ public class RoleEntity {
     )
     @ManyToOne(fetch = FetchType.LAZY)
     private ApplicationEntity application;
+
 }

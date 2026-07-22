@@ -5,6 +5,7 @@ import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalExcepti
 import io.github.tbondetti.authserver.core.port.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USER_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.normalizeUsername;
 
 @RequiredArgsConstructor
@@ -17,7 +18,9 @@ public class GetUserUseCase {
         final String normalizedUsername = normalizeUsername(username);
 
         return this.userRepositoryPort.findByUsername(normalizedUsername).orElseThrow(
-                () -> new AuthServerFunctionalException(ERROR_USER_NOT_FOUND.formatted(normalizedUsername))
+                () -> new AuthServerFunctionalException(
+                        USER_NOT_FOUND,
+                        ERROR_USER_NOT_FOUND.formatted(normalizedUsername))
         );
     }
 }

@@ -12,6 +12,7 @@ import java.util.Optional;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeName;
@@ -25,41 +26,41 @@ public class CreateRoleUseCase {
     private final GetApplicationUseCase getApplicationUseCase;
 
     public Role execute(
+            final String applicationCode,
             final String code,
             final String name,
-            final String description,
-            final String applicationCode
+            final String description
     ) {
+        final Application application = this.getApplicationUseCase.execute(applicationCode);
+
         final String normalizedCode = validateAndNormalizeCode(code, CODE_MAX_LENGTH);
         final String normalizedName = validateAndNormalizeName(name, NAME_MAX_LENGTH);
         final String normalizedDescription = normalizeAndValidateDescription(description, DESCRIPTION_MAX_LENGTH);
 
-        final Application application = this.getApplicationUseCase.execute(applicationCode);
-
-        this.ensureCodeIsUniqueForApplication(normalizedCode, application.code());
+        this.ensureCodeIsUniqueForApplication(application.code(), normalizedCode);
 
         final Role role = Role.builder()
                 .id(randomUUID())
+                .codeApplication(application.code())
                 .code(normalizedCode)
                 .name(normalizedName)
                 .description(normalizedDescription)
-                .codeApplication(application.code())
                 .build();
 
         return this.roleRepositoryPort.save(role);
     }
 
     void ensureCodeIsUniqueForApplication(
-            final String normalizedCode,
-            final String applicationCode
+            final String applicationCode,
+            final String normalizedCode
     ) {
-        final Optional<Role> optionalRole = this.roleRepositoryPort.findByCodeAndApplicationCode(
-                normalizedCode,
-                applicationCode
+        final Optional<Role> optionalRole = this.roleRepositoryPort.findByApplicationCodeAndCode(
+                applicationCode,
+                normalizedCode
         );
 
         if (optionalRole.isPresent()) {
-            throw new AuthServerFunctionalException(ERROR_CODE_MUST_BE_UNIQUE);
+            throw new AuthServerFunctionalException(ROLE_CODE_ALREADY_EXISTS, ERROR_CODE_MUST_BE_UNIQUE);
         }
     }
 }

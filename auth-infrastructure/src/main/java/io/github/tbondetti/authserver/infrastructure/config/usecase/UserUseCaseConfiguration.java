@@ -7,6 +7,7 @@ import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUse
 import io.github.tbondetti.authserver.core.usecase.role.GetRoleUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.AssignRoleToUserUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.CreateUserUseCase;
+import io.github.tbondetti.authserver.core.usecase.user.GetAllUserRolesUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserRolesForApplicationUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
 import org.springframework.context.annotation.Bean;
@@ -55,6 +56,17 @@ public class UserUseCaseConfiguration {
                 userRepositoryPort,
                 getUserUseCase,
                 getApplicationUseCase
+        );
+    }
+
+    @Bean
+    GetAllUserRolesUseCase getAllUserRolesUseCase(
+            final UserRepositoryPort userRepositoryPort,
+            final GetUserUseCase getUserUseCase
+    ) {
+        return new GetAllUserRolesUseCase(
+                userRepositoryPort,
+                getUserUseCase
         );
     }
 }

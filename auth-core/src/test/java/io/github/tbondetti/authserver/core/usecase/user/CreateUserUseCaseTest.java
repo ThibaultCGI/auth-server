@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.USER_NAME;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USERNAME_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.usecase.user.CreateUserUseCase.ERROR_USERNAME_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validateAndNormalizeUsername;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validatePassword;
@@ -56,6 +57,7 @@ class CreateUserUseCaseTest {
                 () -> this.subject.ensureUsernameIsUnique(USER_NAME)
         );
 
+        assertSame(USERNAME_ALREADY_EXISTS, exception.getCode());
         assertEquals(ERROR_USERNAME_MUST_BE_UNIQUE, exception.getMessage());
     }
 

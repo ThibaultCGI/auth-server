@@ -1,8 +1,6 @@
 package io.github.tbondetti.authserver.infrastructure.persistence.repository;
 
-import io.github.tbondetti.authserver.infrastructure.persistence.entity.ApplicationEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.RoleEntity;
-import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRoleEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRoleId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,30 +15,45 @@ public interface UserRoleJpaRepository extends JpaRepository<UserRoleEntity, Use
     @Query(
             """
             SELECT
-                r
+                ur.role
             FROM UserRoleEntity ur
-            JOIN ur.role r
-            WHERE ur.user = :user
-                AND r.application = :application
+            JOIN FETCH ur.role.application a
+            WHERE ur.user.username = :username
+                AND a.code = :applicationCode
             """
     )
-    List<RoleEntity> findAllByUserAndApplication(@Param("user") final UserEntity userEntity,
-                                                 @Param("application") final ApplicationEntity applicationEntity);
+    List<RoleEntity> findAllByUsernameAndApplicationCode(
+            @Param("username") final String username,
+            @Param("applicationCode") final String applicationCode
+    );
 
 
     @Query(
             """
-            SELECT r
+            SELECT
+                ur.role
             FROM UserRoleEntity ur
-            JOIN ur.role r
-            WHERE r.code = :roleCode
-                AND ur.user = :user
-                AND r.application = :application
+            JOIN FETCH ur.role.application a
+            WHERE ur.role.code = :roleCode
+                AND ur.user.username = :username
+                AND a.code = :applicationCode
             """
     )
-    Optional<RoleEntity> findByCodeAndApplicationAndUser(
+    Optional<RoleEntity> findByCodeAndApplicationCodeAndUsername(
             @Param("roleCode") final String roleCode,
-            @Param("application") final ApplicationEntity applicationEntity,
-            @Param("user") final UserEntity userEntity
+            @Param("applicationCode") final String applicationCode,
+            @Param("username") final String username
     );
+
+    @Query(
+            """
+            SELECT
+                ur.role
+            FROM UserRoleEntity ur
+            JOIN FETCH ur.role.application a
+            WHERE ur.user.username = :username
+            """
+    )
+    List<RoleEntity> findAllByUsername(@Param("user") final String username);
+
 }

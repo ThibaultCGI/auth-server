@@ -6,6 +6,11 @@ import lombok.experimental.UtilityClass;
 import static io.github.tbondetti.authserver.core.constants.UserRules.PASSWORD_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.UserRules.PASSWORD_MIN_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.UserRules.USERNAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.PASSWORD_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.PASSWORD_IS_TOO_LONG;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.PASSWORD_IS_TOO_SHORT;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USERNAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USERNAME_IS_TOO_LONG;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.isNull;
 
@@ -15,19 +20,19 @@ public class UserValidationUtils {
     static final String ERROR_USERNAME_TOO_LONG = "Le username ne doit pas dépasser les 100 caractères.";
 
     static final String ERROR_SECRET_IS_REQUIRED = "Le mot de passe est obligatoire et ne peut pas être vide.";
-    static final String ERROR_SECRET_TOO_SHORT = "Le mot de passe doit contenir au minimum 12 caractères.";
+    static final String ERROR_SECRET_TOO_SHORT = "Le mot de passe doit contenir au minimum 5 caractères.";
     static final String ERROR_SECRET_TOO_LONG = "Le mot de passe ne doit pas dépasser les 128 caractères.";
 
 
     public static String validateAndNormalizeUsername(final String username) {
         if (isNull(username) || username.isBlank()) {
-            throw new AuthServerFunctionalException(ERROR_USERNAME_IS_REQUIRED);
+            throw new AuthServerFunctionalException(USERNAME_IS_REQUIRED, ERROR_USERNAME_IS_REQUIRED);
         }
 
         final String normalizedUsername = normalizeUsername(username);
 
         if (normalizedUsername.length() > USERNAME_MAX_LENGTH) {
-            throw new AuthServerFunctionalException(ERROR_USERNAME_TOO_LONG);
+            throw new AuthServerFunctionalException(USERNAME_IS_TOO_LONG, ERROR_USERNAME_TOO_LONG);
         }
 
         return normalizedUsername;
@@ -39,15 +44,15 @@ public class UserValidationUtils {
 
     public static void validatePassword(final String password) {
         if (isNull(password) || password.isBlank()) {
-            throw new AuthServerFunctionalException(ERROR_SECRET_IS_REQUIRED);
+            throw new AuthServerFunctionalException(PASSWORD_IS_REQUIRED, ERROR_SECRET_IS_REQUIRED);
         }
 
         if (password.length() < PASSWORD_MIN_LENGTH) {
-            throw new AuthServerFunctionalException(ERROR_SECRET_TOO_SHORT);
+            throw new AuthServerFunctionalException(PASSWORD_IS_TOO_SHORT, ERROR_SECRET_TOO_SHORT);
         }
 
         if (password.length() > PASSWORD_MAX_LENGTH) {
-            throw new AuthServerFunctionalException(ERROR_SECRET_TOO_LONG);
+            throw new AuthServerFunctionalException(PASSWORD_IS_TOO_LONG, ERROR_SECRET_TOO_LONG);
         }
     }
 }

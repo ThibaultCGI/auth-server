@@ -3,14 +3,12 @@ package io.github.tbondetti.authserver.infrastructure.persistence.adapter;
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.port.UserRepositoryPort;
-import io.github.tbondetti.authserver.infrastructure.persistence.entity.ApplicationEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.RoleEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRoleEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserRoleId;
 import io.github.tbondetti.authserver.infrastructure.persistence.mapper.RoleMapper;
 import io.github.tbondetti.authserver.infrastructure.persistence.mapper.UserMapper;
-import io.github.tbondetti.authserver.infrastructure.persistence.repository.ApplicationJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.RoleJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserRoleJpaRepository;
@@ -26,7 +24,6 @@ import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.U
 public class UserRepositoryAdapter implements UserRepositoryPort {
 
     private final UserJpaRepository userJpaRepository;
-    private final ApplicationJpaRepository applicationJpaRepository;
     private final RoleJpaRepository roleJpaRepository;
     private final UserRoleJpaRepository userRoleJpaRepository;
 
@@ -45,13 +42,15 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     public List<Role> getUserRolesForApplication(final String username,
                                                  final String applicationCode
     ) {
-        final UserEntity userEntity = this.userJpaRepository.getByUsername(username);
-        final ApplicationEntity applicationEntity = this.applicationJpaRepository.getByCode(applicationCode);
-
-        return this.userRoleJpaRepository.findAllByUserAndApplication(
-                userEntity,
-                applicationEntity
+        return this.userRoleJpaRepository.findAllByUsernameAndApplicationCode(
+                username,
+                applicationCode
         ).stream().map(RoleMapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Role> getAllUserRoles(final String username) {
+        return this.userRoleJpaRepository.findAllByUsername(username).stream().map(RoleMapper::toDomain).toList();
     }
 
     @Override
@@ -60,8 +59,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
                               final String roleCode
     ) {
         final UserEntity userEntity = this.userJpaRepository.getByUsername(username);
-        final ApplicationEntity applicationEntity = this.applicationJpaRepository.getByCode(applicationCode);
-        final RoleEntity roleEntity = this.roleJpaRepository.getByApplicationAndCode(applicationEntity, roleCode);
+        final RoleEntity roleEntity = this.roleJpaRepository.getByApplicationCodeAndCode(applicationCode, roleCode);
 
         final UserRoleId userRoleId = new UserRoleId(
                 userEntity.getId(),

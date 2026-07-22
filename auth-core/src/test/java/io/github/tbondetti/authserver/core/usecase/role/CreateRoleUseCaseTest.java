@@ -20,6 +20,7 @@ import java.util.UUID;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.usecase.role.CreateRoleUseCase.ERROR_CODE_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
@@ -50,57 +51,59 @@ class CreateRoleUseCaseTest {
 
     @Test
     void ensureCodeIsUniqueForApplicationKo() {
-        final String givenNormalizedCode = "givenNormalizedCode";
         final String givenApplicationCode = "givenApplicationCode";
+        final String givenNormalizedCode = "givenNormalizedCode";
 
         final Role role = Role.builder().build();
-        when(this.roleRepositoryPort.findByCodeAndApplicationCode(givenNormalizedCode, givenApplicationCode)).thenReturn(Optional.of(role));
+        when(this.roleRepositoryPort.findByApplicationCodeAndCode(givenApplicationCode, givenNormalizedCode)).thenReturn(Optional.of(role));
 
         final AuthServerFunctionalException exception = assertThrows(
                 AuthServerFunctionalException.class,
-                () -> this.subject.ensureCodeIsUniqueForApplication(givenNormalizedCode, givenApplicationCode)
+                () -> this.subject.ensureCodeIsUniqueForApplication(givenApplicationCode, givenNormalizedCode)
         );
 
+        assertSame(ROLE_CODE_ALREADY_EXISTS, exception.getCode());
         assertEquals(ERROR_CODE_MUST_BE_UNIQUE, exception.getMessage());
     }
 
     @Test
     void ensureCodeIsUniqueForApplicationOk() {
-        final String givenNormalizedCode = "givenNormalizedCode";
         final String givenApplicationCode = "givenApplicationCode";
+        final String givenNormalizedCode = "givenNormalizedCode";
 
-        when(this.roleRepositoryPort.findByCodeAndApplicationCode(givenNormalizedCode, givenApplicationCode)).thenReturn(Optional.empty());
+        when(this.roleRepositoryPort.findByApplicationCodeAndCode(givenApplicationCode, givenNormalizedCode)).thenReturn(Optional.empty());
 
-        this.subject.ensureCodeIsUniqueForApplication(givenNormalizedCode, givenApplicationCode);
+        this.subject.ensureCodeIsUniqueForApplication(givenApplicationCode, givenNormalizedCode);
 
-        verify(this.roleRepositoryPort, times(1)).findByCodeAndApplicationCode(givenNormalizedCode, givenApplicationCode);
+        verify(this.roleRepositoryPort, times(1)).findByApplicationCodeAndCode(givenApplicationCode, givenNormalizedCode);
     }
 
     @Test
     void executeOk() {
+        final String givenApplicationCode = "givenApplicationCode";
         final String givenCode = "givenCode";
         final String givenName = "givenName";
         final String givenDescription = "givenDescription";
-        final String givenApplicationCode = "givenApplicationCode";
-
-        final String normalizedCode = "normalizedCode";
-        final String normalizedName = "normalizedName";
-        final String normalizedDescription = "normalizedDescription";
 
         final String codeApplication = "codeApplication";
         final Application application = Application.builder().code(codeApplication).build();
         when(this.getApplicationUseCase.execute(givenApplicationCode)).thenReturn(application);
 
-        doNothing().when(this.subject).ensureCodeIsUniqueForApplication(normalizedCode, codeApplication);
+        final String normalizedCode = "normalizedCode";
+        final String normalizedName = "normalizedName";
+        final String normalizedDescription = "normalizedDescription";
+
+
+        doNothing().when(this.subject).ensureCodeIsUniqueForApplication(codeApplication, normalizedCode);
 
         final UUID uuid = randomUUID();
 
         final Role roleToSave = Role.builder()
+                .codeApplication(codeApplication)
                 .id(uuid)
                 .code(normalizedCode)
                 .name(normalizedName)
                 .description(normalizedDescription)
-                .codeApplication(codeApplication)
                 .build();
 
         final Role roleSaved = Role.builder().build();
@@ -114,10 +117,10 @@ class CreateRoleUseCaseTest {
             commonUtilities.when(() -> normalizeAndValidateDescription(givenDescription, DESCRIPTION_MAX_LENGTH)).thenReturn(normalizedDescription);
             uUIDUtilities.when(UUID::randomUUID).thenReturn(uuid);
 
-            assertSame(roleSaved, this.subject.execute(givenCode, givenName, givenDescription, givenApplicationCode));
+            assertSame(roleSaved, this.subject.execute(givenApplicationCode, givenCode, givenName, givenDescription));
 
         }
 
-        verify(this.subject, times(1)).ensureCodeIsUniqueForApplication(normalizedCode, codeApplication);
+        verify(this.subject, times(1)).ensureCodeIsUniqueForApplication(codeApplication, normalizedCode);
     }
 }

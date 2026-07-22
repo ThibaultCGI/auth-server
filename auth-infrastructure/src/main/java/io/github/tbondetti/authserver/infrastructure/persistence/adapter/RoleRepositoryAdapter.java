@@ -4,11 +4,9 @@ import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.port.RoleRepositoryPort;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.ApplicationEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.entity.RoleEntity;
-import io.github.tbondetti.authserver.infrastructure.persistence.entity.UserEntity;
 import io.github.tbondetti.authserver.infrastructure.persistence.mapper.RoleMapper;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.ApplicationJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.RoleJpaRepository;
-import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserRoleJpaRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -21,19 +19,16 @@ import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.R
 @RequiredArgsConstructor
 public class RoleRepositoryAdapter implements RoleRepositoryPort {
 
-    private final UserJpaRepository userJpaRepository;
     private final ApplicationJpaRepository applicationJpaRepository;
     private final RoleJpaRepository roleJpaRepository;
     private final UserRoleJpaRepository userRoleJpaRepository;
 
     @Override
-    public Optional<Role> findByCodeAndApplicationCode(
-            final String code,
-            final String applicationCode
+    public Optional<Role> findByApplicationCodeAndCode(
+            final String applicationCode,
+            final String code
     ) {
-        final ApplicationEntity application = this.applicationJpaRepository.getByCode(applicationCode);
-
-        return this.roleJpaRepository.findByCodeAndApplication(code, application).map(RoleMapper::toDomain);
+        return this.roleJpaRepository.findByApplicationCodeAndCode(applicationCode, code).map(RoleMapper::toDomain);
     }
 
     @Override
@@ -42,16 +37,31 @@ public class RoleRepositoryAdapter implements RoleRepositoryPort {
             final String applicationCode,
             final String username
     ) {
-        final ApplicationEntity applicationEntity = this.applicationJpaRepository.getByCode(applicationCode);
-        final UserEntity userEntity = this.userJpaRepository.getByUsername(username);
-
-        return this.userRoleJpaRepository.findByCodeAndApplicationAndUser(code, applicationEntity, userEntity).map(RoleMapper::toDomain);
+        return this.userRoleJpaRepository.findByCodeAndApplicationCodeAndUsername(
+                    code,
+                    applicationCode,
+                    username
+                )
+                .map(RoleMapper::toDomain);
     }
 
     @Override
     public Role save(final Role role) {
         final ApplicationEntity application = this.applicationJpaRepository.getByCode(role.codeApplication());
         final RoleEntity newRole = toEntity(role, application);
-        return toDomain(this.roleJpaRepository.save(newRole));
+        final RoleEntity savedRole = this.roleJpaRepository.save(newRole);
+
+        return toDomain(this.roleJpaRepository.getByApplicationCodeAndCode(
+                savedRole.getApplication().getCode(),
+                savedRole.getCode()
+        ));
+    }
+
+    @Override
+    public void delete(final Role role) {
+        final ApplicationEntity application = this.applicationJpaRepository.getByCode(role.codeApplication());
+        final RoleEntity roleToDelete = this.roleJpaRepository.getByApplicationCodeAndCode(application.getCode(), role.code());
+
+        this.roleJpaRepository.delete(roleToDelete);
     }
 }

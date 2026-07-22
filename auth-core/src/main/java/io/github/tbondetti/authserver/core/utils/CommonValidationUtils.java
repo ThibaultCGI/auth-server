@@ -3,6 +3,11 @@ package io.github.tbondetti.authserver.core.utils;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
 import lombok.experimental.UtilityClass;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_TOO_LONG;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.DESCRIPTION_IS_TOO_LONG;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.NAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.NAME_IS_TOO_LONG;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.isNull;
 
@@ -27,13 +32,13 @@ public class CommonValidationUtils {
             final int maxLength
     ) {
         if (isNull(code) || code.isBlank()) {
-            throw new AuthServerFunctionalException(ERROR_CODE_IS_REQUIRED);
+            throw new AuthServerFunctionalException(CODE_IS_REQUIRED, ERROR_CODE_IS_REQUIRED);
         }
 
         final String normalizedCode = normalizeCode(code);
 
         if (normalizedCode.length() > maxLength) {
-            throw new AuthServerFunctionalException(ERROR_CODE_TOO_LONG.formatted(maxLength));
+            throw new AuthServerFunctionalException(CODE_IS_TOO_LONG, ERROR_CODE_TOO_LONG.formatted(maxLength));
         }
 
         return normalizedCode;
@@ -58,7 +63,7 @@ public class CommonValidationUtils {
         }
 
         if (normalizedDescription.length() > maxLength) {
-            throw new AuthServerFunctionalException(ERROR_DESCRIPTION_TOO_LONG.formatted(maxLength));
+            throw new AuthServerFunctionalException(DESCRIPTION_IS_TOO_LONG, ERROR_DESCRIPTION_TOO_LONG.formatted(maxLength));
         }
 
         return normalizedDescription;
@@ -69,13 +74,13 @@ public class CommonValidationUtils {
             final int maxLength
     ) {
         if (isNull(name) || name.isBlank()) {
-            throw new AuthServerFunctionalException(ERROR_NAME_IS_REQUIRED);
+            throw new AuthServerFunctionalException(NAME_IS_REQUIRED, ERROR_NAME_IS_REQUIRED);
         }
 
         final String normalizedName = name.trim();
 
         if (normalizedName.length() > maxLength) {
-            throw new AuthServerFunctionalException(ERROR_NAME_TOO_LONG.formatted(maxLength));
+            throw new AuthServerFunctionalException(NAME_IS_TOO_LONG, ERROR_NAME_TOO_LONG.formatted(maxLength));
         }
 
         return normalizedName;
