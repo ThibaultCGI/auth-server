@@ -20,6 +20,7 @@ import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.norm
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validateAndNormalizeUsername;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validatePassword;
 import static java.util.Locale.ROOT;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -75,6 +76,22 @@ class UserValidationUtilsTest {
 
         assertSame(PASSWORD_IS_TOO_LONG, exception4.getCode());
         assertEquals(ERROR_SECRET_TOO_LONG, exception4.getMessage());
+
+        assertDoesNotThrow(() -> validatePassword(
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                TEN_STRING_LENGTH +
+                "12345678"
+        ));
     }
 
     @Test
