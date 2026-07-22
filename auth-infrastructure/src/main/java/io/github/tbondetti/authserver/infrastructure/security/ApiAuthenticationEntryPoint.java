@@ -14,12 +14,13 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.INVALID_CREDENTIALS;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 @RequiredArgsConstructor
 public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private static final String ERROR_DESCRIPTION = "Nom d'utilisateur ou mot de passe invalide.";
+    static final String ERROR_INVALID_CREDENTIALS = "Nom d'utilisateur ou mot de passe invalide.";
 
     private final ObjectMapper objectMapper;
 
@@ -32,12 +33,12 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         final ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
                 .code(INVALID_CREDENTIALS)
-                .description(ERROR_DESCRIPTION)
+                .description(ERROR_INVALID_CREDENTIALS)
                 .build();
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(UTF_8);
 
         this.objectMapper.writeValue(
                 response.getOutputStream(),

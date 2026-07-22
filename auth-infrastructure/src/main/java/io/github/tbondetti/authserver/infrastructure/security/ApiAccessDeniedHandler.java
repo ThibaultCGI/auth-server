@@ -39,6 +39,7 @@ public class ApiAccessDeniedHandler implements AccessDeniedHandler {
 
         response.setStatus(SC_FORBIDDEN);
         response.setContentType(APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
 
         this.objectMapper.writeValue(
                 response.getOutputStream(),
