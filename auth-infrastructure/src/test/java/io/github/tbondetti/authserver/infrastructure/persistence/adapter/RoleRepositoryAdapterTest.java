@@ -20,7 +20,10 @@ import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.R
 import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.RoleMapper.toEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,5 +116,28 @@ class RoleRepositoryAdapterTest {
 
             assertSame(expected, this.subject.save(given));
         }
+    }
+
+    @Test
+    void deleteOk() {
+        final String applicationCode = "applicationCode";
+        final String roleCode = "roleCode";
+
+        final Role role = Role.builder().codeApplication(applicationCode).code(roleCode).build();
+
+        final String codeApplication = "codeApplication";
+        final ApplicationEntity application = new ApplicationEntity();
+        application.setCode(codeApplication);
+        when(this.applicationJpaRepository.getByCode(applicationCode)).thenReturn(application);
+
+        final RoleEntity roleToDelete = new RoleEntity();
+        when(this.roleJpaRepository.getByApplicationCodeAndCode(codeApplication, roleCode)).thenReturn(roleToDelete);
+
+        doNothing().when(this.roleJpaRepository).delete(roleToDelete);
+
+        this.subject.delete(role);
+
+        verify(this.roleJpaRepository, times(1)).delete(roleToDelete);
+
     }
 }
