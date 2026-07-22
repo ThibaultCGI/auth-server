@@ -35,6 +35,7 @@ public class SecurityFilterChainConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) {
         return http
+                // CSRF désactivé : API stateless, pas de session navigateur.
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(SESSION_MANAGEMENT_CUSTOMIZER)
                 .authorizeHttpRequests(AUTHORIZED_HTTP_REQUESTS_CUSTOMIZER)

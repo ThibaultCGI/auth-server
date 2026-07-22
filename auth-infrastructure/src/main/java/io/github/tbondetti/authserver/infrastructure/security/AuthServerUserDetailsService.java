@@ -13,12 +13,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
+import static io.github.tbondetti.authserver.infrastructure.security.ApiAuthenticationEntryPoint.ERROR_INVALID_CREDENTIALS;
 import static io.github.tbondetti.authserver.infrastructure.security.RoleGrantedAuthorityMapper.toGrantedAuthorities;
 
 @RequiredArgsConstructor
 public class AuthServerUserDetailsService implements UserDetailsService {
-
-    static final String ERROR_GET_USER = "Impossible de charger l'utilisateur.";
 
     private final GetUserUseCase getUserUseCase;
     private final GetAllUserRolesUseCase getAllUserRolesUseCase;
@@ -38,7 +37,7 @@ public class AuthServerUserDetailsService implements UserDetailsService {
         try {
             return this.getUserUseCase.execute(username);
         } catch (final AuthServerFunctionalException e) {
-            throw new UsernameNotFoundException(ERROR_GET_USER, e);
+            throw new UsernameNotFoundException(ERROR_INVALID_CREDENTIALS, e);
         }
     }
 }

@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.List;
 
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USER_NOT_FOUND;
-import static io.github.tbondetti.authserver.infrastructure.security.AuthServerUserDetailsService.ERROR_GET_USER;
+import static io.github.tbondetti.authserver.infrastructure.security.ApiAuthenticationEntryPoint.ERROR_INVALID_CREDENTIALS;
 import static io.github.tbondetti.authserver.infrastructure.security.RoleGrantedAuthorityMapper.toGrantedAuthorities;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,7 +52,7 @@ class AuthServerUserDetailsServiceTest {
                 () -> this.subject.getUser(givenUsername)
         );
 
-        assertSame(ERROR_GET_USER, actual.getMessage());
+        assertSame(ERROR_INVALID_CREDENTIALS, actual.getMessage());
         assertSame(exception, actual.getCause());
     }
 
