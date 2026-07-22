@@ -33,6 +33,7 @@ public class AuthServerUserDetailsService implements UserDetailsService {
         return new AuthServerUserDetails(user, authorities);
     }
 
+    @SuppressWarnings("java:S5804") // aucune information remontée à l'utilisateur
     protected User getUser(final String username) {
         try {
             return this.getUserUseCase.execute(username);

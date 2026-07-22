@@ -33,6 +33,7 @@ public class SecurityFilterChainConfig {
             .requestMatchers(PATH_ACTUATOR_HEALTH, PATH_ACTUATOR_INFO).permitAll()
             .anyRequest().authenticated();
 
+    @SuppressWarnings("java:S4502")
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) {
         return http
