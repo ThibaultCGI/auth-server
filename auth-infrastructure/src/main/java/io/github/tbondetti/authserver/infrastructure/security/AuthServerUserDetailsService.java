@@ -5,6 +5,7 @@ import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
 import io.github.tbondetti.authserver.core.usecase.user.GetAllUserRolesUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,8 +23,9 @@ public class AuthServerUserDetailsService implements UserDetailsService {
     private final GetUserUseCase getUserUseCase;
     private final GetAllUserRolesUseCase getAllUserRolesUseCase;
 
+    @Nonnull
     @Override
-    public UserDetails loadUserByUsername(final String username) {
+    public UserDetails loadUserByUsername(@Nonnull final String username) {
         final User user = this.getUser(username);
         final List<Role> userRoles = this.getAllUserRolesUseCase.execute(user.username());
 

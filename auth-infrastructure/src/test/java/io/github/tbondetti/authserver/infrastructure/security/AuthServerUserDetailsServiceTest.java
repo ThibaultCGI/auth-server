@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USER_NOT_FOUND;
 import static io.github.tbondetti.authserver.infrastructure.security.AuthServerUserDetailsService.ERROR_GET_USER;
 import static io.github.tbondetti.authserver.infrastructure.security.RoleGrantedAuthorityMapper.toGrantedAuthorities;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -43,7 +44,7 @@ class AuthServerUserDetailsServiceTest {
     void getUserKo() {
         final String givenUsername = "givenUsername";
 
-        final AuthServerFunctionalException exception = new AuthServerFunctionalException("test");
+        final AuthServerFunctionalException exception = new AuthServerFunctionalException(USER_NOT_FOUND, "Utilisateur introuvable");
         when(this.getUserUseCase.execute(givenUsername)).thenThrow(exception);
 
         final UsernameNotFoundException actual = assertThrows(

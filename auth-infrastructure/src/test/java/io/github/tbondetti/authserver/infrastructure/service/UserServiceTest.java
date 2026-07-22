@@ -32,6 +32,14 @@ class UserServiceTest {
     private AssignRoleToUserUseCase assignRoleToUserUseCase;
 
     @Test
+    void getUserOk() {
+        final String username = "username";
+        final User user = User.builder().build();
+        when(this.getUserUseCase.execute(username)).thenReturn(user);
+        assertSame(user, this.subject.getUser(username));
+    }
+
+    @Test
     void createUserOk() {
         final String username = "username";
         final String password = "password";

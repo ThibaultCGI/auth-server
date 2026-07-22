@@ -21,7 +21,6 @@ public class SecurityFilterChainConfig {
 
     private static final Customizer<SessionManagementConfigurer<HttpSecurity>> SESSION_MANAGEMENT_CUSTOMIZER = session -> session.sessionCreationPolicy(STATELESS);
     private static final Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> AUTHORIZED_HTTP_REQUESTS_CUSTOMIZER = auth -> auth
-//            .anyRequest().permitAll();
             .requestMatchers(PATH_ACTUATOR_HEALTH, PATH_ACTUATOR_INFO).permitAll()
             .anyRequest().authenticated();
 

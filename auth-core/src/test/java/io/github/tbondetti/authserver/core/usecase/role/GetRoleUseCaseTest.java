@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.usecase.role.GetRoleUseCase.ERROR_ROLE_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,6 +57,7 @@ class GetRoleUseCaseTest {
                     () -> this.subject.execute(givenApplicationCode, givenCode)
             );
 
+            assertSame(ROLE_NOT_FOUND, exception.getCode());
             assertEquals(ERROR_ROLE_NOT_FOUND.formatted(normalizedCode, codeApplication), exception.getMessage());
         }
 

@@ -12,6 +12,7 @@ import java.util.Optional;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeName;
@@ -59,7 +60,7 @@ public class CreateRoleUseCase {
         );
 
         if (optionalRole.isPresent()) {
-            throw new AuthServerFunctionalException(ERROR_CODE_MUST_BE_UNIQUE);
+            throw new AuthServerFunctionalException(ROLE_CODE_ALREADY_EXISTS, ERROR_CODE_MUST_BE_UNIQUE);
         }
     }
 }

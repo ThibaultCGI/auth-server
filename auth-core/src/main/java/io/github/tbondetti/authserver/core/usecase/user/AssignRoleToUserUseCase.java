@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_ALREADY_ASSIGNED;
+
 @RequiredArgsConstructor
 public class AssignRoleToUserUseCase {
 
@@ -50,11 +52,10 @@ public class AssignRoleToUserUseCase {
         );
 
         if (optionalRole.isPresent()) {
-            throw new AuthServerFunctionalException(ERROR_ROLE_ALREADY_ASSIGNED.formatted(
-                    roleCode,
-                    username,
-                    applicationCode
-            ));
+            throw new AuthServerFunctionalException(
+                    ROLE_ALREADY_ASSIGNED,
+                    ERROR_ROLE_ALREADY_ASSIGNED.formatted(roleCode, username, applicationCode)
+            );
         }
 
     }

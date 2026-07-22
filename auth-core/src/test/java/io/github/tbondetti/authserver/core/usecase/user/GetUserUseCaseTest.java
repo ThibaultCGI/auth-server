@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.USER_NAME;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USER_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase.ERROR_USER_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.normalizeUsername;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,6 +46,7 @@ class GetUserUseCaseTest {
                     () -> this.subject.execute(USER_NAME)
             );
 
+            assertSame(USER_NOT_FOUND, exception.getCode());
             assertEquals(ERROR_USER_NOT_FOUND.formatted(normalizedUsername), exception.getMessage());
         }
     }

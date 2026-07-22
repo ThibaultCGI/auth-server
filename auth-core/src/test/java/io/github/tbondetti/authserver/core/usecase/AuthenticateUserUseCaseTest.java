@@ -12,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.GIVEN_PASSWORD;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.GIVEN_USER_NAME;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ACCOUNT_DISABLED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.INVALID_CREDENTIALS;
 import static io.github.tbondetti.authserver.core.usecase.AuthenticateUserUseCase.ERROR_ACCOUNT_DISABLED;
 import static io.github.tbondetti.authserver.core.usecase.AuthenticateUserUseCase.ERROR_INVALID_CREDENTIALS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,6 +49,7 @@ class AuthenticateUserUseCaseTest {
                 () -> this.subject.execute(GIVEN_USER_NAME, GIVEN_PASSWORD)
         );
 
+        assertSame(INVALID_CREDENTIALS, exception.getCode());
         assertEquals(ERROR_INVALID_CREDENTIALS, exception.getMessage());
     }
 
@@ -66,6 +69,7 @@ class AuthenticateUserUseCaseTest {
                 () -> this.subject.execute(GIVEN_USER_NAME, GIVEN_PASSWORD)
         );
 
+        assertSame(ACCOUNT_DISABLED, exception.getCode());
         assertEquals(ERROR_ACCOUNT_DISABLED, exception.getMessage());
     }
 

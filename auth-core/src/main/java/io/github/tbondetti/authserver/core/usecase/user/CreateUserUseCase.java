@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USERNAME_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validateAndNormalizeUsername;
 import static io.github.tbondetti.authserver.core.utils.UserValidationUtils.validatePassword;
 import static java.util.UUID.randomUUID;
@@ -44,7 +45,7 @@ public class CreateUserUseCase {
         final Optional<User> optionalUser = this.userRepositoryPort.findByUsername(normalizedUsername);
 
         if (optionalUser.isPresent()) {
-            throw new AuthServerFunctionalException(ERROR_USERNAME_MUST_BE_UNIQUE);
+            throw new AuthServerFunctionalException(USERNAME_ALREADY_EXISTS, ERROR_USERNAME_MUST_BE_UNIQUE);
         }
     }
 }

@@ -6,6 +6,9 @@ import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
 import lombok.RequiredArgsConstructor;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ACCOUNT_DISABLED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.INVALID_CREDENTIALS;
+
 @RequiredArgsConstructor
 public class AuthenticateUserUseCase {
 
@@ -22,11 +25,11 @@ public class AuthenticateUserUseCase {
         final User user = this.getUserUseCase.execute(username);
 
         if (!this.passwordEncoderPort.matches(rawPassword, user.passwordHash())) {
-            throw new AuthServerFunctionalException(ERROR_INVALID_CREDENTIALS);
+            throw new AuthServerFunctionalException(INVALID_CREDENTIALS, ERROR_INVALID_CREDENTIALS);
         }
 
         if (!user.enabled()) {
-            throw new AuthServerFunctionalException(ERROR_ACCOUNT_DISABLED);
+            throw new AuthServerFunctionalException(ACCOUNT_DISABLED, ERROR_ACCOUNT_DISABLED);
         }
 
         return user;

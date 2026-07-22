@@ -18,6 +18,7 @@ import java.util.UUID;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase.ERROR_CODE_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
@@ -54,6 +55,7 @@ class CreateApplicationUseCaseTest {
                 () -> this.subject.ensureCodeIsUnique(normalizedCode)
         );
 
+        assertSame(APPLICATION_CODE_ALREADY_EXISTS, exception.getCode());
         assertEquals(ERROR_CODE_MUST_BE_UNIQUE, exception.getMessage());
     }
 

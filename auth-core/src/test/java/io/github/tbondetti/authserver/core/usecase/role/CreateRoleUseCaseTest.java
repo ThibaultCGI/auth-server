@@ -20,6 +20,7 @@ import java.util.UUID;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.RoleRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.usecase.role.CreateRoleUseCase.ERROR_CODE_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
@@ -61,6 +62,7 @@ class CreateRoleUseCaseTest {
                 () -> this.subject.ensureCodeIsUniqueForApplication(givenApplicationCode, givenNormalizedCode)
         );
 
+        assertSame(ROLE_CODE_ALREADY_EXISTS, exception.getCode());
         assertEquals(ERROR_CODE_MUST_BE_UNIQUE, exception.getMessage());
     }
 

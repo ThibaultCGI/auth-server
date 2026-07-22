@@ -7,6 +7,7 @@ import io.github.tbondetti.authserver.core.port.RoleRepositoryPort;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
 import lombok.RequiredArgsConstructor;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
 
 @RequiredArgsConstructor
@@ -24,7 +25,10 @@ public class GetRoleUseCase {
         final Application application = this.getApplicationUseCase.execute(applicationCode);
 
         return this.roleRepositoryPort.findByApplicationCodeAndCode(application.code(), normalizedCode).orElseThrow(
-                () -> new AuthServerFunctionalException(ERROR_ROLE_NOT_FOUND.formatted(normalizedCode, application.code()))
+                () -> new AuthServerFunctionalException(
+                        ROLE_NOT_FOUND,
+                        ERROR_ROLE_NOT_FOUND.formatted(normalizedCode, application.code())
+                )
         );
     }
 }

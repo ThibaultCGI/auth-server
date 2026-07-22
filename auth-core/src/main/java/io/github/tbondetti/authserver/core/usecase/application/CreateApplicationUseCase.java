@@ -10,6 +10,7 @@ import java.util.Optional;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeName;
@@ -46,7 +47,7 @@ public class CreateApplicationUseCase {
         final Optional<Application> optionalApplication = this.applicationRepositoryPort.findByCode(normalizedCode);
 
         if (optionalApplication.isPresent()) {
-            throw new AuthServerFunctionalException(ERROR_CODE_MUST_BE_UNIQUE);
+            throw new AuthServerFunctionalException(APPLICATION_CODE_ALREADY_EXISTS, ERROR_CODE_MUST_BE_UNIQUE);
         }
     }
 }

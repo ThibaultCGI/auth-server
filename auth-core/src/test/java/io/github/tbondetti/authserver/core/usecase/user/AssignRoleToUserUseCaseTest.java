@@ -17,8 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ROLE_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.usecase.user.AssignRoleToUserUseCase.ERROR_ROLE_ALREADY_ASSIGNED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -68,6 +70,8 @@ class AssignRoleToUserUseCaseTest {
                         givenRoleCode
                 )
         );
+
+        assertSame(ROLE_CODE_ALREADY_EXISTS, exception.getCode());
         assertEquals(ERROR_ROLE_ALREADY_ASSIGNED.formatted(
                 givenRoleCode,
                 givenUsername,

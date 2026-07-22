@@ -4,6 +4,11 @@ import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalExcepti
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_TOO_LONG;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.DESCRIPTION_IS_TOO_LONG;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.NAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.NAME_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.ERROR_CODE_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.ERROR_CODE_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.ERROR_DESCRIPTION_TOO_LONG;
@@ -34,12 +39,14 @@ class CommonValidationUtilsTest {
                 AuthServerFunctionalException.class,
                 () -> validateAndNormalizeCode(null, 10)
         );
+        assertSame(CODE_IS_REQUIRED, exception1.getCode());
         assertEquals(ERROR_CODE_IS_REQUIRED, exception1.getMessage());
 
         final AuthServerFunctionalException exception2 = assertThrows(
                 AuthServerFunctionalException.class,
                 () -> validateAndNormalizeCode("    ", 10)
         );
+        assertSame(CODE_IS_REQUIRED, exception2.getCode());
         assertEquals(ERROR_CODE_IS_REQUIRED, exception2.getMessage());
     }
 
@@ -56,6 +63,7 @@ class CommonValidationUtilsTest {
                     AuthServerFunctionalException.class,
                     () -> validateAndNormalizeCode(givenCode, 10)
             );
+            assertSame(CODE_IS_TOO_LONG, exception.getCode());
             assertEquals(ERROR_CODE_TOO_LONG.formatted(10), exception.getMessage());
         }
     }
@@ -105,6 +113,7 @@ class CommonValidationUtilsTest {
                     AuthServerFunctionalException.class,
                     () -> normalizeAndValidateDescription(givenDescription, givenMaxLength)
             );
+            assertSame(DESCRIPTION_IS_TOO_LONG, exception.getCode());
             assertEquals(ERROR_DESCRIPTION_TOO_LONG.formatted(givenMaxLength), exception.getMessage());
         }
     }
@@ -129,12 +138,14 @@ class CommonValidationUtilsTest {
                 AuthServerFunctionalException.class,
                 () -> validateAndNormalizeName(null, 10)
         );
+        assertSame(NAME_IS_REQUIRED, exception1.getCode());
         assertEquals(ERROR_NAME_IS_REQUIRED, exception1.getMessage());
 
         final AuthServerFunctionalException exception2 = assertThrows(
                 AuthServerFunctionalException.class,
                 () -> validateAndNormalizeName("    ", 10)
         );
+        assertSame(NAME_IS_REQUIRED, exception2.getCode());
         assertEquals(ERROR_NAME_IS_REQUIRED, exception2.getMessage());
     }
 
@@ -143,11 +154,12 @@ class CommonValidationUtilsTest {
         final String givenName = "   12345678901   ";
         final int givenMaxLength = 10;
 
-        final AuthServerFunctionalException exception2 = assertThrows(
+        final AuthServerFunctionalException exception = assertThrows(
                 AuthServerFunctionalException.class,
                 () -> validateAndNormalizeName(givenName, givenMaxLength)
         );
-        assertEquals(ERROR_NAME_TOO_LONG.formatted(givenMaxLength), exception2.getMessage());
+        assertSame(NAME_IS_TOO_LONG, exception.getCode());
+        assertEquals(ERROR_NAME_TOO_LONG.formatted(givenMaxLength), exception.getMessage());
     }
 
     @Test
