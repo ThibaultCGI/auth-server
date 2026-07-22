@@ -17,7 +17,7 @@ import static io.github.tbondetti.authserver.infrastructure.security.RoleGranted
 @RequiredArgsConstructor
 public class AuthServerUserDetailsService implements UserDetailsService {
 
-    static final String ERROR_GET_USER = "Impossible de charger l'utilisateur %s.";
+    static final String ERROR_GET_USER = "Impossible de charger l'utilisateur.";
 
     private final GetUserUseCase getUserUseCase;
     private final GetAllUserRolesUseCase getAllUserRolesUseCase;
@@ -32,11 +32,11 @@ public class AuthServerUserDetailsService implements UserDetailsService {
         return new AuthServerUserDetails(user, authorities);
     }
 
-    private User getUser(final String username) {
+    protected User getUser(final String username) {
         try {
             return this.getUserUseCase.execute(username);
         } catch (final AuthServerFunctionalException e) {
-            throw new UsernameNotFoundException(ERROR_GET_USER.formatted(username), e);
+            throw new UsernameNotFoundException(ERROR_GET_USER, e);
         }
     }
 }
