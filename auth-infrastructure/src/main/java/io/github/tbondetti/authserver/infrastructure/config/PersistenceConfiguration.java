@@ -1,12 +1,15 @@
 package io.github.tbondetti.authserver.infrastructure.config;
 
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
+import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
 import io.github.tbondetti.authserver.core.port.RoleRepositoryPort;
 import io.github.tbondetti.authserver.core.port.UserRepositoryPort;
 import io.github.tbondetti.authserver.infrastructure.persistence.adapter.ApplicationRepositoryAdapter;
+import io.github.tbondetti.authserver.infrastructure.persistence.adapter.OAuth2ClientRepositoryAdapter;
 import io.github.tbondetti.authserver.infrastructure.persistence.adapter.RoleRepositoryAdapter;
 import io.github.tbondetti.authserver.infrastructure.persistence.adapter.UserRepositoryAdapter;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.ApplicationJpaRepository;
+import io.github.tbondetti.authserver.infrastructure.persistence.repository.OAuth2ClientJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.RoleJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.persistence.repository.UserRoleJpaRepository;
@@ -44,6 +47,17 @@ public class PersistenceConfiguration {
                 applicationJpaRepository,
                 roleJpaRepository,
                 userRoleJpaRepository
+        );
+    }
+
+    @Bean
+    OAuth2ClientRepositoryPort oauth2ClientRepositoryPort(
+            final OAuth2ClientJpaRepository oauth2ClientJpaRepository,
+            final ApplicationJpaRepository applicationJpaRepository
+    ) {
+        return new OAuth2ClientRepositoryAdapter(
+                oauth2ClientJpaRepository,
+                applicationJpaRepository
         );
     }
 }

@@ -9,7 +9,7 @@ public record OAuth2Client(
         UUID id,
         String clientId,
         String clientName,
-        String clientSecret,
+        String clientSecretHash,
         String applicationCode
 ) {
 }

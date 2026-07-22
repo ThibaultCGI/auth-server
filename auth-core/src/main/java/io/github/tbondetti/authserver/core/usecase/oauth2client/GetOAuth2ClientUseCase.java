@@ -9,7 +9,7 @@ import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.normalizeClientId;
 
 @RequiredArgsConstructor
-public class GetOauth2ClientUseCase {
+public class GetOAuth2ClientUseCase {
     static final String ERROR_CLIENT_NOT_FOUND = "Aucun client avec client-id %s n'est présent dans le référentiel.";
 
     private final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort;

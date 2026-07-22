@@ -41,7 +41,7 @@ public class CreateOAuth2ClientUseCase {
         final OAuth2Client client = OAuth2Client.builder()
                 .clientId(normalizedClientId)
                 .clientName(normalizedClientName)
-                .clientSecret(clientSecretHash)
+                .clientSecretHash(clientSecretHash)
                 .applicationCode(application.code())
                 .build();
 
