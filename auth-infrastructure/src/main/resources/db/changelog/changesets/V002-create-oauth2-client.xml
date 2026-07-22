@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.liquibase.org/xml/ns/dbchangelog
+            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        "
+>
+
+    <changeSet
+            id="V002-01-create-oauth2-client-table"
+            author="thibault.bondetti"
+    >
+
+        <createTable tableName="oauth2_client" >
+            <column
+                    name="id_oauth2_client"
+                    type="UUID"
+            >
+                <constraints
+                        primaryKey="true"
+                        primaryKeyName="pk_oauth2_client"
+                        nullable="false"
+                />
+            </column>
+
+            <column
+                    name="client_id"
+                    type="VARCHAR(100)"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="client_name"
+                    type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column
+                    name="client_secret"
+                    type="VARCHAR(255)"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="id_application"
+                    type="UUID"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <createIndex
+                indexName="ux_oauth2_client_client_id"
+                tableName="oauth2_client"
+                unique="true"
+        >
+            <column name="client_id" />
+        </createIndex>
+
+        <createIndex
+                indexName="ix_oauth2_client_id_application"
+                tableName="oauth2_client"
+        >
+            <column name="id_application" />
+        </createIndex>
+
+        <addForeignKeyConstraint
+                baseTableName="oauth2_client"
+                baseColumnNames="id_application"
+                referencedTableName="application"
+                referencedColumnNames="id_application"
+                constraintName="fk_oauth2_client_application"
+                onDelete="CASCADE"
+        />
+    </changeSet>
+</databaseChangeLog>
