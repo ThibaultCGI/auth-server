@@ -63,7 +63,7 @@ class CreateRoleUseCaseTest {
         );
 
         assertSame(ROLE_CODE_ALREADY_EXISTS, exception.getCode());
-        assertEquals(ERROR_CODE_MUST_BE_UNIQUE, exception.getMessage());
+        assertEquals(ERROR_CODE_MUST_BE_UNIQUE.formatted(givenApplicationCode), exception.getMessage());
     }
 
     @Test

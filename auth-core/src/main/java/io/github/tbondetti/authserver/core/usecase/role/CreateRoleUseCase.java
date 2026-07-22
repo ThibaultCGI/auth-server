@@ -60,7 +60,7 @@ public class CreateRoleUseCase {
         );
 
         if (optionalRole.isPresent()) {
-            throw new AuthServerFunctionalException(ROLE_CODE_ALREADY_EXISTS, ERROR_CODE_MUST_BE_UNIQUE);
+            throw new AuthServerFunctionalException(ROLE_CODE_ALREADY_EXISTS, ERROR_CODE_MUST_BE_UNIQUE.formatted(applicationCode));
         }
     }
 }
