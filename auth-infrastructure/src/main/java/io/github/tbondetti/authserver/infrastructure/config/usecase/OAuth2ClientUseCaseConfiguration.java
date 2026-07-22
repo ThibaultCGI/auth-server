@@ -5,11 +5,11 @@ import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.CreateOAuth2ClientUseCase;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.GetOAuth2ClientUseCase;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@RequiredArgsConstructor
-public class OAuth2ClientUseCase {
+@Configuration
+public class OAuth2ClientUseCaseConfiguration {
 
     @Bean
     GetOAuth2ClientUseCase getOAuth2ClientUseCase(final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort) {
