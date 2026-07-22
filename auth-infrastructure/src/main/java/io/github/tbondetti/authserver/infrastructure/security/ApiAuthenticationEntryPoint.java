@@ -1,0 +1,47 @@
+package io.github.tbondetti.authserver.infrastructure.security;
+
+import io.github.tbondetti.authserver.infrastructure.web.error.ApiErrorResponse;
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.INVALID_CREDENTIALS;
+
+@Component
+@RequiredArgsConstructor
+public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private static final String ERROR_DESCRIPTION = "Nom d'utilisateur ou mot de passe invalide.";
+
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public void commence(
+            @Nonnull final HttpServletRequest request,
+            @Nonnull final HttpServletResponse response,
+            @Nonnull final AuthenticationException authException
+    ) throws IOException {
+
+        final ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
+                .code(INVALID_CREDENTIALS)
+                .description(ERROR_DESCRIPTION)
+                .build();
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+
+        this.objectMapper.writeValue(
+                response.getOutputStream(),
+                apiErrorResponse
+        );
+    }
+}

@@ -1,12 +1,16 @@
 
 package io.github.tbondetti.authserver.infrastructure.config;
 
+import io.github.tbondetti.authserver.infrastructure.security.ApiAccessDeniedHandler;
+import io.github.tbondetti.authserver.infrastructure.security.ApiAuthenticationEntryPoint;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -14,7 +18,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityFilterChainConfig {
+
+    private final ApiAuthenticationEntryPoint apiAuthenticationEntryPoint;
+    private final ApiAccessDeniedHandler apiAccessDeniedHandler;
 
     static final String PATH_ACTUATOR_HEALTH = "/actuator/health";
     static final String PATH_ACTUATOR_INFO = "/actuator/info";
@@ -31,6 +39,13 @@ public class SecurityFilterChainConfig {
                 .sessionManagement(SESSION_MANAGEMENT_CUSTOMIZER)
                 .authorizeHttpRequests(AUTHORIZED_HTTP_REQUESTS_CUSTOMIZER)
                 .httpBasic(withDefaults())
+                .exceptionHandling(this.exceptionHandling())
                 .build();
+    }
+
+    private Customizer<ExceptionHandlingConfigurer<HttpSecurity>> exceptionHandling() {
+        return exceptionHandling -> exceptionHandling
+                .authenticationEntryPoint(this.apiAuthenticationEntryPoint)
+                .accessDeniedHandler(this.apiAccessDeniedHandler);
     }
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import static io.github.tbondetti.authserver.infrastructure.web.mapper.UserWebMapper.toResponse;
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserWebMapperTest {
 
