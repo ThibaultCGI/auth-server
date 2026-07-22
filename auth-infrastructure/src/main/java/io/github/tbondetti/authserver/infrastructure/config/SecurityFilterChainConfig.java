@@ -27,8 +27,9 @@ public class SecurityFilterChainConfig {
     static final String PATH_ACTUATOR_HEALTH = "/actuator/health";
     static final String PATH_ACTUATOR_INFO = "/actuator/info";
 
-    private static final Customizer<SessionManagementConfigurer<HttpSecurity>> SESSION_MANAGEMENT_CUSTOMIZER = session -> session.sessionCreationPolicy(STATELESS);
-    private static final Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> AUTHORIZED_HTTP_REQUESTS_CUSTOMIZER = auth -> auth
+    static final Customizer<SessionManagementConfigurer<HttpSecurity>> SESSION_MANAGEMENT_CUSTOMIZER = session -> session.sessionCreationPolicy(STATELESS);
+    static final Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> AUTHORIZED_HTTP_REQUESTS_CUSTOMIZER = auth -> auth
+//            .anyRequest().permitAll();
             .requestMatchers(PATH_ACTUATOR_HEALTH, PATH_ACTUATOR_INFO).permitAll()
             .anyRequest().authenticated();
 
@@ -44,7 +45,7 @@ public class SecurityFilterChainConfig {
                 .build();
     }
 
-    private Customizer<ExceptionHandlingConfigurer<HttpSecurity>> exceptionHandling() {
+    protected Customizer<ExceptionHandlingConfigurer<HttpSecurity>> exceptionHandling() {
         return exceptionHandling -> exceptionHandling
                 .authenticationEntryPoint(this.apiAuthenticationEntryPoint)
                 .accessDeniedHandler(this.apiAccessDeniedHandler);
