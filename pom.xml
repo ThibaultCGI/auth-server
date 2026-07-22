@@ -58,6 +58,7 @@
 		<sonar.coverage.jacoco.aggregateXmlReportPaths>
 			${maven.multiModuleProjectDirectory}/auth-coverage-report/target/site/jacoco-aggregate/jacoco.xml
 		</sonar.coverage.jacoco.aggregateXmlReportPaths>
+		<sonar.coverage.exclusions>**/config/**,**/*Configuration.java</sonar.coverage.exclusions>
 	</properties>
 
 	<dependencyManagement>
