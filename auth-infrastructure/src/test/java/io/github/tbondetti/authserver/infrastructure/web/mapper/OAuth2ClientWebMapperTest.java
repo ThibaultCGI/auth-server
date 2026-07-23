@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import static io.github.tbondetti.authserver.infrastructure.web.mapper.OAuth2ClientWebMapper.toCreateResponse;
 import static io.github.tbondetti.authserver.infrastructure.web.mapper.OAuth2ClientWebMapper.toResponse;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OAuth2ClientWebMapperTest {
 
