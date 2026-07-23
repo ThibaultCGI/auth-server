@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.security;
+package io.github.tbondetti.authserver.infrastructure.security.handler;
 
 import io.github.tbondetti.authserver.infrastructure.web.error.ApiErrorResponse;
 import jakarta.annotation.Nonnull;

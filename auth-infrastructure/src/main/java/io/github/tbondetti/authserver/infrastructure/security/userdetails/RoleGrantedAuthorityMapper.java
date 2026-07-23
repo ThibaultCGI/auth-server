@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.security;
+package io.github.tbondetti.authserver.infrastructure.security.userdetails;
 
 import io.github.tbondetti.authserver.core.domain.Role;
 import lombok.experimental.UtilityClass;

@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.security;
+package io.github.tbondetti.authserver.infrastructure.security.userdetails;
 
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.domain.User;
@@ -13,8 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
-import static io.github.tbondetti.authserver.infrastructure.security.ApiAuthenticationEntryPoint.ERROR_INVALID_CREDENTIALS;
-import static io.github.tbondetti.authserver.infrastructure.security.RoleGrantedAuthorityMapper.toGrantedAuthorities;
+import static io.github.tbondetti.authserver.infrastructure.security.SecurityMessages.ERROR_INVALID_CREDENTIALS;
+import static io.github.tbondetti.authserver.infrastructure.security.userdetails.RoleGrantedAuthorityMapper.toGrantedAuthorities;
 
 @RequiredArgsConstructor
 public class AuthServerUserDetailsService implements UserDetailsService {

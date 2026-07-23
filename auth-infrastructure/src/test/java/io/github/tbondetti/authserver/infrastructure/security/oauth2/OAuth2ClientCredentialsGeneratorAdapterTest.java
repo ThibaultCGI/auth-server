@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.security;
+package io.github.tbondetti.authserver.infrastructure.security.oauth2;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,13 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter.ALPHABET;
-import static io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_COUNT;
-import static io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_LENGTH;
-import static io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_SEPARATOR;
-import static io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_SECRET_LENGTH;
-import static io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter.generateRandomString;
-import static io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter.generatedClientIdLength;
+import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.ALPHABET;
+import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_COUNT;
+import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_LENGTH;
+import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_SEPARATOR;
+import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_SECRET_LENGTH;
+import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.generateRandomString;
+import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.generatedClientIdLength;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;

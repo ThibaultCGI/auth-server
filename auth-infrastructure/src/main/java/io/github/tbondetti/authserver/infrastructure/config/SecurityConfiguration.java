@@ -5,9 +5,9 @@ import io.github.tbondetti.authserver.core.port.OAuth2ClientCredentialsGenerator
 import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.usecase.user.GetAllUserRolesUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
-import io.github.tbondetti.authserver.infrastructure.security.AuthServerUserDetailsService;
-import io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter;
-import io.github.tbondetti.authserver.infrastructure.security.PasswordEncoderAdapter;
+import io.github.tbondetti.authserver.infrastructure.security.userdetails.AuthServerUserDetailsService;
+import io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter;
+import io.github.tbondetti.authserver.infrastructure.security.encoder.PasswordEncoderAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;

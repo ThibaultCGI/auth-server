@@ -1,8 +1,8 @@
 
 package io.github.tbondetti.authserver.infrastructure.config;
 
-import io.github.tbondetti.authserver.infrastructure.security.ApiAccessDeniedHandler;
-import io.github.tbondetti.authserver.infrastructure.security.ApiAuthenticationEntryPoint;
+import io.github.tbondetti.authserver.infrastructure.security.handler.ApiAccessDeniedHandler;
+import io.github.tbondetti.authserver.infrastructure.security.handler.ApiAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

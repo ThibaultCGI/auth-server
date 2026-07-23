@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.security;
+package io.github.tbondetti.authserver.infrastructure.security.oauth2;
 
 import io.github.tbondetti.authserver.core.port.OAuth2ClientCredentialsGeneratorPort;
 

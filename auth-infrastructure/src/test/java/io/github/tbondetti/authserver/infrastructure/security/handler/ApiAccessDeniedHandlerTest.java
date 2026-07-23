@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.security;
+package io.github.tbondetti.authserver.infrastructure.security.handler;
 
 import io.github.tbondetti.authserver.infrastructure.web.error.ApiErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -6,15 +6,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.access.AccessDeniedException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.INVALID_CREDENTIALS;
-import static io.github.tbondetti.authserver.infrastructure.security.ApiAuthenticationEntryPoint.ERROR_INVALID_CREDENTIALS;
-import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ACCESS_DENIED;
+import static io.github.tbondetti.authserver.infrastructure.security.handler.ApiAccessDeniedHandler.ACCES_REFUSE;
+import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,20 +21,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-class ApiAuthenticationEntryPointTest {
+class ApiAccessDeniedHandlerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final ApiAuthenticationEntryPoint subject = new ApiAuthenticationEntryPoint(this.objectMapper);
+    private final ApiAccessDeniedHandler subject = new ApiAccessDeniedHandler(objectMapper);
 
     @Test
-    void commenceShouldReturnUnauthorizedWithJsonBody() throws IOException {
+    void handleShouldReturnForbiddenWithJsonBody() throws IOException {
         final HttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final AuthenticationException authenticationException = new BadCredentialsException("Bad credentials");
+        final AccessDeniedException exception = new AccessDeniedException("Test");
 
-        this.subject.commence(request, response, authenticationException);
+        this.subject.handle(request, response, exception);
 
-        assertEquals(SC_UNAUTHORIZED, response.getStatus());
+        assertEquals(SC_FORBIDDEN, response.getStatus());
         assertEquals(APPLICATION_JSON_VALUE + ";charset=" + UTF_8, response.getContentType());
 
         final ApiErrorResponse actualBody = this.objectMapper.readValue(
@@ -43,19 +42,21 @@ class ApiAuthenticationEntryPointTest {
                 ApiErrorResponse.class
         );
 
-        assertEquals(INVALID_CREDENTIALS, actualBody.code());
-        assertEquals(ERROR_INVALID_CREDENTIALS, actualBody.description());
+        assertEquals(ACCESS_DENIED, actualBody.code());
+        assertEquals(ACCES_REFUSE, actualBody.description());
     }
 
     @Test
-    void commenceShouldPropagateIOExceptionWhenWritingResponseFails() throws IOException {
+    void handleShouldPropagateIOExceptionWhenWritingResponseFails() throws IOException {
         final HttpServletRequest request = new MockHttpServletRequest();
         final HttpServletResponse response = mock(HttpServletResponse.class);
-        final AuthenticationException authenticationException = new BadCredentialsException("Bad credentials");
+        final AccessDeniedException exception = new AccessDeniedException("Test");
 
         when(response.getOutputStream()).thenThrow(new IOException("Unable to write response"));
 
-        assertThatThrownBy(() -> this.subject.commence(request, response, authenticationException))
+        final ApiAccessDeniedHandler failingSubject = new ApiAccessDeniedHandler(this.objectMapper);
+
+        assertThatThrownBy(() -> failingSubject.handle(request, response, exception))
                 .isInstanceOf(IOException.class)
                 .hasMessage("Unable to write response");
     }

@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.security;
+package io.github.tbondetti.authserver.infrastructure.security.encoder;
 
 import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import lombok.RequiredArgsConstructor;

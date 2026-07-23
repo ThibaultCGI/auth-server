@@ -1,11 +1,11 @@
-package io.github.tbondetti.authserver.infrastructure.security;
+package io.github.tbondetti.authserver.infrastructure.security.userdetails;
 
 import io.github.tbondetti.authserver.core.domain.Role;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.github.tbondetti.authserver.infrastructure.security.RoleGrantedAuthorityMapper.toGrantedAuthorities;
+import static io.github.tbondetti.authserver.infrastructure.security.userdetails.RoleGrantedAuthorityMapper.toGrantedAuthorities;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RoleGrantedAuthorityMapperTest {
