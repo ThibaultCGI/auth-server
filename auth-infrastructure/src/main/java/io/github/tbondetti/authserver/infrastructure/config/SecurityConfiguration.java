@@ -1,10 +1,12 @@
 package io.github.tbondetti.authserver.infrastructure.config;
 
 
+import io.github.tbondetti.authserver.core.port.OAuth2ClientCredentialsGeneratorPort;
 import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.usecase.user.GetAllUserRolesUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
 import io.github.tbondetti.authserver.infrastructure.security.AuthServerUserDetailsService;
+import io.github.tbondetti.authserver.infrastructure.security.OAuth2ClientCredentialsGeneratorAdapter;
 import io.github.tbondetti.authserver.infrastructure.security.PasswordEncoderAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class SecurityConfig {
+public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -32,4 +34,10 @@ public class SecurityConfig {
     ) {
         return new AuthServerUserDetailsService(getUserUseCase, getAllUserRolesUseCase);
     }
+
+    @Bean
+    OAuth2ClientCredentialsGeneratorPort oauth2ClientCredentialsGeneratorPort() {
+        return new OAuth2ClientCredentialsGeneratorAdapter();
+    }
+
 }

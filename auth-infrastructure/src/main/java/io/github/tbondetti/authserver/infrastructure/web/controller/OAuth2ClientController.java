@@ -2,6 +2,7 @@ package io.github.tbondetti.authserver.infrastructure.web.controller;
 
 import io.github.tbondetti.authserver.infrastructure.service.OAuth2ClientService;
 import io.github.tbondetti.authserver.infrastructure.web.dto.CreateOAuth2ClientRequest;
+import io.github.tbondetti.authserver.infrastructure.web.response.CreateOAuth2ClientResponse;
 import io.github.tbondetti.authserver.infrastructure.web.response.OAuth2ClientResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.github.tbondetti.authserver.infrastructure.web.mapper.OAuth2ClientWebMapper.toCreateResponse;
 import static io.github.tbondetti.authserver.infrastructure.web.mapper.OAuth2ClientWebMapper.toResponse;
 
 
@@ -30,11 +32,9 @@ public class OAuth2ClientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OAuth2ClientResponse createOAuth2Client(@RequestBody final CreateOAuth2ClientRequest request) {
-        return toResponse(this.oauth2ClientService.createOAuth2Client(
-                request.clientId(),
+    public CreateOAuth2ClientResponse createOAuth2Client(@RequestBody final CreateOAuth2ClientRequest request) {
+        return toCreateResponse(this.oauth2ClientService.createOAuth2Client(
                 request.clientName(),
-                request.clientSecret(),
                 request.applicationCode()
         ));
     }

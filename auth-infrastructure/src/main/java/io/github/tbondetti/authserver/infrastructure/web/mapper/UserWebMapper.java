@@ -9,7 +9,6 @@ public class UserWebMapper {
 
     public static UserResponse toResponse(final User user) {
         return UserResponse.builder()
-                .id(user.id())
                 .username(user.username())
                 .enabled(user.enabled())
                 .build();

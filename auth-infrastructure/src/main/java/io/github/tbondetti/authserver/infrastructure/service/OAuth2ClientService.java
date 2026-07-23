@@ -1,6 +1,7 @@
 package io.github.tbondetti.authserver.infrastructure.service;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
+import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.CreateOAuth2ClientUseCase;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.GetOAuth2ClientUseCase;
 import lombok.RequiredArgsConstructor;
@@ -19,16 +20,12 @@ public class OAuth2ClientService {
     }
 
     @Transactional
-    public OAuth2Client createOAuth2Client(
-            final String clientId,
+    public OAuth2CreatedClient createOAuth2Client(
             final String clientName,
-            final String clientSecret,
             final String applicationCode
     ) {
         return this.createOAuth2ClientUseCase.execute(
-                clientId,
                 clientName,
-                clientSecret,
                 applicationCode
         );
     }
