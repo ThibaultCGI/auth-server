@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 
 public class OAuth2ClientCredentialsGeneratorAdapter implements OAuth2ClientCredentialsGeneratorPort {
 
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     static final int CLIENT_ID_SEQUENCE_COUNT = 4;
     static final int CLIENT_ID_SEQUENCE_LENGTH = 6;
