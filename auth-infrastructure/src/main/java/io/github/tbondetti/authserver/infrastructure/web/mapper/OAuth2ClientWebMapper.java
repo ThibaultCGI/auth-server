@@ -10,8 +10,7 @@ import lombok.experimental.UtilityClass;
 public class OAuth2ClientWebMapper {
 
     public static OAuth2ClientResponse toResponse(final OAuth2Client client) {
-        return OAuth2ClientResponse
-                .builder()
+        return OAuth2ClientResponse.builder()
                 .clientId(client.clientId())
                 .clientName(client.clientName())
                 .applicationCode(client.applicationCode())
@@ -19,8 +18,7 @@ public class OAuth2ClientWebMapper {
     }
 
     public static CreateOAuth2ClientResponse toCreateResponse(final OAuth2CreatedClient client) {
-        return CreateOAuth2ClientResponse
-                .builder()
+        return CreateOAuth2ClientResponse.builder()
                 .clientId(client.clientId())
                 .clientName(client.clientName())
                 .clientSecret(client.clientSecret())
