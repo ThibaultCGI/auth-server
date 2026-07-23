@@ -17,7 +17,7 @@ public interface OAuth2ClientJpaRepository extends JpaRepository<OAuth2ClientEnt
                 oauth
             FROM OAuth2ClientEntity oauth
             JOIN FETCH oauth.application
-            WHERE oauth.client_id = :clientId
+            WHERE oauth.clientId = :clientId
             """;
 
     @Query(FIND_BY_CLIENT_ID_QUERY)
