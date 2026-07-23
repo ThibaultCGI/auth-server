@@ -74,7 +74,6 @@ class CreateOAuth2ClientUseCaseTest {
         final String clientId = "clientId";
         when(this.oauth2ClientCredentialsGeneratorPort.generateClientId()).thenReturn(clientId);
 
-        final OAuth2Client client = OAuth2Client.builder().build();
         when(this.oauth2ClientRepositoryPort.findByClientId(clientId)).thenReturn(Optional.empty());
 
         assertSame(clientId, this.subject.generateClientId());
