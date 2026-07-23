@@ -1,6 +1,7 @@
 package io.github.tbondetti.authserver.infrastructure.security.userdetails;
 
 import io.github.tbondetti.authserver.core.domain.User;
+import jakarta.annotation.Nonnull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -22,6 +23,7 @@ public class AuthServerUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
+    @Nonnull
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
@@ -32,6 +34,7 @@ public class AuthServerUserDetails implements UserDetails {
         return this.passwordHash;
     }
 
+    @Nonnull
     @Override
     public String getUsername() {
         return this.username;
