@@ -14,7 +14,7 @@ public class OAuth2ClientValidationUtils {
     static final String ERROR_CLIENT_NAME_IS_TOO_LONG = "Le nom du client ne doit pas dépasser les 255 caractères.";
 
     public static String normalizeClientId(final String clientId) {
-        return clientId.trim().toLowerCase();
+        return clientId.trim();
     }
 
     public static String validateAndNormalizeClientName(final String clientName) {

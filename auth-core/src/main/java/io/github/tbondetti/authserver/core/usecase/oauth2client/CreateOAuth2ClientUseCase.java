@@ -16,8 +16,8 @@ import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUt
 @RequiredArgsConstructor
 public class CreateOAuth2ClientUseCase {
 
-    private static final int MAX_CLIENT_ID_GENERATION_ATTEMPTS = 5;
-    private static final String ERROR_CLIENT_ID_GENERATION_FAILED = "Impossible de générer un client ID unique après plusieurs tentatives.";
+    static final int MAX_CLIENT_ID_GENERATION_ATTEMPTS = 5;
+    static final String ERROR_CLIENT_ID_GENERATION_FAILED = "Impossible de générer un client ID unique après plusieurs tentatives.";
 
     private final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort;
     private final OAuth2ClientCredentialsGeneratorPort oauth2ClientCredentialsGeneratorPort;
@@ -54,7 +54,7 @@ public class CreateOAuth2ClientUseCase {
     }
 
 
-    private String generateClientId() {
+    protected String generateClientId() {
         for (int i = 0; i < MAX_CLIENT_ID_GENERATION_ATTEMPTS; i++) {
             final String clientId = this.oauth2ClientCredentialsGeneratorPort.generateClientId();
 
