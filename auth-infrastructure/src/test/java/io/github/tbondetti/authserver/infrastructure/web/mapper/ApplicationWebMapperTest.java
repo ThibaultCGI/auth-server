@@ -27,7 +27,6 @@ class ApplicationWebMapperTest {
                 .build();
 
         final ApplicationResponse expected = ApplicationResponse.builder()
-                .id(id)
                 .code(code)
                 .name(name)
                 .description(description)

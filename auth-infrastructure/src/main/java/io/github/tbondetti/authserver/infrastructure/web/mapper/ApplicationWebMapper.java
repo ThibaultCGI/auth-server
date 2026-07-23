@@ -10,7 +10,6 @@ public class ApplicationWebMapper {
     public static ApplicationResponse toResponse(final Application application) {
         return ApplicationResponse
                 .builder()
-                .id(application.id())
                 .code(application.code())
                 .name(application.name())
                 .description(application.description())

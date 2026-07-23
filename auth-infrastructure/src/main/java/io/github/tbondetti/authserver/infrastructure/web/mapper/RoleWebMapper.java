@@ -11,7 +11,6 @@ public class RoleWebMapper {
         return RoleResponse
                 .builder()
                 .codeApplication(role.codeApplication())
-                .id(role.id())
                 .code(role.code())
                 .name(role.name())
                 .description(role.description())

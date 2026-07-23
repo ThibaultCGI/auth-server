@@ -31,7 +31,6 @@ class RoleWebMapperTest {
 
         final RoleResponse expected = RoleResponse.builder()
                 .codeApplication(codeApplication)
-                .id(id)
                 .code(code)
                 .name(name)
                 .description(description)

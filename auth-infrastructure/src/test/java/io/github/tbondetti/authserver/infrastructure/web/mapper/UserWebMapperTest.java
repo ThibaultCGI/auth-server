@@ -25,7 +25,6 @@ class UserWebMapperTest {
                 .build();
 
         final UserResponse expected = UserResponse.builder()
-                .id(id)
                 .username(username)
                 .enabled(enabled)
                 .build();

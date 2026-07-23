@@ -14,4 +14,9 @@
             file="changesets/V001-create-users-roles.xml"
     />
 
+    <include
+            relativeToChangelogFile="true"
+            file="changesets/V002-create-oauth2-client.xml"
+    />
+
 </databaseChangeLog>
