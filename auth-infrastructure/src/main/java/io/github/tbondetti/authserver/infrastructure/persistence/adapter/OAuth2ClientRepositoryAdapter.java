@@ -10,6 +10,7 @@ import io.github.tbondetti.authserver.infrastructure.persistence.repository.OAut
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.OAuth2ClientMapper.toDomain;
 import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.OAuth2ClientMapper.toEntity;
@@ -19,6 +20,11 @@ public class OAuth2ClientRepositoryAdapter implements OAuth2ClientRepositoryPort
 
     private final OAuth2ClientJpaRepository oauth2ClientJpaRepository;
     private final ApplicationJpaRepository applicationJpaRepository;
+
+    @Override
+    public Optional<OAuth2Client> findById(final UUID id) {
+        return this.oauth2ClientJpaRepository.findById(id).map(OAuth2ClientMapper::toDomain);
+    }
 
     @Override
     public Optional<OAuth2Client> findByClientId(final String clientId) {

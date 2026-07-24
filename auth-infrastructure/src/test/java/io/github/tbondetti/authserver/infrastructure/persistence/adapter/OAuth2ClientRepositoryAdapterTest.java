@@ -14,6 +14,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.OAuth2ClientMapper.toDomain;
 import static io.github.tbondetti.authserver.infrastructure.persistence.mapper.OAuth2ClientMapper.toEntity;
@@ -34,6 +35,20 @@ class OAuth2ClientRepositoryAdapterTest {
 
     @Mock
     private ApplicationJpaRepository applicationJpaRepository;
+
+    @Test
+    void findByIdOk() {
+        final UUID id = randomUUID();
+        final OAuth2ClientEntity entity = new OAuth2ClientEntity();
+        when(this.oauth2ClientJpaRepository.findById(id)).thenReturn(Optional.of(entity));
+
+        try (final MockedStatic<OAuth2ClientMapper> utilities = mockStatic(OAuth2ClientMapper.class)) {
+            final OAuth2Client client = OAuth2Client.builder().id(randomUUID()).build();
+            utilities.when(() -> toDomain(entity)).thenReturn(client); // déjà testé
+
+            assertEquals(Optional.of(client), this.subject.findById(id));
+        }
+    }
 
     @Test
     void findByClientIdOk() {

@@ -34,6 +34,15 @@ public class UserController {
         return toResponse(this.userService.getUser(username));
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponse createUser(@RequestBody final CreateUserRequest request) {
+        return toResponse(this.userService.createUser(
+                request.username(),
+                request.password()
+        ));
+    }
+
     @GetMapping("/{username}/roles")
     public List<RoleResponse> getUserRoles(
             @PathVariable final String username,
@@ -44,16 +53,6 @@ public class UserController {
     ) {
         return this.userService.getUserRoles(username, applicationCode).stream().map(RoleWebMapper::toResponse).toList();
     }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse createUser(@RequestBody final CreateUserRequest request) {
-        return toResponse(this.userService.createUser(
-                request.username(),
-                request.password()
-        ));
-    }
-
 
     @PostMapping("/{username}/roles")
     @ResponseStatus(HttpStatus.NO_CONTENT)
