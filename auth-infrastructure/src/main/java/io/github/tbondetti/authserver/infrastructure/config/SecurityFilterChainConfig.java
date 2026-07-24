@@ -6,6 +6,7 @@ import io.github.tbondetti.authserver.infrastructure.security.handler.ApiAuthent
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -34,6 +35,7 @@ public class SecurityFilterChainConfig {
 
     @SuppressWarnings("java:S4502")
     @Bean
+    @Order(2)
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) {
         return http
                 // CSRF désactivé : API stateless, pas de session navigateur.

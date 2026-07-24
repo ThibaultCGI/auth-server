@@ -41,4 +41,6 @@ public enum AuthServerErrorCode {
     CLIENT_SECRET_IS_TOO_LONG,
 
     CLIENT_NOT_FOUND,
+
+    ERREUR_TECHNIQUE,
 }
