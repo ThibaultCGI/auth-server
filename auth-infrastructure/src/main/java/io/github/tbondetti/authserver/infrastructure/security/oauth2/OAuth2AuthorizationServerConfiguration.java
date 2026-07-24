@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import io.github.tbondetti.authserver.core.exception.AuthServerTechnicalException;
+import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.security.KeyPair;
@@ -74,5 +77,10 @@ public class OAuth2AuthorizationServerConfiguration {
                     e
             );
         }
+    }
+
+    @Bean
+    OAuth2TokenCustomizer<JwtEncodingContext> oauth2JwtCustomizer(final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort) {
+        return new OAuth2JwtCustomizer(oauth2ClientRepositoryPort);
     }
 }
