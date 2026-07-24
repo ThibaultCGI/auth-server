@@ -22,7 +22,7 @@ public class OAuth2JwtCustomizer implements OAuth2TokenCustomizer<JwtEncodingCon
         );
     }
 
-    private static void addClientClaims(
+    protected static void addClientClaims(
             final JwtEncodingContext context,
             final OAuth2Client client
     ) {

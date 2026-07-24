@@ -35,6 +35,7 @@ public class OAuth2AuthorizationServerConfiguration {
 
     private final RegisteredClientRepository registeredClientRepository;
 
+    @SuppressWarnings("java:S4502")
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(final HttpSecurity http) {

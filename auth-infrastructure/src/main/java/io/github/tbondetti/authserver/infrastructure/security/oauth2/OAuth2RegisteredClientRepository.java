@@ -11,13 +11,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OAuth2RegisteredClientRepository implements RegisteredClientRepository {
 
+    static final String ERROR_DO_NOT_SAVE = "OAuth2 clients must be created through the application API.";
     private final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort;
 
     @Override
     public void save(@Nonnull final RegisteredClient registeredClient) {
-        throw new UnsupportedOperationException(
-                "OAuth2 clients must be created through the application API."
-        );
+        throw new UnsupportedOperationException(ERROR_DO_NOT_SAVE);
     }
 
     @Override
