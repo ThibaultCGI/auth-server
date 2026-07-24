@@ -9,7 +9,7 @@ import java.util.UUID;
 import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2RegisteredClientMapper.DEFAULT_SCOPE;
 import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2RegisteredClientMapper.toRegisteredClient;
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.oauth2.core.AuthorizationGrantType.CLIENT_CREDENTIALS;
 import static org.springframework.security.oauth2.core.ClientAuthenticationMethod.CLIENT_SECRET_BASIC;
 

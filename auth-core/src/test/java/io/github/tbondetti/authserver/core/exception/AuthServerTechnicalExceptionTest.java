@@ -3,7 +3,7 @@ package io.github.tbondetti.authserver.core.exception;
 import org.junit.jupiter.api.Test;
 
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_REQUIRED;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 class AuthServerTechnicalExceptionTest {
 
