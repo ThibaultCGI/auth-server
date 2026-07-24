@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_ID_GENERATION_FAILED;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.validateAndNormalizeClientName;
+import static java.util.UUID.randomUUID;
 
 @RequiredArgsConstructor
 public class CreateOAuth2ClientUseCase {
@@ -36,6 +37,7 @@ public class CreateOAuth2ClientUseCase {
         final String clientSecretHash = this.passwordEncoderPort.encode(clientSecret);
 
         final OAuth2Client clientToSave = OAuth2Client.builder()
+                .id(randomUUID())
                 .clientId(clientId)
                 .clientName(normalizedClientName)
                 .clientSecretHash(clientSecretHash)

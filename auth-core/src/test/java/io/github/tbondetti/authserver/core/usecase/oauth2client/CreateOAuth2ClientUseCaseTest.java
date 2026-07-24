@@ -103,37 +103,43 @@ class CreateOAuth2ClientUseCaseTest {
             final String clientSecretHash = "clientSecretHash";
             when(this.passwordEncoderPort.encode(clientSecret)).thenReturn(clientSecretHash);
 
-            final OAuth2Client clientToSave = OAuth2Client.builder()
-                    .clientId(clientId)
-                    .clientName(normalizedClientName)
-                    .clientSecretHash(clientSecretHash)
-                    .applicationCode(applicationApplicationCode)
-                    .build();
+            try (MockedStatic<UUID> uuidUtilities = mockStatic(UUID.class)) {
+                final UUID id = randomUUID();
+                uuidUtilities.when(UUID::randomUUID).thenReturn(id);
 
-            final UUID idSaved = randomUUID();
-            final String clientIdSaved = "clientIdSaved";
-            final String clientNameSaved = "clientNameSaved";
-            final String clientSecretHashSaved = "clientSecretHashSaved";
-            final String applicationCodeSaved = "applicationCodeSaved";
+                final OAuth2Client clientToSave = OAuth2Client.builder()
+                        .id(id)
+                        .clientId(clientId)
+                        .clientName(normalizedClientName)
+                        .clientSecretHash(clientSecretHash)
+                        .applicationCode(applicationApplicationCode)
+                        .build();
 
-            final OAuth2Client clientSaved =  OAuth2Client.builder()
-                    .id(idSaved)
-                    .clientId(clientIdSaved)
-                    .clientName(clientNameSaved)
-                    .clientSecretHash(clientSecretHashSaved)
-                    .applicationCode(applicationCodeSaved)
-                    .build();
-            when(this.oauth2ClientRepositoryPort.save(clientToSave)).thenReturn(clientSaved);
+                final String clientIdSaved = "clientIdSaved";
+                final String clientNameSaved = "clientNameSaved";
+                final String clientSecretHashSaved = "clientSecretHashSaved";
+                final String applicationCodeSaved = "applicationCodeSaved";
 
-            final OAuth2CreatedClient expected =  OAuth2CreatedClient.builder()
-                    .id(idSaved)
-                    .clientId(clientIdSaved)
-                    .clientName(clientNameSaved)
-                    .clientSecret(clientSecret) // uniquement pour la création
-                    .applicationCode(applicationCodeSaved)
-                    .build();
+                final OAuth2Client clientSaved =  OAuth2Client.builder()
+                        .id(id)
+                        .clientId(clientIdSaved)
+                        .clientName(clientNameSaved)
+                        .clientSecretHash(clientSecretHashSaved)
+                        .applicationCode(applicationCodeSaved)
+                        .build();
+                when(this.oauth2ClientRepositoryPort.save(clientToSave)).thenReturn(clientSaved);
 
-            assertEquals(expected, this.subject.execute(clientName, applicationCode));
+                final OAuth2CreatedClient expected =  OAuth2CreatedClient.builder()
+                        .id(id)
+                        .clientId(clientIdSaved)
+                        .clientName(clientNameSaved)
+                        .clientSecret(clientSecret) // uniquement pour la création
+                        .applicationCode(applicationCodeSaved)
+                        .build();
+
+                assertEquals(expected, this.subject.execute(clientName, applicationCode));
+            }
+
         }
     }
 }
