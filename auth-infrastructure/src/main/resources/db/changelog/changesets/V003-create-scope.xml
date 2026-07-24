@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.liquibase.org/xml/ns/dbchangelog
+            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        "
+>
+
+    <changeSet
+            id="V003-01-create-scope-table"
+            author="thibault.bondetti"
+    >
+
+        <createTable tableName="oauth2_scope" >
+            <column
+                    name="id_oauth2_scope"
+                    type="UUID"
+            >
+                <constraints
+                        primaryKey="true"
+                        primaryKeyName="pk_oauth2_scope"
+                        nullable="false"
+                />
+            </column>
+
+            <column
+                    name="id_application"
+                    type="UUID"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="code"
+                    type="VARCHAR(100)"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="name"
+                    type="VARCHAR(100)"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="description"
+                    type="VARCHAR(500)"
+            />
+        </createTable>
+
+        <createIndex
+                indexName="ux_oauth2_scope_id_application_code"
+                tableName="oauth2_scope"
+                unique="true"
+        >
+            <column name="id_application" />
+            <column name="code" />
+        </createIndex>
+
+        <createIndex
+                indexName="ix_oauth2_scope_id_application"
+                tableName="oauth2_scope"
+        >
+            <column name="id_application" />
+        </createIndex>
+
+        <addForeignKeyConstraint
+                baseTableName="oauth2_scope"
+                baseColumnNames="id_application"
+                referencedTableName="application"
+                referencedColumnNames="id_application"
+                constraintName="fk_oauth2_scope_application"
+                onDelete="CASCADE"
+        />
+    </changeSet>
+
+    <changeSet
+            id="V003-02-create-oauth2-client-oauth2-scope-table"
+            author="thibault.bondetti"
+    >
+
+        <createTable tableName="oauth2_client_oauth2_scope" >
+            <column
+                    name="id_oauth2_client"
+                    type="UUID"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="id_oauth2_scope"
+                    type="UUID"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="oauth2_client_oauth2_scope"
+                columnNames="id_oauth2_client, id_oauth2_scope"
+                constraintName="pk_oauth2_client_oauth2_scope"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="oauth2_client_oauth2_scope"
+                baseColumnNames="id_oauth2_client"
+                referencedTableName="oauth2_client"
+                referencedColumnNames="id_oauth2_client"
+                constraintName="fk_oauth2_client_oauth2_scope_oauth2_client"
+                onDelete="CASCADE"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="oauth2_client_oauth2_scope"
+                baseColumnNames="id_oauth2_scope"
+                referencedTableName="oauth2_scope"
+                referencedColumnNames="id_oauth2_scope"
+                constraintName="fk_oauth2_client_oauth2_scope_oauth2_scope"
+                onDelete="CASCADE"
+        />
+
+        <createIndex
+                indexName="ix_oauth2_client_oauth2_scope_id_oauth2_client"
+                tableName="oauth2_client_oauth2_scope"
+        >
+            <column name="id_oauth2_client" />
+        </createIndex>
+
+        <createIndex
+                indexName="ix_oauth2_client_oauth2_scope_id_oauth2_scope"
+                tableName="oauth2_client_oauth2_scope"
+        >
+            <column name="id_oauth2_scope" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
