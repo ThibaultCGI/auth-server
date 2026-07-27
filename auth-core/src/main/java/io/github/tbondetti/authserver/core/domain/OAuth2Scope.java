@@ -12,4 +12,9 @@ public record OAuth2Scope(
         String name,
         String description
 ) {
+    static String COMPLETE_CODE_FORMAT = "%s:%s";
+
+    public String completeCode() {
+        return COMPLETE_CODE_FORMAT.formatted(this.applicationCode, this.code);
+    }
 }
