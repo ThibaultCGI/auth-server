@@ -4,7 +4,7 @@ import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalExcepti
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-import static io.github.tbondetti.authserver.core.constants.TestConstants.FIFTY_STRING_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.TestConstants.ONE_HUNDRED_NON_NUMERIC_STRING_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.ONE_HUNDRED_STRING_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.TWO_HUNDRED_STRING_LENGTH;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_CODE_HAS_INVALID_CARACTER;
@@ -13,6 +13,7 @@ import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_DESCRIPTION_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NAME_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NAME_IS_TOO_LONG;
+import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeNullableString;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ALPHABET;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_CODE_HAS_INVALID_CARACTER;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_CODE_IS_REQUIRED;
@@ -22,7 +23,6 @@ import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUti
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_NAME_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeCode;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeDescription;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeName;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.validateAndNormalizeCode;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.validateAndNormalizeName;
@@ -74,7 +74,7 @@ class OAuth2ScopeValidationUtilsTest {
             assertSame(ERROR_CODE_TOO_LONG, exception3.getMessage());
 
             final String code2 = "code2";
-            final String normalizedCode2 = ONE_HUNDRED_STRING_LENGTH;
+            final String normalizedCode2 = "normalizedCode2";
 
             utilities.when(() -> normalizeCode(code2)).thenReturn(normalizedCode2); // déjà testé
 
@@ -90,11 +90,10 @@ class OAuth2ScopeValidationUtilsTest {
             );
 
             final String code3 = "code3";
-            final String normalizedCode3 = "scope";
 
-            utilities.when(() -> normalizeCode(code3)).thenReturn(normalizedCode3); // déjà testé
+            utilities.when(() -> normalizeCode(code3)).thenReturn(ONE_HUNDRED_NON_NUMERIC_STRING_LENGTH); // déjà testé
 
-            assertSame(normalizedCode3, validateAndNormalizeCode(code3));
+            assertSame(ONE_HUNDRED_NON_NUMERIC_STRING_LENGTH, validateAndNormalizeCode(code3));
         }
     }
 
@@ -148,34 +147,25 @@ class OAuth2ScopeValidationUtilsTest {
     }
 
     @Test
-    void normalizeDescriptionOk() {
-
-        assertNull(normalizeDescription(null));
-        assertNull(normalizeDescription(""));
-        assertNull(normalizeDescription("   "));
-
-        assertEquals("description", normalizeDescription(" description "));
-    }
-
-    @Test
     void normalizeAndValidateDescriptionOk() {
+        try (final MockedStatic<CommonValidationUtils> commonUtilities = mockStatic(
+                CommonValidationUtils.class,
+                CALLS_REAL_METHODS
+        )) {
+            final String description0 = "description0";
+            commonUtilities.when(() -> normalizeNullableString(description0)).thenReturn(null);
 
-        assertNull(normalizeAndValidateDescription(null));
-        assertNull(normalizeAndValidateDescription(""));
-        assertNull(normalizeAndValidateDescription("   "));
-
-        try (MockedStatic<OAuth2ScopeValidationUtils> utilities = mockStatic(OAuth2ScopeValidationUtils.class, CALLS_REAL_METHODS)) {
+            assertNull(normalizeAndValidateDescription(description0));
 
             final String description1 = "description1";
 
-            final String normalizedDescription1 =
-                    TWO_HUNDRED_STRING_LENGTH +
-                            TWO_HUNDRED_STRING_LENGTH +
-                            FIFTY_STRING_LENGTH +
-                            FIFTY_STRING_LENGTH +
-                            "1";
+            final String normalizedDescription1 = TWO_HUNDRED_STRING_LENGTH
+                    + TWO_HUNDRED_STRING_LENGTH
+                    + ONE_HUNDRED_STRING_LENGTH
+                    + "1"
+                    ;
 
-            utilities.when(() -> normalizeDescription(description1))
+            commonUtilities.when(() -> normalizeNullableString(description1))
                     .thenReturn(normalizedDescription1); // déjà testé
 
             final AuthServerFunctionalException exception = assertThrows(
@@ -188,19 +178,16 @@ class OAuth2ScopeValidationUtilsTest {
 
             final String description2 = "description2";
 
-            final String normalizedDescription2 =
-                    TWO_HUNDRED_STRING_LENGTH +
-                            TWO_HUNDRED_STRING_LENGTH +
-                            FIFTY_STRING_LENGTH +
-                            FIFTY_STRING_LENGTH;
+            final String normalizedDescription2 = TWO_HUNDRED_STRING_LENGTH
+                    + TWO_HUNDRED_STRING_LENGTH
+                    + ONE_HUNDRED_STRING_LENGTH
+                    ;
 
-            utilities.when(() -> normalizeDescription(description2))
+            commonUtilities.when(() -> normalizeNullableString(description2))
                     .thenReturn(normalizedDescription2); // déjà testé
 
-            assertSame(
-                    normalizedDescription2,
-                    normalizeAndValidateDescription(description2)
-            );
+            assertSame(normalizedDescription2, normalizeAndValidateDescription(description2));
         }
+
     }
 }

@@ -53,7 +53,7 @@ public class CreateOAuth2ScopeUseCase {
         this.oauth2ScopeRepositoryPort.findByApplicationCodeAndCode(
                 applicationCode,
                 code
-        ).ifPresent(existingScope -> {
+        ).ifPresent(_ -> {
             throw new AuthServerFunctionalException(
                     SCOPE_CODE_ALREADY_EXISTS_FOR_APPLICATION, ERROR_SCOPE_CODE_ALREADY_EXISTS_FOR_APPLICATION
             );

@@ -12,6 +12,7 @@ import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_DESCRIPTION_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NAME_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NAME_IS_TOO_LONG;
+import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeNullableString;
 import static java.util.Objects.isNull;
 
 @UtilityClass
@@ -71,7 +72,7 @@ public class OAuth2ScopeValidationUtils {
     }
 
     public static String normalizeAndValidateDescription(final String description) {
-        final String normalizedDescription = normalizeDescription(description);
+        final String normalizedDescription = normalizeNullableString(description);
         if (isNull(normalizedDescription)) {
             return null;
         }
@@ -82,13 +83,4 @@ public class OAuth2ScopeValidationUtils {
 
         return normalizedDescription;
     }
-
-    public static String normalizeDescription(final String description) {
-        if (isNull(description) || description.isBlank()) {
-            return null;
-        }
-
-        return description.trim();
-    }
-
 }

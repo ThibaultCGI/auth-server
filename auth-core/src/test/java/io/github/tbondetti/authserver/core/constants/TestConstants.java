@@ -23,4 +23,13 @@ public class TestConstants {
     public static final String TWO_HUNDRED_STRING_LENGTH = ONE_HUNDRED_STRING_LENGTH
             + ONE_HUNDRED_STRING_LENGTH;
 
+    public static final String TEN_NON_NUMERIC_STRING_LENGTH = "abcdefghij";
+    public static final String FIFTY_NON_NUMERIC_STRING_LENGTH = TEN_NON_NUMERIC_STRING_LENGTH
+            + TEN_NON_NUMERIC_STRING_LENGTH
+            + TEN_NON_NUMERIC_STRING_LENGTH
+            + TEN_NON_NUMERIC_STRING_LENGTH
+            + TEN_NON_NUMERIC_STRING_LENGTH;
+
+    public static final String ONE_HUNDRED_NON_NUMERIC_STRING_LENGTH = FIFTY_NON_NUMERIC_STRING_LENGTH
+            + FIFTY_NON_NUMERIC_STRING_LENGTH;
 }
