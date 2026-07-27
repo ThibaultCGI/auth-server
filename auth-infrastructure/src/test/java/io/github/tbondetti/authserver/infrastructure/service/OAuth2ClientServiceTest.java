@@ -4,6 +4,7 @@ import io.github.tbondetti.authserver.core.domain.OAuth2Client;
 import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.CreateOAuth2ClientUseCase;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.GetOAuth2ClientUseCase;
+import io.github.tbondetti.authserver.core.usecase.oauth2scope.AssignOAuth2ScopesToOAuth2ClientUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,6 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +28,9 @@ class OAuth2ClientServiceTest {
 
     @Mock
     private CreateOAuth2ClientUseCase createOAuth2ClientUseCase;
+
+    @Mock
+    private AssignOAuth2ScopesToOAuth2ClientUseCase assignOAuth2ScopesToOAuth2ClientUseCase;
 
     @Test
     void getOAuth2ClientOk() {
@@ -48,6 +55,27 @@ class OAuth2ClientServiceTest {
         )).thenReturn(client);
 
         assertSame(client, this.subject.createOAuth2Client(clientName, applicationCode));
+    }
+
+    @Test
+    void assignScopeOk() {
+        final String clientId = "clientId";
+        final String applicationCode = "applicationCode";
+        final String code = "code";
+
+        doNothing().when(this.assignOAuth2ScopesToOAuth2ClientUseCase).execute(
+                applicationCode,
+                code,
+                clientId
+        );
+
+        this.subject.assignScope(clientId, applicationCode, code);
+
+        verify(this.assignOAuth2ScopesToOAuth2ClientUseCase, times(1)).execute(
+                applicationCode,
+                code,
+                clientId
+        );
     }
 
 }
