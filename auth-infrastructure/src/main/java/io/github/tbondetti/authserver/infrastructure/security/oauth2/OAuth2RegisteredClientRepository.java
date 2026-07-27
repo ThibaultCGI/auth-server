@@ -1,18 +1,26 @@
 package io.github.tbondetti.authserver.infrastructure.security.oauth2;
 
+import io.github.tbondetti.authserver.core.domain.OAuth2Client;
+import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
 import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
+import io.github.tbondetti.authserver.infrastructure.persistence.mapper.OAuth2ScopeMapper;
+import io.github.tbondetti.authserver.infrastructure.persistence.repository.OAuth2ScopeJpaRepository;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 
+import java.util.List;
 import java.util.UUID;
+
+import static io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2RegisteredClientMapper.toRegisteredClient;
 
 @RequiredArgsConstructor
 public class OAuth2RegisteredClientRepository implements RegisteredClientRepository {
 
     static final String ERROR_DO_NOT_SAVE = "OAuth2 clients must be created through the application API.";
     private final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort;
+    private final OAuth2ScopeJpaRepository oauth2ScopeJpaRepository;
 
     @Override
     public void save(@Nonnull final RegisteredClient registeredClient) {
@@ -21,9 +29,10 @@ public class OAuth2RegisteredClientRepository implements RegisteredClientReposit
 
     @Override
     public RegisteredClient findById(@Nonnull final String id) {
+
         return this.oauth2ClientRepositoryPort
                 .findById(UUID.fromString(id))
-                .map(OAuth2RegisteredClientMapper::toRegisteredClient)
+                .map(this::toClient)
                 .orElse(null);
     }
 
@@ -33,7 +42,16 @@ public class OAuth2RegisteredClientRepository implements RegisteredClientReposit
         // on n'utilise pas GetOAuth2ClientUseCase car Spring ne s'attend pas à recevoir une exception fonctionnelle,
         // mais null si aucun client trouvé
         return this.oauth2ClientRepositoryPort.findByClientId(clientId)
-                .map(OAuth2RegisteredClientMapper::toRegisteredClient)
+                .map(this::toClient)
                 .orElse(null);
+    }
+
+    RegisteredClient toClient(final OAuth2Client client) {
+        final List<OAuth2Scope> scopes = this.oauth2ScopeJpaRepository.findAllByClientId(client.clientId())
+                .stream()
+                .map(OAuth2ScopeMapper::toDomain)
+                .toList();
+
+        return toRegisteredClient(client, scopes);
     }
 }

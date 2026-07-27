@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,5 +34,16 @@ public interface OAuth2ScopeJpaRepository extends JpaRepository<OAuth2ScopeEntit
             @Param("applicationCode") final String applicationCode,
             @Param("code") final String code
     );
+
+    @Query(
+            """
+            SELECT
+                cs.scope
+            FROM OAuth2ClientScopeEntity cs
+            JOIN FETCH cs.scope.application
+            WHERE cs.client.clientId = :clientId
+            """
+    )
+    List<OAuth2ScopeEntity> findAllByClientId(@Param("clientId") final String clientId);
 
 }

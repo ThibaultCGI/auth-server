@@ -6,6 +6,7 @@ import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
 import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.usecase.user.GetAllUserRolesUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
+import io.github.tbondetti.authserver.infrastructure.persistence.repository.OAuth2ScopeJpaRepository;
 import io.github.tbondetti.authserver.infrastructure.security.encoder.PasswordEncoderAdapter;
 import io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter;
 import io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2RegisteredClientRepository;
@@ -44,8 +45,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    RegisteredClientRepository registeredClientRepository(final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort) {
-        return new OAuth2RegisteredClientRepository(oauth2ClientRepositoryPort);
+    RegisteredClientRepository registeredClientRepository(
+            final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort,
+            final OAuth2ScopeJpaRepository oauth2ScopeJpaRepository
+    ) {
+        return new OAuth2RegisteredClientRepository(oauth2ClientRepositoryPort, oauth2ScopeJpaRepository);
     }
 
 }
