@@ -3,6 +3,7 @@ package io.github.tbondetti.authserver.infrastructure.web.controller;
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
 import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
 import io.github.tbondetti.authserver.infrastructure.service.OAuth2ClientService;
+import io.github.tbondetti.authserver.infrastructure.web.dto.AssignOAuth2ScopeRequest;
 import io.github.tbondetti.authserver.infrastructure.web.dto.CreateOAuth2ClientRequest;
 import io.github.tbondetti.authserver.infrastructure.web.mapper.OAuth2ClientWebMapper;
 import io.github.tbondetti.authserver.infrastructure.web.response.CreateOAuth2ClientResponse;
@@ -18,6 +19,7 @@ import static io.github.tbondetti.authserver.infrastructure.web.mapper.OAuth2Cli
 import static io.github.tbondetti.authserver.infrastructure.web.mapper.OAuth2ClientWebMapper.toResponse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,5 +66,25 @@ class OAuth2ClientControllerTest {
 
             assertSame(expected, this.subject.createOAuth2Client(request));
         }
+    }
+
+    @Test
+    void assignScopeOk() {
+        final String clientId = "clientId";
+
+        final String applicationCode = "applicationCode";
+        final String code = "code";
+        final AssignOAuth2ScopeRequest request = new AssignOAuth2ScopeRequest(
+                applicationCode,
+                code
+        );
+
+        this.subject.assignScope(clientId, request);
+
+        verify(this.oauth2ClientService).assignScope(
+                clientId,
+                applicationCode,
+                code
+        );
     }
 }

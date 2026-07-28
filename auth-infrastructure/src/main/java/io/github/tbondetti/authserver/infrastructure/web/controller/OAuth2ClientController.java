@@ -1,6 +1,7 @@
 package io.github.tbondetti.authserver.infrastructure.web.controller;
 
 import io.github.tbondetti.authserver.infrastructure.service.OAuth2ClientService;
+import io.github.tbondetti.authserver.infrastructure.web.dto.AssignOAuth2ScopeRequest;
 import io.github.tbondetti.authserver.infrastructure.web.dto.CreateOAuth2ClientRequest;
 import io.github.tbondetti.authserver.infrastructure.web.response.CreateOAuth2ClientResponse;
 import io.github.tbondetti.authserver.infrastructure.web.response.OAuth2ClientResponse;
@@ -37,5 +38,18 @@ public class OAuth2ClientController {
                 request.clientName(),
                 request.applicationCode()
         ));
+    }
+
+    @PostMapping("/{clientId}/scopes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void assignScope(
+            @PathVariable final String clientId,
+            @RequestBody final AssignOAuth2ScopeRequest request
+    ) {
+        this.oauth2ClientService.assignScope(
+                clientId,
+                request.applicationCode(),
+                request.code()
+        );
     }
 }

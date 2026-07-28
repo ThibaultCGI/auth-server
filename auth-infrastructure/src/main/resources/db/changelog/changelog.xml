@@ -19,4 +19,9 @@
             file="changesets/V002-create-oauth2-client.xml"
     />
 
+    <include
+            relativeToChangelogFile="true"
+            file="changesets/V003-create-scope.xml"
+    />
+
 </databaseChangeLog>
