@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 
 @UtilityClass
 public class OAuth2ScopeValidationUtils {
-    static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+    static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz-.";
 
     static final String ERROR_CODE_IS_REQUIRED = "Le code du scope est obligatoire.";
     static final String ERROR_CODE_TOO_LONG = "Le code du scope ne doit pas dépasser les 100 caractères.";

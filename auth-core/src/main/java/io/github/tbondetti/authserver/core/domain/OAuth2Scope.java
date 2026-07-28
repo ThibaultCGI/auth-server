@@ -4,6 +4,8 @@ import lombok.Builder;
 
 import java.util.UUID;
 
+import static java.util.Locale.ROOT;
+
 @Builder
 public record OAuth2Scope(
         UUID id,
@@ -15,6 +17,6 @@ public record OAuth2Scope(
     static String COMPLETE_CODE_FORMAT = "%s:%s";
 
     public String completeCode() {
-        return COMPLETE_CODE_FORMAT.formatted(this.applicationCode, this.code);
+        return COMPLETE_CODE_FORMAT.formatted(this.applicationCode, this.code).toLowerCase(ROOT);
     }
 }
