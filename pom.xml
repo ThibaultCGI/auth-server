@@ -17,11 +17,7 @@
 
 	<description>Projet de mise en place d'un serveur d'authentification OAuth2</description>
 
-	<url/>
-
-	<licenses>
-		<license/>
-	</licenses>
+	<url>https://github.com/ThibaultCGI/auth-server</url>
 
 	<developers>
 		<developer>
@@ -36,13 +32,6 @@
 		<module>auth-boot</module>
 		<module>auth-coverage-report</module>
 	</modules>
-
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
 
 	<properties>
 		<java.version>25</java.version>
@@ -77,12 +66,6 @@
 				<groupId>io.github.tbondetti</groupId>
 				<artifactId>auth-infrastructure</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>3.20.0</version>
 			</dependency>
 
 			<dependency>
