@@ -2,7 +2,12 @@
 
 Ce document recense les principales décisions d'architecture et de conception prises au cours du projet.
 
-L'objectif est de conserver une trace des choix effectués ainsi que de leurs motivations.
+L'objectif est de :
+
+- conserver une trace des choix effectués ;
+- documenter les motivations ;
+- faciliter la compréhension de l'architecture ;
+- éviter de remettre en question des décisions déjà validées sans raison.
 
 ---
 
@@ -10,26 +15,26 @@ L'objectif est de conserver une trace des choix effectués ainsi que de leurs mo
 
 ## Décision
 
-Le projet adopte une architecture hexagonale.
+Le projet adopte une architecture hexagonale (Ports & Adapters).
 
 ## Motivation
 
 Nous souhaitons :
 
-- isoler le métier de la technique ;
-- limiter les dépendances envers les frameworks ;
+- isoler le métier des technologies ;
 - faciliter les tests unitaires ;
-- permettre l'évolution des choix techniques sans impacter le métier.
+- limiter les dépendances aux frameworks ;
+- permettre l'évolution des choix techniques sans impact sur le métier.
 
 ## Conséquences
 
-Le domaine dépend uniquement :
+Le métier dépend uniquement :
 
 - des objets métier ;
 - des use cases ;
 - des ports.
 
-Les détails techniques sont implémentés dans le module infrastructure.
+Les détails techniques sont implémentés dans des adaptateurs spécialisés.
 
 ---
 
@@ -37,23 +42,29 @@ Les détails techniques sont implémentés dans le module infrastructure.
 
 ## Décision
 
-Le projet est découpé en plusieurs modules Maven :
+Le projet est organisé sous la forme des modules Maven suivants :
 
-- auth-core
-- auth-infrastructure
-- auth-boot
+- auth-server-core
+- auth-server-application
+- auth-server-web
+- auth-server-persistence
+- auth-server-security
+- auth-server-boot
 
 ## Motivation
 
 Séparer clairement :
 
 - le métier ;
-- l'infrastructure ;
-- le bootstrap Spring Boot.
+- l'orchestration applicative ;
+- l'exposition HTTP ;
+- la persistance ;
+- la sécurité ;
+- le démarrage de l'application.
 
 ## Conséquences
 
-Le core ne dépend pas de Spring.
+Chaque module possède une responsabilité unique et clairement identifiée.
 
 ---
 
@@ -68,13 +79,13 @@ La persistance repose sur PostgreSQL.
 PostgreSQL fournit :
 
 - une excellente stabilité ;
-- un support avancé des types ;
 - une gestion native des UUID ;
-- un excellent support avec Spring Boot.
+- un excellent support Spring ;
+- des performances adaptées aux besoins du projet.
 
 ## Conséquences
 
-Les entités sont stockées dans une base PostgreSQL locale durant le développement.
+Les données de production et de développement sont stockées dans une base PostgreSQL.
 
 ---
 
@@ -89,12 +100,12 @@ Les migrations de base de données sont gérées via Liquibase.
 Nous souhaitons :
 
 - versionner le schéma ;
-- reproduire facilement un environnement ;
-- suivre l'historique des évolutions.
+- reproduire facilement les environnements ;
+- historiser les évolutions de la base.
 
 ## Conséquences
 
-Toute modification de base doit être réalisée via un changelog Liquibase.
+Toute modification du schéma doit être réalisée via un changelog Liquibase.
 
 ---
 
@@ -108,9 +119,9 @@ Les changelogs Liquibase sont écrits en XML.
 
 Le format XML :
 
-- est bien supporté par IntelliJ ;
-- offre une bonne lisibilité ;
-- fournit une validation XSD.
+- est bien supporté par les IDE ;
+- bénéficie d'une validation XSD ;
+- reste lisible et maintenable.
 
 ## Conséquences
 
@@ -118,15 +129,11 @@ Les migrations SQL pures ne sont utilisées qu'en cas de besoin spécifique.
 
 ---
 
-# ADR-006 - Schéma dédié
+# ADR-006 - Schéma PostgreSQL dédié
 
 ## Décision
 
-Les objets applicatifs sont créés dans le schéma :
-
-```text
-auth_server
-```
+Les objets applicatifs sont créés dans un schéma dédié.
 
 ## Motivation
 
@@ -134,7 +141,7 @@ Isoler les objets applicatifs du reste de la base.
 
 ## Conséquences
 
-Toutes les tables métier sont créées dans ce schéma.
+Toutes les tables métier sont regroupées dans le même périmètre fonctionnel.
 
 ---
 
@@ -142,47 +149,45 @@ Toutes les tables métier sont créées dans ce schéma.
 
 ## Décision
 
-Les identifiants métier sont de type UUID.
+Les identifiants métier utilisent le type UUID.
 
 ## Motivation
 
 Les UUID :
 
 - évitent l'exposition d'identifiants séquentiels ;
-- facilitent les futures évolutions distribuées ;
-- sont bien supportés par PostgreSQL.
+- facilitent les évolutions futures ;
+- sont nativement supportés par PostgreSQL.
 
 ## Conséquences
 
-Les entités User et Role utilisent des UUID.
+Les agrégats métier utilisent des UUID comme identifiants.
 
 ---
 
-# ADR-008 - PasswordEncoderPort
+# ADR-008 - Encodage des mots de passe via un port
 
 ## Décision
 
-Le mécanisme d'encodage des mots de passe est abstrait derrière un port :
+L'encodage des mots de passe est abstrait derrière :
 
-```
-PasswordEncoderPort
-```
+- PasswordEncoderPort
 
 ## Motivation
 
-Le métier ne doit pas dépendre directement :
+Le métier ne doit pas dépendre :
 
-- de BCrypt ;
 - de Spring Security ;
-- d'un algorithme particulier.
+- de BCrypt ;
+- d'un algorithme technique particulier.
 
 ## Conséquences
 
-L'infrastructure choisit l'implémentation concrète.
+Le Core reste totalement indépendant de la technologie utilisée.
 
 ---
 
-# ADR-009 - BCrypt
+# ADR-009 - BCrypt comme implémentation actuelle
 
 ## Décision
 
@@ -190,11 +195,11 @@ L'implémentation actuelle du PasswordEncoderPort repose sur BCrypt.
 
 ## Motivation
 
-BCrypt constitue une solution éprouvée et largement utilisée.
+BCrypt représente une solution robuste et largement éprouvée.
 
 ## Conséquences
 
-Le domaine n'est pas couplé à BCrypt.
+Il est possible de remplacer BCrypt sans impacter le métier.
 
 ---
 
@@ -202,19 +207,15 @@ Le domaine n'est pas couplé à BCrypt.
 
 ## Décision
 
-Le domaine manipule un attribut :
-
-```
-passwordHash
-```
+Le domaine ne manipule jamais un mot de passe persistant en clair.
 
 ## Motivation
 
-Un mot de passe ne doit jamais être stocké en clair.
+Respecter les bonnes pratiques de sécurité.
 
 ## Conséquences
 
-Le hash est calculé avant la création du User.
+Seul le hash du mot de passe est stocké.
 
 ---
 
@@ -222,10 +223,10 @@ Le hash est calculé avant la création du User.
 
 ## Décision
 
-Les usernames sont normalisés :
+Les usernames sont :
 
-- trim ;
-- lowercase.
+- trimés ;
+- normalisés en minuscules.
 
 ## Motivation
 
@@ -243,55 +244,48 @@ représentent le même utilisateur.
 
 ## Conséquences
 
-Les recherches sont systématiquement réalisées sur le username normalisé.
+Les recherches sont réalisées sur la forme normalisée.
 
 ---
 
-# ADR-012 - Centralisation des règles utilisateur
+# ADR-012 - Centralisation des règles métier
 
 ## Décision
 
-Les règles de validation utilisateur sont centralisées dans :
+Les règles de validation sont regroupées dans :
 
-```text
-UserValidationUtils
-```
-
-et
-
-```text
-UserRules
-```
+- *Rules
+- *ValidationUtils
 
 ## Motivation
 
-Éviter la duplication entre les use cases.
+Éviter la duplication des validations.
 
 ## Conséquences
 
-Les validations de username et password sont réutilisées par plusieurs cas d'usage.
+Les règles sont réutilisées par plusieurs use cases.
 
 ---
 
-# ADR-013 - Mappers dédiés
+# ADR-013 - Utilisation systématique de mappers
 
 ## Décision
 
-Les conversions entre domaine et persistance passent par des mappers.
-
-Exemple :
-
-```
-UserMapper
-```
+Les conversions entre domaine et technique passent par des mappers dédiés.
 
 ## Motivation
 
-Éviter d'exposer les entités JPA dans le domaine.
+Éviter d'exposer :
+
+- les entités JPA ;
+- les DTO HTTP ;
+- les objets Spring Security
+
+au domaine métier.
 
 ## Conséquences
 
-Le domaine reste indépendant de la persistance.
+Chaque couche reste indépendante.
 
 ---
 
@@ -299,90 +293,121 @@ Le domaine reste indépendant de la persistance.
 
 ## Décision
 
-Les use cases et adapters sont assemblés dans des classes de configuration Spring.
+Les use cases et adaptateurs sont déclarés dans des classes de configuration Spring.
 
 ## Motivation
 
-Conserver des classes métier indépendantes du framework.
+Conserver des use cases indépendants du framework.
 
 ## Conséquences
 
 Les use cases ne sont pas annotés :
 
-```
+```java
 @Component
 @Service
+@Repository
 ```
 
 ---
 
-# ADR-015 - Gestion du temps via Clock
+# ADR-015 - Introduction d'une couche Application
 
 ## Décision
 
-L'application utilise :
+Les services applicatifs sont regroupés dans :
 
-```
-Clock
-```
-
-injecté par Spring.
+- auth-server-application
 
 ## Motivation
 
-Améliorer :
+Séparer :
 
-- la testabilité ;
-- la reproductibilité ;
-- la maîtrise de la notion de temps.
+- le métier ;
+- les transactions ;
+- l'orchestration applicative.
 
 ## Conséquences
 
-Les use cases utilisent :
-
-```
-LocalDateTime.now(clock)
-```
-
-et non :
-
-```
-LocalDateTime.now()
-```
+Les transactions sont gérées dans la couche Application et non dans le Core.
 
 ---
 
-# ADR-016 - UTC comme référence technique
+# ADR-016 - Séparation Persistence / Security
 
 ## Décision
 
-Le Clock fourni par Spring utilise :
+Les responsabilités techniques sont séparées dans deux modules :
 
-```
-Clock.systemUTC()
-```
+- auth-server-persistence
+- auth-server-security
 
 ## Motivation
 
-Éviter les comportements dépendants de la timezone de la machine.
+Isoler :
+
+- l'accès aux données ;
+- les problématiques de sécurité.
 
 ## Conséquences
 
-Les dates techniques sont produites en UTC.
-
-Les conversions de timezone éventuelles seront réalisées aux frontières du système.
+Chaque module possède une responsabilité technique unique.
 
 ---
 
-# ADR-017 - Mockito pour les tests unitaires
+# ADR-017 - Découplage Security / Persistence
 
 ## Décision
 
-Mockito est utilisé pour tester les use cases.
+Le module auth-server-security ne dépend pas du module auth-server-persistence.
 
 ## Motivation
 
-Isoler la logique métier.
+Préserver l'architecture hexagonale.
+
+La sécurité doit dépendre des ports métier et non de la technologie de persistance.
+
+## Conséquences
+
+Les composants OAuth2 utilisent :
+
+- OAuth2ClientRepositoryPort
+- OAuth2ScopeRepositoryPort
+
+au lieu de dépendre directement de JPA.
+
+---
+
+# ADR-018 - Composition Root centralisée
+
+## Décision
+
+Le module auth-server-boot joue le rôle de Composition Root.
+
+## Motivation
+
+Centraliser l'assemblage de l'application.
+
+## Conséquences
+
+Le module Boot est le seul module autorisé à connaître simultanément :
+
+- web
+- application
+- persistence
+- security
+
+---
+
+# ADR-019 - Mockito pour les tests unitaires
+
+## Décision
+
+Mockito est utilisé pour tester les use cases et services.
+
+## Motivation
+
+Isoler la logique métier des dépendances techniques.
 
 ## Conséquences
 
@@ -390,43 +415,44 @@ Les ports sont mockés dans les tests unitaires.
 
 ---
 
-# ADR-018 - Stratégie de tests
+# ADR-020 - Stratégie de tests
 
 ## Décision
 
-Les tests sont organisés en plusieurs niveaux :
+Les tests sont organisés selon plusieurs niveaux :
 
-1. validation des règles métier ;
-2. tests d'orchestration ;
-3. tests comportementaux lorsque nécessaire.
+- validation métier ;
+- tests de use cases ;
+- tests de services ;
+- tests d'intégration lorsque nécessaire.
 
 ## Motivation
 
-Limiter la duplication tout en conservant une bonne couverture.
+Conserver une bonne couverture tout en gardant des tests lisibles.
 
 ## Conséquences
 
-Les sous-comportements peuvent être testés indépendamment des use cases complets.
+Chaque couche dispose de ses propres tests.
 
 ---
 
-# ADR-019 - Pas de module de test partagé pour le moment
+# ADR-021 - Pas de module de test partagé
 
 ## Décision
 
-Les constantes et utilitaires de test restent dans chaque module.
+Les utilitaires de test restent dans les modules concernés.
 
 ## Motivation
 
-La taille actuelle du projet ne justifie pas l'introduction d'un module supplémentaire.
+Éviter l'introduction prématurée d'un module supplémentaire.
 
 ## Conséquences
 
-Chaque module possède ses propres classes de test.
+Chaque module reste autonome sur ses besoins de test.
 
 ---
 
-# ADR-020 - Conformité Sonar pragmatique
+# ADR-022 - Conformité Sonar pragmatique
 
 ## Décision
 
@@ -434,14 +460,27 @@ Les recommandations Sonar sont étudiées au cas par cas.
 
 ## Motivation
 
-Un warning Sonar n'est pas forcément synonyme d'erreur.
-
-## Conséquences
-
-Nous privilégions :
+Privilégier :
 
 - la pertinence métier ;
 - la lisibilité ;
 - la maintenabilité.
 
-plutôt qu'une suppression systématique de tous les warnings.
+## Conséquences
+
+Les avertissements peuvent être conservés lorsqu'ils sont justifiés et documentés.
+
+---
+
+# Principes directeurs
+
+Le développement du projet est guidé par les principes suivants :
+
+- le métier ne dépend pas des frameworks ;
+- les ports appartiennent au Core ;
+- les adaptateurs implémentent les détails techniques ;
+- les responsabilités sont clairement séparées ;
+- les dépendances vont toujours vers le métier ;
+- les transactions sont gérées dans la couche Application ;
+- la sécurité reste indépendante de la persistance ;
+- le code doit rester simple, lisible et testable.

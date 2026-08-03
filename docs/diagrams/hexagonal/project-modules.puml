@@ -1,18 +1,27 @@
 @startuml
-title Structure Maven multi-modules
+title Architecture modulaire
 
 skinparam shadowing false
 skinparam roundcorner 10
 
-package "auth-server" {
-    package "auth-core" as core
-    package "auth-infrastructure" as infra
-    package "auth-boot" as boot
-}
+rectangle "auth-server-core" as core
 
-boot ..> core : dépend
-boot ..> infra : dépend
-infra ..> core : dépend
+rectangle "auth-server-application" as application
+rectangle "auth-server-web" as web
+
+rectangle "auth-server-persistence" as persistence
+rectangle "auth-server-security" as security
+
+rectangle "auth-server-boot" as boot
+
+web --> application
+application --> core
+
+persistence --> core
+security --> core
+
+boot --> web
+boot --> persistence
+boot --> security
 
 @enduml
-``

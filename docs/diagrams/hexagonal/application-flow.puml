@@ -6,27 +6,48 @@ skinparam roundcorner 10
 
 actor Client
 
-rectangle "auth-boot" {
+rectangle "auth-server-web" {
+
     component "Controller REST" as Controller
 }
 
-rectangle "auth-core" {
-    component "Use Case" as UseCase
-    interface "Port entrant" as InPort
-    interface "Port sortant" as OutPort
+rectangle "auth-server-application" {
+
+    component "Application Service" as Service
 }
 
-rectangle "auth-infrastructure" {
-    component "Adapter Web" as WebAdapter
-    component "Adapter Persistence" as PersistenceAdapter
+rectangle "auth-server-core" {
+
+    component "Use Case" as UseCase
+
+    interface "Repository Port" as RepositoryPort
+    interface "Security Port" as SecurityPort
+}
+
+rectangle "auth-server-persistence" {
+
+    component "Repository Adapter" as RepositoryAdapter
+
     database "PostgreSQL" as PostgreSQL
 }
 
+rectangle "auth-server-security" {
+
+    component "Security Adapter" as SecurityAdapter
+}
+
 Client --> Controller : HTTP Request
-Controller --> UseCase : appel du cas d'usage
-UseCase --> InPort : utilise
-UseCase --> OutPort : demande d'accès aux données
-OutPort --> PersistenceAdapter : implémentation
-PersistenceAdapter --> PostgreSQL : SQL / JPA
+
+Controller --> Service : appel applicatif
+
+Service --> UseCase : exécute
+
+UseCase --> RepositoryPort : accès données
+UseCase --> SecurityPort : services de sécurité
+
+RepositoryPort --> RepositoryAdapter : implémentation
+SecurityPort --> SecurityAdapter : implémentation
+
+RepositoryAdapter --> PostgreSQL : JPA / SQL
 
 @enduml

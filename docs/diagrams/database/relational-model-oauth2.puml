@@ -1,79 +1,56 @@
 @startuml
-title Modèle relationnel cible - OAuth2
+title Modèle relationnel OAuth2
 
 hide circle
 skinparam shadowing false
 skinparam roundcorner 10
 
-entity "oauth_clients" as oauth_clients {
-    * id : UUID <<PK>>
-    --
-    client_id : VARCHAR(100) <<UQ>>
-    client_secret : VARCHAR(255)
-    enabled : BOOLEAN
-    created_at : TIMESTAMP
-}
+entity "application" as application {
 
-entity "oauth_client_redirect_uris" as oauth_client_redirect_uris {
-    * id : UUID <<PK>>
-    --
-    client_id : UUID <<FK>>
-    redirect_uri : VARCHAR(255)
-}
+    * id_application : UUID <<PK>>
 
-entity "oauth_client_grant_types" as oauth_client_grant_types {
-    * id : UUID <<PK>>
     --
-    client_id : UUID <<FK>>
-    grant_type : VARCHAR(100)
-}
 
-entity "scopes" as scopes {
-    * id : UUID <<PK>>
-    --
-    code : VARCHAR(100) <<UQ>>
+    code : VARCHAR(50) <<UQ>>
     description : VARCHAR(255)
 }
 
-entity "oauth_client_scopes" as oauth_client_scopes {
-    * client_id : UUID <<PK, FK>>
-    * scope_id : UUID <<PK, FK>>
-}
+entity "oauth2_client" as oauth2_client {
 
-entity "authorizations" as authorizations {
-    * id : UUID <<PK>>
+    * id_oauth2_client : UUID <<PK>>
+
     --
-    authorization_code : VARCHAR(255) <<UQ>>
-    user_id : UUID <<FK>>
-    client_id : UUID <<FK>>
-    issued_at : TIMESTAMP
-    expires_at : TIMESTAMP
-    revoked : BOOLEAN
+
+    application_id : UUID <<FK>>
+
+    client_id : VARCHAR(100) <<UQ>>
+    client_secret_hash : VARCHAR(255)
 }
 
-entity "authorization_scopes" as authorization_scopes {
-    * authorization_id : UUID <<PK, FK>>
-    * scope_id : UUID <<PK, FK>>
-}
+entity "oauth2_scope" as oauth2_scope {
 
-entity "refresh_tokens" as refresh_tokens {
-    * id : UUID <<PK>>
+    * id_oauth2_scope : UUID <<PK>>
+
     --
-    token_value : VARCHAR(500) <<UQ>>
-    authorization_id : UUID <<FK>>
-    expires_at : TIMESTAMP
-    revoked : BOOLEAN
+
+    application_id : UUID <<FK>>
+
+    code : VARCHAR(100)
+    description : VARCHAR(255)
 }
 
-oauth_clients ||--o{ oauth_client_redirect_uris
-oauth_clients ||--o{ oauth_client_grant_types
-oauth_clients ||--o{ oauth_client_scopes
-scopes ||--o{ oauth_client_scopes
+entity "oauth2_client_scope" as oauth2_client_scope {
 
-oauth_clients ||--o{ authorizations
-authorizations ||--o{ authorization_scopes
-scopes ||--o{ authorization_scopes
+    * oauth2_client_id : UUID <<PK, FK>>
+    * oauth2_scope_id  : UUID <<PK, FK>>
+}
 
-authorizations ||--o{ refresh_tokens
+application ||--o{ oauth2_client
+
+application ||--o{ oauth2_scope
+
+oauth2_client ||--o{ oauth2_client_scope
+
+oauth2_scope ||--o{ oauth2_client_scope
 
 @enduml

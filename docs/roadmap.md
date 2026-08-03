@@ -2,481 +2,306 @@
 
 ## Objectif
 
-Ce document décrit les grandes étapes de construction du projet `auth-server`.
+Ce document décrit l'état d'avancement du projet et les évolutions envisagées.
 
-L'objectif est de suivre une progression incrémentale permettant :
+L'objectif du projet est de construire un serveur d'autorisation moderne basé sur :
 
-- de construire un socle métier solide ;
-- de conserver une architecture propre ;
-- de livrer des fonctionnalités exploitables à chaque étape ;
-- d'introduire progressivement les mécanismes de sécurité avancés.
-
----
-
-# Vision du projet
-
-Construire un serveur d'authentification moderne reposant sur :
-
-- Spring Boot
+- Java 25
+- Spring Boot 4
+- Spring Security
+- Spring Authorization Server
 - PostgreSQL
 - Liquibase
-- Spring Security
-- OAuth2
-- OpenID Connect
 
-Le projet doit rester :
-
-- modulaire ;
-- testable ;
-- maintenable ;
-- indépendant des détails techniques.
+tout en conservant une architecture hexagonale modulaire.
 
 ---
 
-# Phase 1 - Fondations techniques
+# État actuel
 
-## Objectif
-
-Mettre en place le socle technique du projet.
-
-## État
+## Architecture
 
 ✅ Terminé
 
-## Réalisations
+### Réalisations
 
-### Architecture
+- Architecture hexagonale
+- Architecture multi-modules
+- Découpage métier / sécurité / persistance
+- Composition Root centralisée
+- Séparation Security / Persistence
 
-- architecture hexagonale ;
-- découpage multi-modules Maven ;
-
-Modules :
+Modules actuels :
 
 ```text
-auth-core
-auth-infrastructure
-auth-boot
+auth-server-core
+auth-server-application
+auth-server-web
+auth-server-persistence
+auth-server-security
+auth-server-boot
 ```
 
 ---
 
-### Base de données
-
-- PostgreSQL ;
-- schéma dédié :
-
-```text
-auth_server
-```
-
----
-
-### Migrations
-
-- intégration Liquibase ;
-- changelog principal ;
-- première migration versionnée.
-
----
-
-### Modèle relationnel
-
-Création des tables :
-
-```text
-users
-roles
-users_roles
-```
-
----
-
-# Phase 2 - Gestion des utilisateurs
-
-## Objectif
-
-Construire les premières fonctionnalités métier autour des utilisateurs.
-
-## État
+## Gestion des utilisateurs
 
 ✅ Terminé
 
-## Réalisations
+### Fonctionnalités
 
-### Domaine
-
-Création :
-
-```text
-User
-```
+- Création d'utilisateur
+- Recherche d'utilisateur
+- Authentification utilisateur
+- Encodage des mots de passe
+- Validation métier des données utilisateur
 
 ---
 
-### Validation
+## Gestion des rôles
 
-Création :
+✅ Terminé
 
-```text
-UserRules
-UserValidationUtils
-```
+### Fonctionnalités
 
-Règles implémentées :
-
-- validation du username ;
-- normalisation du username ;
-- validation du mot de passe.
+- Création de rôles
+- Suppression de rôles
+- Attribution de rôles à un utilisateur
+- Consultation des rôles utilisateur
 
 ---
 
-### Persistance
+## Gestion des applications
 
-Création :
+✅ Terminé
 
-```text
-UserEntity
-UserJpaRepository
-UserRepositoryAdapter
-UserMapper
-```
+### Fonctionnalités
+
+- Création d'applications
+- Recherche d'applications
 
 ---
 
-### Cas d'usage
+## Gestion OAuth2
 
-Implémentation :
+✅ Première version terminée
 
-```text
-CreateUserUseCase
-GetUserUseCase
-```
+### Fonctionnalités
 
----
-
-### Sécurité
-
-Création :
-
-```text
-PasswordEncoderPort
-PasswordEncoderAdapter
-```
-
-Implémentation actuelle :
-
-```text
-BCrypt
-```
+- Création de clients OAuth2
+- Recherche de clients OAuth2
+- Création de scopes OAuth2
+- Attribution de scopes à un client
+- Authentification des clients
+- Flux Client Credentials
+- Génération de JWT
 
 ---
 
-### Tests
+# Priorités court terme
 
-Tests unitaires :
+## Bean Validation
 
-- validation métier ;
-- orchestration ;
-- persistance simulée via Mockito.
+### Objectif
 
----
+Ajouter une validation standard des requêtes HTTP.
 
-# Phase 3 - Authentification utilisateur
+### Fonctionnalités
 
-## Objectif
+- @NotBlank
+- @Size
+- @Valid
+- Gestion centralisée des erreurs de validation
 
-Permettre l'authentification d'un utilisateur à partir de son username et de son mot de passe.
+### État
 
-## État
-
-🚧 À faire
-
-## Fonctionnalités prévues
-
-### PasswordEncoderPort
-
-Ajout :
-
-```java
-boolean matches(
-        String rawPassword,
-        String encodedPassword
-);
-```
+📋 Prévu
 
 ---
 
-### AuthenticateUserUseCase
+## Tests d'intégration
 
-Création :
+### Objectif
 
-```text
-AuthenticateUserUseCase
-```
+Compléter les tests unitaires existants par des tests d'intégration.
 
-Responsabilités :
+### Fonctionnalités
 
-- validation des entrées ;
-- récupération de l'utilisateur ;
-- vérification du mot de passe ;
-- vérification de l'état du compte ;
-- retour de l'utilisateur authentifié.
+- Tests API REST
+- Tests Spring Security
+- Tests Persistence
+- Tests OAuth2
 
----
+### État
 
-### Tests
-
-Création des tests unitaires associés.
+📋 Prévu
 
 ---
 
-# Phase 4 - Gestion des rôles
+## Documentation
 
-## Objectif
+### Objectif
 
-Permettre l'association de rôles aux utilisateurs.
+Finaliser la documentation du projet.
 
-## État
+### Fonctionnalités
 
-🚧 À faire
+- Mise à jour des diagrammes
+- Documentation d'architecture
+- Documentation OAuth2
+- Documentation OpenAPI
 
-## Fonctionnalités prévues
-
-### Domaine
-
-Création :
-
-```text
-Role
-```
-
----
-
-### Persistance
-
-Création :
-
-```text
-RoleEntity
-RoleJpaRepository
-RoleRepositoryAdapter
-RoleMapper
-```
-
----
-
-### Cas d'usage
-
-Création :
-
-```text
-AssignRoleToUserUseCase
-```
-
-et autres cas d'usage nécessaires.
-
----
-
-# Phase 5 - Intégration Spring Security
-
-## Objectif
-
-Connecter le domaine métier au framework de sécurité.
-
-## État
-
-🚧 À faire
-
-## Fonctionnalités prévues
-
-### Configuration
-
-Création :
-
-```text
-SecurityConfiguration
-```
-
----
-
-### Authentification
-
-Intégration :
-
-```text
-SecurityFilterChain
-UserDetailsService
-```
-
----
-
-### Contrôle d'accès
-
-Support :
-
-- authentification HTTP ;
-- autorisations basées sur les rôles.
-
----
-
-# Phase 6 - OAuth2 Authorization Server
-
-## Objectif
-
-Transformer l'application en serveur OAuth2.
-
-## État
-
-🚧 À faire
-
-## Fonctionnalités prévues
-
-### Clients OAuth2
-
-Gestion :
-
-```text
-OAuthClient
-```
-
----
-
-### Scopes
-
-Gestion :
-
-```text
-Scopes
-```
-
----
-
-### Tokens
-
-Gestion :
-
-```text
-Access Token
-Refresh Token
-```
-
----
-
-### Autorisations
-
-Gestion :
-
-```text
-OAuth Authorizations
-```
-
----
-
-# Phase 7 - OpenID Connect
-
-## Objectif
-
-Exposer une couche d'identité compatible OpenID Connect.
-
-## État
-
-🚧 À faire
-
-## Fonctionnalités prévues
-
-### OIDC
-
-Support :
-
-- ID Token ;
-- UserInfo Endpoint ;
-- Claims standards ;
-- Discovery Endpoint.
-
----
-
-# Phase 8 - Qualité et industrialisation
-
-## Objectif
-
-Préparer une exploitation durable du projet.
-
-## État
+### État
 
 🚧 En cours
 
-## Fonctionnalités prévues
+---
 
-### Couverture
+# Priorités moyen terme
 
-Amélioration :
+## Refresh Tokens
 
-- couverture des tests ;
-- tests d'intégration ;
-- tests de persistance.
+### Objectif
+
+Supporter le renouvellement des jetons.
+
+### Fonctionnalités
+
+- Refresh Token
+- Rotation des refresh tokens
+- Gestion des expirations
+
+### État
+
+📋 Prévu
 
 ---
 
-### Analyse statique
+## Révocation de tokens
 
-Renforcement :
+### Objectif
 
-- Sonar ;
-- dette technique ;
-- qualité du code.
+Permettre l'invalidation de jetons avant leur expiration.
 
----
+### Fonctionnalités
 
-### CI/CD
+- Endpoint de révocation
+- Gestion du cycle de vie des tokens
 
-Mise en place :
+### État
 
-- GitHub Actions ;
-- build automatique ;
-- exécution des tests ;
-- analyse Sonar.
+📋 Prévu
 
 ---
 
-### Conteneurisation
+## Introspection
 
-Ajout :
+### Objectif
+
+Permettre à une ressource protégée de vérifier un token.
+
+### Fonctionnalités
+
+- Endpoint d'introspection OAuth2
+
+### État
+
+📋 Prévu
+
+---
+
+# Priorités long terme
+
+## OpenID Connect
+
+### Objectif
+
+Transformer le serveur OAuth2 en fournisseur d'identité compatible OIDC.
+
+### Fonctionnalités
+
+- ID Token
+- UserInfo Endpoint
+- Discovery Endpoint
+- Claims standards
+- Support OIDC complet
+
+### État
+
+📋 Prévu
+
+---
+
+## Administration avancée
+
+### Objectif
+
+Faciliter l'exploitation de la plateforme.
+
+### Fonctionnalités
+
+- Rotation des secrets OAuth2
+- Audit
+- Historisation des opérations
+- Gestion avancée des clients
+
+### État
+
+📋 Prévu
+
+---
+
+## Industrialisation
+
+### Objectif
+
+Préparer une utilisation dans un environnement plus proche de la production.
+
+### Fonctionnalités
+
+- Docker
+- Docker Compose
+- GitHub Actions
+- Pipeline CI/CD
+- Monitoring
+- Observabilité
+
+### État
+
+📋 Prévu
+
+---
+
+# Vision cible
 
 ```text
-Docker
-Docker Compose
+✅ Architecture hexagonale
+✅ Gestion utilisateurs
+✅ Gestion rôles
+✅ Spring Security
+✅ OAuth2 Authorization Server
+✅ Client Credentials
+
+⬜ Refresh Tokens
+⬜ Token Revocation
+⬜ Token Introspection
+⬜ OpenID Connect
+⬜ Audit
+⬜ Industrialisation avancée
 ```
 
 ---
 
-# Priorités actuelles
+# Prochaine étape recommandée
 
-Les prochaines tâches recommandées sont :
-
-1. AuthenticateUserUseCase
-2. Extension de PasswordEncoderPort avec matches(...)
-3. Tests d'authentification
-4. Domaine Role
-5. Intégration Spring Security
-
----
-
-# Long terme
-
-L'objectif final reste :
+L'étape qui apporte aujourd'hui le plus de valeur est :
 
 ```text
-Utilisateur
-    ↓
-Authentification
-    ↓
-Rôles
-    ↓
-Spring Security
-    ↓
-OAuth2
-    ↓
-OpenID Connect
+Bean Validation
+        ↓
+Tests d'intégration
+        ↓
+Refresh Tokens
 ```
 
-Chaque étape doit fournir une fonctionnalité complète, testée et documentée avant de passer à la suivante.
+Ces travaux amélioreront la robustesse du projet avant d'aborder OpenID Connect et les fonctionnalités OAuth2 avancées.

@@ -1,5 +1,5 @@
 @startuml
-title Modèle relationnel V1 - Users / Roles
+title Modèle relationnel - Utilisateurs et rôles
 
 hide circle
 skinparam shadowing false
