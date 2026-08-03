@@ -4,6 +4,7 @@ import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.usecase.role.CreateRoleUseCase;
 import io.github.tbondetti.authserver.core.usecase.role.DeleteRoleUseCase;
 import io.github.tbondetti.authserver.core.usecase.role.GetRoleUseCase;
+import io.github.tbondetti.authserver.web.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

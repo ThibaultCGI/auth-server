@@ -5,6 +5,7 @@ import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.CreateOAuth2ClientUseCase;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.GetOAuth2ClientUseCase;
 import io.github.tbondetti.authserver.core.usecase.oauth2scope.AssignOAuth2ScopesToOAuth2ClientUseCase;
+import io.github.tbondetti.authserver.web.service.OAuth2ClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

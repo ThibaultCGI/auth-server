@@ -7,6 +7,7 @@ import io.github.tbondetti.authserver.core.usecase.user.CreateUserUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetAllUserRolesUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserRolesForApplicationUseCase;
 import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
+import io.github.tbondetti.authserver.web.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

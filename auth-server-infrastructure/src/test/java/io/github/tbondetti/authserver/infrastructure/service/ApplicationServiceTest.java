@@ -3,6 +3,7 @@ package io.github.tbondetti.authserver.infrastructure.service;
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
+import io.github.tbondetti.authserver.web.service.ApplicationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

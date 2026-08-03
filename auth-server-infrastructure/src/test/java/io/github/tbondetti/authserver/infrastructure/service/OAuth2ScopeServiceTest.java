@@ -3,6 +3,7 @@ package io.github.tbondetti.authserver.infrastructure.service;
 import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
 import io.github.tbondetti.authserver.core.usecase.oauth2scope.CreateOAuth2ScopeUseCase;
 import io.github.tbondetti.authserver.core.usecase.oauth2scope.GetOAuth2ScopeUseCase;
+import io.github.tbondetti.authserver.web.service.OAuth2ScopeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
