@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.core.usecase;
+package io.github.tbondetti.authserver.core.usecase.authentication;
 
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
@@ -14,8 +14,8 @@ import static io.github.tbondetti.authserver.core.constants.TestConstants.GIVEN_
 import static io.github.tbondetti.authserver.core.constants.TestConstants.GIVEN_USER_NAME;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ACCOUNT_DISABLED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.INVALID_CREDENTIALS;
-import static io.github.tbondetti.authserver.core.usecase.AuthenticateUserUseCase.ERROR_ACCOUNT_DISABLED;
-import static io.github.tbondetti.authserver.core.usecase.AuthenticateUserUseCase.ERROR_INVALID_CREDENTIALS;
+import static io.github.tbondetti.authserver.core.usecase.authentication.AuthenticateUserUseCase.ERROR_ACCOUNT_DISABLED;
+import static io.github.tbondetti.authserver.core.usecase.authentication.AuthenticateUserUseCase.ERROR_INVALID_CREDENTIALS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
