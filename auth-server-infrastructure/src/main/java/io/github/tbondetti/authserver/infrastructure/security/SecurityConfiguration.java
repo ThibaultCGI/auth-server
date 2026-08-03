@@ -1,0 +1,55 @@
+package io.github.tbondetti.authserver.infrastructure.security;
+
+
+import io.github.tbondetti.authserver.core.port.OAuth2ClientCredentialsGeneratorPort;
+import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
+import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
+import io.github.tbondetti.authserver.core.usecase.user.GetAllUserRolesUseCase;
+import io.github.tbondetti.authserver.core.usecase.user.GetUserUseCase;
+import io.github.tbondetti.authserver.infrastructure.persistence.repository.OAuth2ScopeJpaRepository;
+import io.github.tbondetti.authserver.infrastructure.security.encoder.PasswordEncoderAdapter;
+import io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter;
+import io.github.tbondetti.authserver.infrastructure.security.oauth2.OAuth2RegisteredClientRepository;
+import io.github.tbondetti.authserver.infrastructure.security.userdetails.AuthServerUserDetailsService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+
+@Configuration
+public class SecurityConfiguration {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PasswordEncoderPort passwordEncoderPort(final PasswordEncoder passwordEncoder) {
+        return new PasswordEncoderAdapter(passwordEncoder);
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(
+            final GetUserUseCase getUserUseCase,
+            final GetAllUserRolesUseCase getAllUserRolesUseCase
+    ) {
+        return new AuthServerUserDetailsService(getUserUseCase, getAllUserRolesUseCase);
+    }
+
+    @Bean
+    OAuth2ClientCredentialsGeneratorPort oauth2ClientCredentialsGeneratorPort() {
+        return new OAuth2ClientCredentialsGeneratorAdapter();
+    }
+
+    @Bean
+    RegisteredClientRepository registeredClientRepository(
+            final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort,
+            final OAuth2ScopeJpaRepository oauth2ScopeJpaRepository
+    ) {
+        return new OAuth2RegisteredClientRepository(oauth2ClientRepositoryPort, oauth2ScopeJpaRepository);
+    }
+
+}

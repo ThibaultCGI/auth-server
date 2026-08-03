@@ -20,6 +20,11 @@
 
         <dependency>
             <groupId>io.github.tbondetti</groupId>
+            <artifactId>auth-server-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.tbondetti</groupId>
             <artifactId>auth-server-infrastructure</artifactId>
         </dependency>
     </dependencies>

@@ -17,8 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_INVALID_CREDENTIALS;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.USER_NOT_FOUND;
-import static io.github.tbondetti.authserver.infrastructure.security.SecurityMessages.ERROR_INVALID_CREDENTIALS;
 import static io.github.tbondetti.authserver.infrastructure.security.userdetails.RoleGrantedAuthorityMapper.toGrantedAuthorities;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
