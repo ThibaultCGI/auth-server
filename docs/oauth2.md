@@ -145,19 +145,19 @@ Les migrations sont gérées par Liquibase.
 
 Spring Authorization Server utilise l'interface :
 
-```java
+```
 RegisteredClientRepository
 ```
 
 Le projet fournit l'implémentation :
 
-```java
+```
 OAuth2RegisteredClientRepository
 ```
 
 Cette implémentation utilise les ports métier :
 
-```java
+```
 OAuth2ClientRepositoryPort
 OAuth2ScopeRepositoryPort
 ```
@@ -189,13 +189,13 @@ Adapters de persistance
 
 La génération des identifiants techniques est abstraite derrière :
 
-```java
+```
 OAuth2ClientCredentialsGeneratorPort
 ```
 
 L'implémentation actuelle est :
 
-```java
+```
 OAuth2ClientCredentialsGeneratorAdapter
 ```
 
@@ -246,7 +246,7 @@ pour la génération des tokens.
 
 Un composant dédié :
 
-```java
+```
 OAuth2JwtCustomizer
 ```
 
