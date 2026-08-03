@@ -1,5 +1,6 @@
 package io.github.tbondetti.authserver.web.api.controller;
 
+import io.github.tbondetti.authserver.application.service.OAuth2ClientService;
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
 import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
 import io.github.tbondetti.authserver.web.api.dto.AssignOAuth2ScopeRequest;
@@ -7,7 +8,6 @@ import io.github.tbondetti.authserver.web.api.dto.CreateOAuth2ClientRequest;
 import io.github.tbondetti.authserver.web.api.mapper.OAuth2ClientWebMapper;
 import io.github.tbondetti.authserver.web.api.response.CreateOAuth2ClientResponse;
 import io.github.tbondetti.authserver.web.api.response.OAuth2ClientResponse;
-import io.github.tbondetti.authserver.application.service.OAuth2ClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

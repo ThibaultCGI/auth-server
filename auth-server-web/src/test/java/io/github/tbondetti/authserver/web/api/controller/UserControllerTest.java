@@ -1,5 +1,6 @@
 package io.github.tbondetti.authserver.web.api.controller;
 
+import io.github.tbondetti.authserver.application.service.UserService;
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.domain.User;
 import io.github.tbondetti.authserver.web.api.dto.AssignRoleRequest;
@@ -8,7 +9,6 @@ import io.github.tbondetti.authserver.web.api.mapper.RoleWebMapper;
 import io.github.tbondetti.authserver.web.api.mapper.UserWebMapper;
 import io.github.tbondetti.authserver.web.api.response.RoleResponse;
 import io.github.tbondetti.authserver.web.api.response.UserResponse;
-import io.github.tbondetti.authserver.application.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

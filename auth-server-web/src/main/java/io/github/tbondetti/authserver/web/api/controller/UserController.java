@@ -1,11 +1,11 @@
 package io.github.tbondetti.authserver.web.api.controller;
 
+import io.github.tbondetti.authserver.application.service.UserService;
 import io.github.tbondetti.authserver.web.api.dto.AssignRoleRequest;
 import io.github.tbondetti.authserver.web.api.dto.CreateUserRequest;
 import io.github.tbondetti.authserver.web.api.mapper.RoleWebMapper;
 import io.github.tbondetti.authserver.web.api.response.RoleResponse;
 import io.github.tbondetti.authserver.web.api.response.UserResponse;
-import io.github.tbondetti.authserver.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,10 +1,10 @@
 package io.github.tbondetti.authserver.web.api.controller;
 
+import io.github.tbondetti.authserver.application.service.ApplicationService;
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.web.api.dto.CreateApplicationRequest;
 import io.github.tbondetti.authserver.web.api.mapper.ApplicationWebMapper;
 import io.github.tbondetti.authserver.web.api.response.ApplicationResponse;
-import io.github.tbondetti.authserver.application.service.ApplicationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

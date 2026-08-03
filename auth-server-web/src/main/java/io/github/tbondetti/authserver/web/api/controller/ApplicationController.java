@@ -1,8 +1,8 @@
 package io.github.tbondetti.authserver.web.api.controller;
 
+import io.github.tbondetti.authserver.application.service.ApplicationService;
 import io.github.tbondetti.authserver.web.api.dto.CreateApplicationRequest;
 import io.github.tbondetti.authserver.web.api.response.ApplicationResponse;
-import io.github.tbondetti.authserver.application.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

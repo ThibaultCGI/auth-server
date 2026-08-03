@@ -1,10 +1,10 @@
 package io.github.tbondetti.authserver.web.api.controller;
 
+import io.github.tbondetti.authserver.application.service.RoleService;
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.web.api.dto.CreateRoleRequest;
 import io.github.tbondetti.authserver.web.api.mapper.RoleWebMapper;
 import io.github.tbondetti.authserver.web.api.response.RoleResponse;
-import io.github.tbondetti.authserver.application.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

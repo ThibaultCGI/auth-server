@@ -1,8 +1,8 @@
 package io.github.tbondetti.authserver.web.api.controller;
 
+import io.github.tbondetti.authserver.application.service.RoleService;
 import io.github.tbondetti.authserver.web.api.dto.CreateRoleRequest;
 import io.github.tbondetti.authserver.web.api.response.RoleResponse;
-import io.github.tbondetti.authserver.application.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
