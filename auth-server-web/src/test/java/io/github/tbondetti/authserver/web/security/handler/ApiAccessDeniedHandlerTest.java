@@ -12,7 +12,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ACCESS_DENIED;
-import static io.github.tbondetti.authserver.web.security.handler.ApiAccessDeniedHandler.ACCES_REFUSE;
+import static io.github.tbondetti.authserver.web.security.handler.ApiAccessDeniedHandler.ACCESS_DENIED_MESSAGE;
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,7 +43,7 @@ class ApiAccessDeniedHandlerTest {
         );
 
         assertEquals(ACCESS_DENIED, actualBody.code());
-        assertEquals(ACCES_REFUSE, actualBody.description());
+        assertEquals(ACCESS_DENIED_MESSAGE, actualBody.description());
     }
 
     @Test
