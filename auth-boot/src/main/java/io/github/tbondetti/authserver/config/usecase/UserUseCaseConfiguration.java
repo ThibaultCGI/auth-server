@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.config.usecase;
+package io.github.tbondetti.authserver.config.usecase;
 
 import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.port.RoleRepositoryPort;

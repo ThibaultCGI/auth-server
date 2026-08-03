@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.config.usecase;
+package io.github.tbondetti.authserver.config.usecase;
 
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
 import io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase;
@@ -15,8 +15,7 @@ public class ApplicationUseCaseConfiguration {
     }
 
     @Bean
-    GetApplicationUseCase getApplicationUseCase(final ApplicationRepositoryPort applicationRepositoryPort
-    ) {
+    GetApplicationUseCase getApplicationUseCase(final ApplicationRepositoryPort applicationRepositoryPort) {
         return new GetApplicationUseCase(applicationRepositoryPort);
     }
 

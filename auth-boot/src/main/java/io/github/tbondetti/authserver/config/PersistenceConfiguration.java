@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.config;
+package io.github.tbondetti.authserver.config;
 
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
 import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;

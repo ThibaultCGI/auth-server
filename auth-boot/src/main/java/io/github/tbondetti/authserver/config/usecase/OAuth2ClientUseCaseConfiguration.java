@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.infrastructure.config.usecase;
+package io.github.tbondetti.authserver.config.usecase;
 
 import io.github.tbondetti.authserver.core.port.OAuth2ClientCredentialsGeneratorPort;
 import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
