@@ -56,7 +56,7 @@ public class OAuth2AuthorizationServerConfiguration {
         final RSAKey rsaKey = generateRsaKey();
         final JWKSet jwkSet = new JWKSet(rsaKey);
 
-        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+        return (jwkSelector, _) -> jwkSelector.select(jwkSet);
     }
 
     private static RSAKey generateRsaKey() {
