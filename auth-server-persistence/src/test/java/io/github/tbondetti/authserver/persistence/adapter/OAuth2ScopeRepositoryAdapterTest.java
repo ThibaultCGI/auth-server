@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -105,6 +106,27 @@ class OAuth2ScopeRepositoryAdapterTest {
             utilities.when(() -> toDomain(found)).thenReturn(expected); // déjà testé
 
             assertSame(expected, this.subject.save(scope));
+        }
+    }
+
+    @Test
+    void findAllByClientIdOk() {
+        final String clientId = "clientId";
+
+        final OAuth2ScopeEntity scope1 = new OAuth2ScopeEntity();
+        final OAuth2ScopeEntity scope2 = new OAuth2ScopeEntity();
+        final List<OAuth2ScopeEntity> scopes = List.of(scope1, scope2);
+        when(this.oauth2ScopeJpaRepository.findAllByClientId(clientId)).thenReturn(scopes);
+
+        try (final MockedStatic<OAuth2ScopeMapper> utilities = mockStatic(OAuth2ScopeMapper.class)) {
+            final OAuth2Scope scopeMapped1 = OAuth2Scope.builder().id(UUID.randomUUID()).build();
+            utilities.when(() -> toDomain(scope1)).thenReturn(scopeMapped1);
+
+            final OAuth2Scope scopeMapped2 = OAuth2Scope.builder().id(UUID.randomUUID()).build();
+            utilities.when(() -> toDomain(scope2)).thenReturn(scopeMapped2);
+
+            final List<OAuth2Scope> expected = List.of(scopeMapped1, scopeMapped2);
+            assertEquals(expected, this.subject.findAllByClientId(clientId));
         }
     }
 }

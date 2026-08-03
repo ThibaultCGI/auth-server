@@ -43,6 +43,10 @@ public class OAuth2ScopeRepositoryAdapter implements OAuth2ScopeRepositoryPort {
 
     @Override
     public List<OAuth2Scope> findAllByClientId(final String clientId) {
-        return this.oauth2ScopeJpaRepository.findAllByClientId(clientId).stream().map(OAuth2ScopeMapper::toDomain).toList();
+        return this.oauth2ScopeJpaRepository.findAllByClientId(clientId)
+                .stream()
+                .map(OAuth2ScopeMapper::toDomain)
+                .toList()
+                ;
     }
 }
