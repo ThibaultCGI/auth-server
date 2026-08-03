@@ -28,10 +28,10 @@
 
 	<modules>
 		<module>auth-server-core</module>
+		<module>auth-server-persistence</module>
 		<module>auth-server-application</module>
 		<module>auth-server-web</module>
 		<module>auth-server-security</module>
-		<module>auth-server-persistence</module>
 		<module>auth-server-boot</module>
 		<module>auth-server-coverage-report</module>
 	</modules>
@@ -67,6 +67,12 @@
 
 			<dependency>
 				<groupId>io.github.tbondetti</groupId>
+				<artifactId>auth-server-persistence</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.github.tbondetti</groupId>
 				<artifactId>auth-server-application</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -80,12 +86,6 @@
 			<dependency>
 				<groupId>io.github.tbondetti</groupId>
 				<artifactId>auth-server-security</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.github.tbondetti</groupId>
-				<artifactId>auth-server-persistence</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static io.github.tbondetti.authserver.persistence.adapter.UserRepositoryAdapter.newUserRoleEntity;
+import static io.github.tbondetti.authserver.persistence.adapter.UserRepositoryAdapter.buildUserRoleEntity;
 import static io.github.tbondetti.authserver.persistence.mapper.UserMapper.toDomain;
 import static io.github.tbondetti.authserver.persistence.mapper.UserMapper.toEntity;
 import static java.util.UUID.randomUUID;
@@ -145,7 +145,7 @@ class UserRepositoryAdapterTest {
         final UserEntity userEntity = new UserEntity();
         final RoleEntity roleEntity = new RoleEntity();
 
-        final UserRoleEntity actual = newUserRoleEntity(userRoleId, userEntity, roleEntity);
+        final UserRoleEntity actual = buildUserRoleEntity(userRoleId, userEntity, roleEntity);
 
         assertSame(userRoleId, actual.getId());
         assertSame(userEntity, actual.getUser());
@@ -181,7 +181,7 @@ class UserRepositoryAdapterTest {
         when(this.roleJpaRepository.getByApplicationCodeAndCode(givenApplicationCode, givenRoleCode)).thenReturn(foundRole);
 
         try (final MockedStatic<UserRepositoryAdapter> utilities = mockStatic(UserRepositoryAdapter.class)) {
-            utilities.when(() -> newUserRoleEntity(userRoleId, foundUser, foundRole)).thenReturn(userRoleToSave); // déjà testé
+            utilities.when(() -> buildUserRoleEntity(userRoleId, foundUser, foundRole)).thenReturn(userRoleToSave); // déjà testé
 
             this.subject.addRoleToUser(givenUsername, givenApplicationCode, givenRoleCode);
 
