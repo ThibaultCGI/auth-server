@@ -27,7 +27,7 @@ L’architecture retenue est une architecture hexagonale afin de séparer claire
 Le projet est organisé sous la forme de plusieurs modules Maven :
 
 - `auth-server-core`
-- `auth-server-infrastructure`
+- `auth-server-security`
 - `auth-server-boot`
 
 ### Rôle de `auth-server-core`
@@ -51,9 +51,9 @@ Il ne dépend :
 
 ---
 
-### Rôle de `auth-server-infrastructure`
+### Rôle de `auth-server-security`
 
-Le module `auth-server-infrastructure` contient tous les détails techniques.
+Le module `auth-server-security` contient tous les détails techniques.
 
 Il dépend :
 
@@ -109,7 +109,7 @@ Exemples :
 - `UserRepositoryAdapter`
 - `PasswordEncoderAdapter`
 
-Les adapters sont situés dans `auth-server-infrastructure`.
+Les adapters sont situés dans `auth-server-security`.
 
 ---
 

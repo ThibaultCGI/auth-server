@@ -2,6 +2,7 @@ package io.github.tbondetti.authserver.core.port;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OAuth2ScopeRepositoryPort {
@@ -12,4 +13,6 @@ public interface OAuth2ScopeRepositoryPort {
             final String applicationCode,
             final String code
     );
+
+    List<OAuth2Scope> findAllByClientId(final String clientId);
 }

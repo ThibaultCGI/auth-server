@@ -31,7 +31,12 @@
 
         <dependency>
             <groupId>io.github.tbondetti</groupId>
-            <artifactId>auth-server-infrastructure</artifactId>
+            <artifactId>auth-server-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.tbondetti</groupId>
+            <artifactId>auth-server-persistence</artifactId>
         </dependency>
 
         <dependency>
