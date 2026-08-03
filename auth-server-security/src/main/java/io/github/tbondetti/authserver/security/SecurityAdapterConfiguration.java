@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 
 @Configuration
-public class SecurityConfiguration {
+public class SecurityAdapterConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {

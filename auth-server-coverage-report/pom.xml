@@ -21,12 +21,7 @@
 
         <dependency>
             <groupId>io.github.tbondetti</groupId>
-            <artifactId>auth-server-application</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.tbondetti</groupId>
-            <artifactId>auth-server-web</artifactId>
+            <artifactId>auth-server-persistence</artifactId>
         </dependency>
 
         <dependency>
@@ -36,7 +31,12 @@
 
         <dependency>
             <groupId>io.github.tbondetti</groupId>
-            <artifactId>auth-server-persistence</artifactId>
+            <artifactId>auth-server-application</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.tbondetti</groupId>
+            <artifactId>auth-server-web</artifactId>
         </dependency>
 
         <dependency>
