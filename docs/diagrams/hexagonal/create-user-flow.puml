@@ -1,0 +1,37 @@
+@startuml
+title Exemple de flux - Création d'un utilisateur
+
+skinparam shadowing false
+skinparam roundcorner 10
+
+actor Client
+
+participant "UserController" as Controller
+participant "UserService" as Service
+participant "CreateUserUseCase" as UseCase
+
+participant "PasswordEncoderPort" as EncoderPort
+participant "PasswordEncoderAdapter" as EncoderAdapter
+
+participant "UserRepositoryPort" as UserPort
+participant "UserRepositoryAdapter" as UserAdapter
+
+database "PostgreSQL" as DB
+
+Client -> Controller : POST /api/users
+
+Controller -> Service : createUser()
+
+Service -> UseCase : execute()
+
+UseCase -> EncoderPort : encode(password)
+EncoderPort -> EncoderAdapter
+
+UseCase -> UserPort : save(user)
+UserPort -> UserAdapter
+UserAdapter -> DB
+
+Controller <-- Service
+Client <-- Controller
+
+@enduml

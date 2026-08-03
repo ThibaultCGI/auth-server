@@ -10,7 +10,12 @@ class User {
     +String username
     +String passwordHash
     +boolean enabled
-    +Instant createdAt
+}
+
+class Application {
+    +UUID id
+    +String code
+    +String description
 }
 
 class Role {
@@ -20,5 +25,7 @@ class Role {
 }
 
 User "*" -- "*" Role : possède >
+
+Application "1" -- "0..*" Role : définit >
 
 @enduml

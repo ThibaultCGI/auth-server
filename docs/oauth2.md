@@ -2,396 +2,358 @@
 
 ## Objectif
 
-Ce document décrit la vision OAuth2 du projet ainsi que les étapes prévues pour atteindre cet objectif.
+Ce document décrit l'implémentation OAuth2 actuellement présente dans le projet ainsi que les évolutions envisagées.
 
-L'objectif n'est pas d'introduire OAuth2 immédiatement, mais de construire progressivement un socle métier solide avant d'ajouter les fonctionnalités de sécurité avancées.
+Le projet a pour objectif de fournir un serveur d'autorisation moderne basé sur :
 
----
-
-# Vision
-
-À terme, le projet doit fournir un serveur d'authentification capable de :
-
-- authentifier des utilisateurs ;
-- gérer les rôles et permissions ;
-- délivrer des tokens OAuth2 ;
-- gérer des refresh tokens ;
-- gérer des clients OAuth2 ;
-- supporter OpenID Connect.
-
-L'objectif est de disposer d'un véritable Authorization Server.
+- OAuth 2.1
+- OpenID Connect (à terme)
+- Spring Authorization Server
+- Spring Security
 
 ---
 
-# État actuel
+# Vue d'ensemble
 
-Les fondations du système sont déjà présentes.
+Le projet agit comme un Authorization Server.
 
-## Utilisateurs
+Il est responsable :
 
-Implémenté :
-
-- User
-- UserRepositoryPort
-- UserEntity
-- UserMapper
-- UserJpaRepository
-- UserRepositoryAdapter
+- de l'authentification des utilisateurs ;
+- de l'authentification des clients OAuth2 ;
+- de la validation des scopes ;
+- de l'émission des tokens ;
+- de la gestion des autorisations.
 
 ---
 
-## Validation utilisateur
+# Architecture
 
-Implémenté :
+## Modules impliqués
 
-- UserRules
-- UserValidationUtils
+```text
+auth-server-security
+        ↓
+auth-server-core
+
+auth-server-persistence
+        ↓
+auth-server-core
+```
+
+Les composants OAuth2 sont regroupés dans :
+
+```text
+auth-server-security
+└── oauth2
+```
+
+La persistance des données OAuth2 est réalisée dans :
+
+```text
+auth-server-persistence
+```
+
+---
+
+# Flux Client Credentials
+
+Le projet supporte actuellement le flux :
+
+```text
+Client Credentials
+```
+
+## Principe
+
+```text
+OAuth2 Client
+        │
+        ▼
+
+POST /oauth2/token
+
+        │
+        ▼
+
+Validation du client
+
+        │
+        ▼
+
+Validation des scopes
+
+        │
+        ▼
+
+Génération du JWT
+
+        │
+        ▼
+
+Retour du token d'accès
+```
+
+---
+
+# Gestion des clients OAuth2
+
+## Domaine
+
+Le domaine métier contient :
+
+```text
+OAuth2Client
+OAuth2Scope
+```
 
 ---
 
 ## Cas d'usage
 
-Implémenté :
+Exemples :
 
-- CreateUserUseCase
-- GetUserUseCase
+```text
+CreateOAuth2ClientUseCase
+GetOAuth2ClientUseCase
 
----
+CreateOAuth2ScopeUseCase
+GetOAuth2ScopeUseCase
 
-## Sécurité
-
-Implémenté :
-
-- PasswordEncoderPort
-- PasswordEncoderAdapter
-- BCryptPasswordEncoder
+AssignOAuth2ScopesToOAuth2ClientUseCase
+```
 
 ---
 
 ## Persistance
 
-Implémenté :
+Les données OAuth2 sont stockées dans PostgreSQL.
 
-- PostgreSQL
-- Liquibase
-- schéma `auth_server`
-
----
-
-# Pourquoi OAuth2 n'est pas encore implémenté ?
-
-OAuth2 repose sur plusieurs briques métier préalables.
-
-Avant de générer un token, le système doit déjà savoir :
-
-1. retrouver un utilisateur ;
-2. vérifier un mot de passe ;
-3. vérifier l'état du compte ;
-4. connaître les rôles de l'utilisateur ;
-5. gérer les autorisations.
-
-Pour cette raison, OAuth2 a été volontairement repoussé après la mise en place du domaine utilisateur.
-
----
-
-# Roadmap de sécurité
-
-## Étape 1 - Authentification utilisateur
-
-Prochaine étape prévue.
-
-### Objectif
-
-Permettre :
+Tables principales :
 
 ```text
-username + password
-        ↓
-authentification
+oauth2_client
+oauth2_scope
+oauth2_client_scope
 ```
 
-### Éléments à implémenter
+Les migrations sont gérées par Liquibase.
 
-- AuthenticateUserUseCase
-- PasswordEncoderPort.matches(...)
-- vérification du compte utilisateur
+---
 
-### Résultat attendu
+# RegisteredClientRepository
 
-Le système doit pouvoir répondre :
+Spring Authorization Server utilise l'interface :
+
+```
+RegisteredClientRepository
+```
+
+Le projet fournit l'implémentation :
+
+```
+OAuth2RegisteredClientRepository
+```
+
+Cette implémentation utilise les ports métier :
+
+```
+OAuth2ClientRepositoryPort
+OAuth2ScopeRepositoryPort
+```
+
+et ne dépend pas directement de JPA.
+
+## Schéma
 
 ```text
-Utilisateur authentifié
+Spring Authorization Server
+            │
+            ▼
+
+OAuth2RegisteredClientRepository
+            │
+            ▼
+
+OAuth2ClientRepositoryPort
+OAuth2ScopeRepositoryPort
+            │
+            ▼
+
+Adapters de persistance
 ```
 
-ou
+---
+
+# Génération des identifiants OAuth2
+
+La génération des identifiants techniques est abstraite derrière :
+
+```
+OAuth2ClientCredentialsGeneratorPort
+```
+
+L'implémentation actuelle est :
+
+```
+OAuth2ClientCredentialsGeneratorAdapter
+```
+
+## Génération du client_id
+
+Format actuel :
 
 ```text
-Identifiants invalides
+XXXXXX-XXXXXX-XXXXXX-XXXXXX
 ```
 
----
+où chaque caractère est aléatoire.
 
-## Étape 2 - Gestion des rôles
+## Génération du client_secret
 
-### Objectif
-
-Associer des rôles aux utilisateurs.
-
-### Éléments à implémenter
-
-- Role
-- RoleRepositoryPort
-- RoleEntity
-- RoleMapper
-- RoleJpaRepository
-- RoleRepositoryAdapter
-
-### Cas d'usage futurs
-
-- assignation d'un rôle
-- récupération des rôles d'un utilisateur
+Le secret est généré aléatoirement puis encodé avant persistance.
 
 ---
 
-## Étape 3 - Spring Security
+# Gestion des scopes
 
-### Objectif
+Les scopes sont définis au niveau métier.
 
-Intégrer le domaine utilisateur avec Spring Security.
-
-### Éléments prévus
-
-- SecurityFilterChain
-- UserDetailsService
-- gestion de l'authentification HTTP
-
-### Résultat attendu
-
-Le système doit pouvoir protéger des ressources HTTP.
-
----
-
-## Étape 4 - OAuth2 Authorization Server
-
-### Objectif
-
-Transformer l'application en serveur OAuth2.
-
-### Dépendance envisagée
-
-```
-spring-security-oauth2-authorization-server
-```
-
-### Fonctionnalités visées
-
-- gestion des clients OAuth2 ;
-- génération de tokens ;
-- gestion des scopes ;
-- gestion des refresh tokens ;
-- révocation de tokens.
-
----
-
-## Étape 5 - OpenID Connect
-
-### Objectif
-
-Ajouter la gestion de l'identité.
-
-### Fonctionnalités visées
-
-- endpoint UserInfo ;
-- ID Token ;
-- claims standard ;
-- authentification OpenID Connect.
-
----
-
-# Architecture cible
-
-## Domaine
-
-Le domaine métier reste indépendant d'OAuth2.
-
-Le core ne doit pas connaître :
-
-- JWT ;
-- OAuth2 ;
-- OpenID Connect ;
-- Spring Security.
-
----
-
-## Infrastructure
-
-L'infrastructure est responsable :
-
-- de Spring Security ;
-- d'OAuth2 ;
-- des tokens ;
-- des clients ;
-- de la gestion technique des autorisations.
-
----
-
-# Domaine utilisateur et OAuth2
-
-Le domaine utilisateur constitue la fondation de l'ensemble du système.
-
-## User
-
-Le domaine utilisateur représente :
+Exemple :
 
 ```text
-Qui est l'utilisateur ?
+trs:produit-api.read
+trs:produit-api.write
 ```
+
+Chaque scope est :
+
+- associé à une application ;
+- stocké en base ;
+- attribué explicitement à des clients OAuth2.
 
 ---
 
-## Role
+# JWT
 
-Le domaine rôle représente :
+Le projet utilise :
 
 ```text
-Que peut faire l'utilisateur ?
+Spring Authorization Server
 ```
+
+pour la génération des tokens.
+
+Un composant dédié :
+
+```
+OAuth2JwtCustomizer
+```
+
+permet d'enrichir le contenu des tokens.
 
 ---
 
-## OAuth2
+# Principes architecturaux
 
-OAuth2 représente :
+## Le Core ne connaît pas OAuth2
+
+Le module :
 
 ```text
-Comment accède-t-il à une ressource ?
+auth-server-core
 ```
 
-Cette séparation est volontaire.
+ne connaît pas :
 
----
-
-# Gestion des mots de passe
-
-Le système applique les règles suivantes :
-
-- aucun mot de passe en clair n'est stocké ;
-- les mots de passe sont encodés avant persistance ;
-- l'algorithme d'encodage est abstrait derrière PasswordEncoderPort.
-
-L'implémentation actuelle repose sur BCrypt.
-
----
-
-# Gestion des dates
-
-Les dates techniques utilisent :
-
-```
-Clock
-```
-
-injecté par Spring.
-
-Configuration actuelle :
-
-```
-Clock.systemUTC()
-```
-
-Cette stratégie sera conservée pour :
-
-- les utilisateurs ;
-- les tokens ;
-- les refresh tokens ;
-- les expirations futures.
-
----
-
-# Modèle de données envisagé
-
-## Déjà présent
-
-```text
-users
-roles
-users_roles
-```
-
----
-
-## Envisagé pour OAuth2
-
-```text
-oauth_clients
-oauth_client_scopes
-authorizations
-authorization_scopes
-refresh_tokens
-```
-
-Le modèle exact sera défini lorsque la phase OAuth2 débutera.
-
----
-
-# Principes directeurs
-
-Les principes suivants guideront l'intégration OAuth2 :
-
-1. Le métier reste indépendant du framework.
-2. OAuth2 ne doit pas polluer le domaine utilisateur.
-3. Les use cases restent simples et testables.
-4. Les règles métier restent dans le core.
-5. Les détails OAuth2 restent dans l'infrastructure.
-6. La sécurité est introduite progressivement.
-
----
-
-# État de progression
-
-## Réalisé
-
-- architecture hexagonale ;
-- domaine utilisateur ;
-- persistance PostgreSQL ;
-- migration Liquibase ;
-- CreateUserUseCase ;
-- GetUserUseCase ;
-- PasswordEncoderPort ;
-- BCrypt.
-
-## En cours
-
-- préparation de AuthenticateUserUseCase.
-
-## Prévu
-
-- gestion des rôles ;
 - Spring Security ;
+- Spring Authorization Server ;
+- JWT ;
 - OAuth2 ;
 - OpenID Connect.
 
 ---
 
-# Conclusion
+## OAuth2 repose sur les ports métier
 
-OAuth2 constitue l'objectif final du projet, mais n'est volontairement pas la première fonctionnalité développée.
+La sécurité dépend des ports du Core :
 
-L'approche retenue consiste à construire progressivement :
-
-```text
-Utilisateur
-    ↓
-Authentification
-    ↓
-Rôles
-    ↓
-Spring Security
-    ↓
-OAuth2
-    ↓
-OpenID Connect
+```
+OAuth2ClientRepositoryPort
+OAuth2ScopeRepositoryPort
 ```
 
-Cette stratégie permet de garder un domaine métier simple, testable et robuste avant d'introduire des mécanismes de sécurité plus avancés.
+et non des repositories JPA.
+
+---
+
+## Séparation Security / Persistence
+
+Le module :
+
+```text
+auth-server-security
+```
+
+ne dépend pas du module :
+
+```text
+auth-server-persistence
+```
+
+Le découplage est réalisé via les ports métier.
+
+---
+
+# État actuel
+
+## Fonctionnel
+
+✅ Gestion des utilisateurs
+
+✅ Gestion des rôles
+
+✅ Gestion des applications
+
+✅ Gestion des clients OAuth2
+
+✅ Gestion des scopes OAuth2
+
+✅ Attribution de scopes à un client
+
+✅ Authentification des clients OAuth2
+
+✅ Flux Client Credentials
+
+✅ Génération de JWT
+
+---
+
+# Évolutions envisagées
+
+## OAuth2
+
+- Refresh Tokens
+- Token Revocation
+- Token Introspection
+
+## OpenID Connect
+
+- ID Token
+- UserInfo Endpoint
+- Standard Claims
+- Discovery Endpoint
+
+## Administration
+
+- Gestion avancée des clients
+- Rotation des secrets
+- Audit des autorisations
+
+---
+
+# Conclusion
+
+Le projet dispose désormais d'une première implémentation fonctionnelle d'un Authorization Server OAuth2 basé sur Spring Authorization Server.
+
+L'architecture retenue permet de conserver un cœur métier indépendant tout en intégrant les mécanismes OAuth2 dans un module de sécurité d
