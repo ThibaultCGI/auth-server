@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>auth-coverage-report</artifactId>
+    <artifactId>auth-server-coverage-report</artifactId>
 
     <packaging>pom</packaging>
 
@@ -17,21 +17,29 @@
     <dependencies>
         <dependency>
             <groupId>io.github.tbondetti</groupId>
-            <artifactId>auth-core</artifactId>
+            <artifactId>auth-server-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.tbondetti</groupId>
-            <artifactId>auth-infrastructure</artifactId>
+            <artifactId>auth-server-infrastructure</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>io.github.tbondetti</groupId>
+            <artifactId>auth-server-web</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.tbondetti</groupId>
-            <artifactId>auth-boot</artifactId>
+            <artifactId>auth-server-boot</artifactId>
             <version>${project.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>

@@ -26,13 +26,13 @@ L’architecture retenue est une architecture hexagonale afin de séparer claire
 
 Le projet est organisé sous la forme de plusieurs modules Maven :
 
-- `auth-core`
-- `auth-infrastructure`
-- `auth-boot`
+- `auth-server-core`
+- `auth-server-infrastructure`
+- `auth-server-boot`
 
-### Rôle de `auth-core`
+### Rôle de `auth-server-core`
 
-Le module `auth-core` contient exclusivement les éléments métier.
+Le module `auth-server-core` contient exclusivement les éléments métier.
 
 Il ne dépend :
 
@@ -51,9 +51,9 @@ Il ne dépend :
 
 ---
 
-### Rôle de `auth-infrastructure`
+### Rôle de `auth-server-infrastructure`
 
-Le module `auth-infrastructure` contient tous les détails techniques.
+Le module `auth-server-infrastructure` contient tous les détails techniques.
 
 Il dépend :
 
@@ -75,9 +75,9 @@ Il dépend :
 
 ---
 
-### Rôle de `auth-boot`
+### Rôle de `auth-server-boot`
 
-Le module `auth-boot` contient :
+Le module `auth-server-boot` contient :
 
 - la classe de démarrage Spring Boot ;
 - les propriétés applicatives ;
@@ -96,7 +96,7 @@ Exemples :
 - `UserRepositoryPort`
 - `PasswordEncoderPort`
 
-Les ports sont définis dans le module `auth-core`.
+Les ports sont définis dans le module `auth-server-core`.
 
 ---
 
@@ -109,7 +109,7 @@ Exemples :
 - `UserRepositoryAdapter`
 - `PasswordEncoderAdapter`
 
-Les adapters sont situés dans `auth-infrastructure`.
+Les adapters sont situés dans `auth-server-infrastructure`.
 
 ---
 

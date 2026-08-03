@@ -9,13 +9,13 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>auth-infrastructure</artifactId>
+    <artifactId>auth-server-infrastructure</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>io.github.tbondetti</groupId>
-            <artifactId>auth-core</artifactId>
+            <artifactId>auth-server-core</artifactId>
         </dependency>
 
         <dependency>

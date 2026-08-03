@@ -27,10 +27,11 @@
 	</developers>
 
 	<modules>
-		<module>auth-core</module>
-		<module>auth-infrastructure</module>
-		<module>auth-boot</module>
-		<module>auth-coverage-report</module>
+		<module>auth-server-core</module>
+		<module>auth-server-infrastructure</module>
+		<module>auth-server-boot</module>
+		<module>auth-server-coverage-report</module>
+		<module>auth-server-web</module>
 	</modules>
 
 	<properties>
@@ -45,7 +46,7 @@
 		<sonar.projectKey>ThibaultCGI_auth-server</sonar.projectKey>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.coverage.jacoco.aggregateXmlReportPaths>
-			${maven.multiModuleProjectDirectory}/auth-coverage-report/target/site/jacoco-aggregate/jacoco.xml
+			${maven.multiModuleProjectDirectory}/auth-server-coverage-report/target/site/jacoco-aggregate/jacoco.xml
 		</sonar.coverage.jacoco.aggregateXmlReportPaths>
 		<sonar.coverage.exclusions>
 			**/AuthServerApplication.java,
@@ -58,13 +59,19 @@
 		<dependencies>
 			<dependency>
 				<groupId>io.github.tbondetti</groupId>
-				<artifactId>auth-core</artifactId>
+				<artifactId>auth-server-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>io.github.tbondetti</groupId>
-				<artifactId>auth-infrastructure</artifactId>
+				<artifactId>auth-server-infrastructure</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.github.tbondetti</groupId>
+				<artifactId>auth-server-web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
