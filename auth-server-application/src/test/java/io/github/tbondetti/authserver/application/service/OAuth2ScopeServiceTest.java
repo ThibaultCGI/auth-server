@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
 import io.github.tbondetti.authserver.core.usecase.oauth2scope.CreateOAuth2ScopeUseCase;
@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OAuth2ScopeFacadeTest {
+class OAuth2ScopeServiceTest {
 
     @InjectMocks
-    private OAuth2ScopeFacade subject;
+    private OAuth2ScopeService subject;
 
     @Mock
     private GetOAuth2ScopeUseCase getOAuth2ScopeUseCase;

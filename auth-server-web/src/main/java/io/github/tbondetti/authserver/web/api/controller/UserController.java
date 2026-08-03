@@ -5,7 +5,7 @@ import io.github.tbondetti.authserver.web.api.dto.CreateUserRequest;
 import io.github.tbondetti.authserver.web.api.mapper.RoleWebMapper;
 import io.github.tbondetti.authserver.web.api.response.RoleResponse;
 import io.github.tbondetti.authserver.web.api.response.UserResponse;
-import io.github.tbondetti.authserver.web.facade.UserFacade;
+import io.github.tbondetti.authserver.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,17 +27,17 @@ import static io.github.tbondetti.authserver.web.api.mapper.UserWebMapper.toResp
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserFacade userFacade;
+    private final UserService userService;
 
     @GetMapping("/{username}")
     public UserResponse getUser(@PathVariable final String username) {
-        return toResponse(this.userFacade.getUser(username));
+        return toResponse(this.userService.getUser(username));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse createUser(@RequestBody final CreateUserRequest request) {
-        return toResponse(this.userFacade.createUser(
+        return toResponse(this.userService.createUser(
                 request.username(),
                 request.password()
         ));
@@ -51,7 +51,7 @@ public class UserController {
                     required = false
             ) final String applicationCode
     ) {
-        return this.userFacade.getUserRoles(username, applicationCode).stream().map(RoleWebMapper::toResponse).toList();
+        return this.userService.getUserRoles(username, applicationCode).stream().map(RoleWebMapper::toResponse).toList();
     }
 
     @PostMapping("/{username}/roles")
@@ -60,7 +60,7 @@ public class UserController {
             @PathVariable final String username,
             @RequestBody final AssignRoleRequest request
     ) {
-        this.userFacade.assignUserRole(
+        this.userService.assignUserRole(
                 username,
                 request.applicationCode(),
                 request.roleCode()

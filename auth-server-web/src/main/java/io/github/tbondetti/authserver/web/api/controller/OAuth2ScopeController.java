@@ -2,7 +2,7 @@ package io.github.tbondetti.authserver.web.api.controller;
 
 import io.github.tbondetti.authserver.web.api.dto.CreateOAuth2ScopeRequest;
 import io.github.tbondetti.authserver.web.api.response.OAuth2ScopeResponse;
-import io.github.tbondetti.authserver.web.facade.OAuth2ScopeFacade;
+import io.github.tbondetti.authserver.application.service.OAuth2ScopeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,20 +21,20 @@ import static io.github.tbondetti.authserver.web.api.mapper.OAuth2ScopeWebMapper
 @RequiredArgsConstructor
 public class OAuth2ScopeController {
 
-    private final OAuth2ScopeFacade oauth2ScopeFacade;
+    private final OAuth2ScopeService oauth2ScopeService;
 
     @GetMapping("/{applicationCode}/{code}")
     public OAuth2ScopeResponse getOAuth2Scope(
             @PathVariable final String applicationCode,
             @PathVariable final String code
     ) {
-        return toResponse(this.oauth2ScopeFacade.getOAuth2Scope(applicationCode, code));
+        return toResponse(this.oauth2ScopeService.getOAuth2Scope(applicationCode, code));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OAuth2ScopeResponse createOAuth2Scope(@RequestBody final CreateOAuth2ScopeRequest request) {
-        return toResponse(this.oauth2ScopeFacade.createOAuth2Scope(
+        return toResponse(this.oauth2ScopeService.createOAuth2Scope(
                 request.applicationCode(),
                 request.code(),
                 request.name(),

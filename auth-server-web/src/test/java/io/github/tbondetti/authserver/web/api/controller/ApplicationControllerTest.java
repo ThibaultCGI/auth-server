@@ -4,7 +4,7 @@ import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.web.api.dto.CreateApplicationRequest;
 import io.github.tbondetti.authserver.web.api.mapper.ApplicationWebMapper;
 import io.github.tbondetti.authserver.web.api.response.ApplicationResponse;
-import io.github.tbondetti.authserver.web.facade.ApplicationFacade;
+import io.github.tbondetti.authserver.application.service.ApplicationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,14 +24,14 @@ class ApplicationControllerTest {
     private ApplicationController subject;
 
     @Mock
-    private ApplicationFacade applicationFacade;
+    private ApplicationService applicationService;
 
     @Test
     void getApplicationOk() {
         final String code = "code";
 
         final Application application = Application.builder().build();
-        when(this.applicationFacade.getApplication(code)).thenReturn(application);
+        when(this.applicationService.getApplication(code)).thenReturn(application);
 
         final ApplicationResponse applicationResponse = ApplicationResponse.builder().build();
         try (final MockedStatic<ApplicationWebMapper> userUtilities = mockStatic(ApplicationWebMapper.class)) {
@@ -50,7 +50,7 @@ class ApplicationControllerTest {
         final CreateApplicationRequest createApplicationRequest = new CreateApplicationRequest(code, name, description);
 
         final Application application = Application.builder().build();
-        when(this.applicationFacade.createApplication(code, name, description)).thenReturn(application);
+        when(this.applicationService.createApplication(code, name, description)).thenReturn(application);
 
         final ApplicationResponse applicationResponse = ApplicationResponse.builder().build();
         try (final MockedStatic<ApplicationWebMapper> userUtilities = mockStatic(ApplicationWebMapper.class)) {

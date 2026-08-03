@@ -266,7 +266,7 @@ Les migrations sont écrites en :
 ### Configuration
 
 - `SpringConfiguration`
-- `PersistenceConfiguration`
+- `RepositoryAdapterConfiguration`
 - `PasswordEncoderConfiguration`
 - `UserUseCaseConfiguration`
 

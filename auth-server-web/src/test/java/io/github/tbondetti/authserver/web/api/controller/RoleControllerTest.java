@@ -4,7 +4,7 @@ import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.web.api.dto.CreateRoleRequest;
 import io.github.tbondetti.authserver.web.api.mapper.RoleWebMapper;
 import io.github.tbondetti.authserver.web.api.response.RoleResponse;
-import io.github.tbondetti.authserver.web.facade.RoleFacade;
+import io.github.tbondetti.authserver.application.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +27,7 @@ class RoleControllerTest {
     private RoleController subject;
 
     @Mock
-    private RoleFacade roleFacade;
+    private RoleService roleService;
 
     @Test
     void getRoleOk() {
@@ -35,7 +35,7 @@ class RoleControllerTest {
         final String code = "code";
 
         final Role role = Role.builder().build();
-        when(this.roleFacade.getRole(applicationCode, code)).thenReturn(role);
+        when(this.roleService.getRole(applicationCode, code)).thenReturn(role);
 
         final RoleResponse roleResponse = RoleResponse.builder().build();
         try (final MockedStatic<RoleWebMapper> userUtilities = mockStatic(RoleWebMapper.class)) {
@@ -55,7 +55,7 @@ class RoleControllerTest {
         final CreateRoleRequest createRoleRequest = new CreateRoleRequest(applicationCode, code, name, description);
 
         final Role role = Role.builder().build();
-        when(this.roleFacade.createRole(applicationCode, code, name, description)).thenReturn(role);
+        when(this.roleService.createRole(applicationCode, code, name, description)).thenReturn(role);
 
         final RoleResponse roleResponse = RoleResponse.builder().build();
         try (final MockedStatic<RoleWebMapper> userUtilities = mockStatic(RoleWebMapper.class)) {
@@ -70,11 +70,11 @@ class RoleControllerTest {
         final String applicationCode = "applicationCode";
         final String code = "code";
 
-        doNothing().when(this.roleFacade).deleteRole(applicationCode, code);
+        doNothing().when(this.roleService).deleteRole(applicationCode, code);
 
         this.subject.deleteRole(applicationCode, code);
 
-        verify(this.roleFacade, times(1)).deleteRole(applicationCode, code);
+        verify(this.roleService, times(1)).deleteRole(applicationCode, code);
     }
 
 }

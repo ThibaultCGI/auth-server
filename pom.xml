@@ -28,6 +28,7 @@
 
 	<modules>
 		<module>auth-server-core</module>
+		<module>auth-server-application</module>
 		<module>auth-server-web</module>
 		<module>auth-server-infrastructure</module>
 		<module>auth-server-boot</module>
@@ -65,13 +66,25 @@
 
 			<dependency>
 				<groupId>io.github.tbondetti</groupId>
-				<artifactId>auth-server-infrastructure</artifactId>
+				<artifactId>auth-server-application</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>io.github.tbondetti</groupId>
 				<artifactId>auth-server-web</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.github.tbondetti</groupId>
+				<artifactId>auth-server-infrastructure</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.github.tbondetti</groupId>
+				<artifactId>auth-server-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

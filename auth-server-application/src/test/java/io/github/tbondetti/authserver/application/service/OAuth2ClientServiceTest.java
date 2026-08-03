@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
 import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
@@ -18,10 +18,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OAuth2ClientFacadeTest {
+class OAuth2ClientServiceTest {
 
     @InjectMocks
-    private OAuth2ClientFacade subject;
+    private OAuth2ClientService subject;
 
     @Mock
     private GetOAuth2ClientUseCase getOAuth2ClientUseCase;

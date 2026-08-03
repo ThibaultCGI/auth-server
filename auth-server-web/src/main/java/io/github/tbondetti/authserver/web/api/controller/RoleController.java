@@ -2,7 +2,7 @@ package io.github.tbondetti.authserver.web.api.controller;
 
 import io.github.tbondetti.authserver.web.api.dto.CreateRoleRequest;
 import io.github.tbondetti.authserver.web.api.response.RoleResponse;
-import io.github.tbondetti.authserver.web.facade.RoleFacade;
+import io.github.tbondetti.authserver.application.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,20 +21,20 @@ import static io.github.tbondetti.authserver.web.api.mapper.RoleWebMapper.toResp
 @RequiredArgsConstructor
 public class RoleController {
 
-    private final RoleFacade roleFacade;
+    private final RoleService roleService;
 
     @GetMapping("/{applicationCode}/{code}")
     public RoleResponse getRole(
             @PathVariable final String applicationCode,
             @PathVariable final String code
     ) {
-        return toResponse(this.roleFacade.getRole(applicationCode, code));
+        return toResponse(this.roleService.getRole(applicationCode, code));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RoleResponse createRole(@RequestBody final CreateRoleRequest request) {
-        return toResponse(this.roleFacade.createRole(
+        return toResponse(this.roleService.createRole(
                 request.codeApplication(),
                 request.code(),
                 request.name(),
@@ -47,6 +47,6 @@ public class RoleController {
             @PathVariable final String applicationCode,
             @PathVariable final String code
     ) {
-        this.roleFacade.deleteRole(applicationCode, code);
+        this.roleService.deleteRole(applicationCode, code);
     }
 }

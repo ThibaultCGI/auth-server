@@ -8,7 +8,7 @@ import io.github.tbondetti.authserver.web.api.mapper.RoleWebMapper;
 import io.github.tbondetti.authserver.web.api.mapper.UserWebMapper;
 import io.github.tbondetti.authserver.web.api.response.RoleResponse;
 import io.github.tbondetti.authserver.web.api.response.UserResponse;
-import io.github.tbondetti.authserver.web.facade.UserFacade;
+import io.github.tbondetti.authserver.application.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,14 +34,14 @@ class UserControllerTest {
     private UserController subject;
 
     @Mock
-    private UserFacade userFacade;
+    private UserService userService;
 
     @Test
     void getUserOk() {
         final String username = "username";
 
         final User user = User.builder().build();
-        when(this.userFacade.getUser(username)).thenReturn(user);
+        when(this.userService.getUser(username)).thenReturn(user);
 
         final UserResponse userResponse = UserResponse.builder().build();
         try (final MockedStatic<UserWebMapper> userUtilities = mockStatic(UserWebMapper.class)) {
@@ -59,7 +59,7 @@ class UserControllerTest {
         final CreateUserRequest createUserRequest = new CreateUserRequest(username, password);
 
         final User user = User.builder().build();
-        when(this.userFacade.createUser(username, password)).thenReturn(user);
+        when(this.userService.createUser(username, password)).thenReturn(user);
 
         final UserResponse userResponse = UserResponse.builder().build();
         try (final MockedStatic<UserWebMapper> userUtilities = mockStatic(UserWebMapper.class)) {
@@ -77,11 +77,11 @@ class UserControllerTest {
 
         final AssignRoleRequest assignRoleRequest = new AssignRoleRequest(applicationCode, roleCode);
 
-        doNothing().when(this.userFacade).assignUserRole(username, applicationCode, roleCode);
+        doNothing().when(this.userService).assignUserRole(username, applicationCode, roleCode);
 
         this.subject.assignRole(username, assignRoleRequest);
 
-        verify(this.userFacade, times(1)).assignUserRole(username, applicationCode, roleCode);
+        verify(this.userService, times(1)).assignUserRole(username, applicationCode, roleCode);
     }
 
     @Test
@@ -92,7 +92,7 @@ class UserControllerTest {
         final Role role1 = Role.builder().code("role1").build();
         final Role role2 = Role.builder().code("role2").build();
 
-        when(this.userFacade.getUserRoles(username, applicationCode)).thenReturn(List.of(role1, role2));
+        when(this.userService.getUserRoles(username, applicationCode)).thenReturn(List.of(role1, role2));
 
         try (final MockedStatic<RoleWebMapper> utilities = mockStatic(RoleWebMapper.class)) {
             final RoleResponse roleResponse1 = RoleResponse.builder().build();

@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
 import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class OAuth2ClientFacade {
+public class OAuth2ClientService {
 
     private final GetOAuth2ClientUseCase getOAuth2ClientUseCase;
     private final CreateOAuth2ClientUseCase createOAuth2ClientUseCase;

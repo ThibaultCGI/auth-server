@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.domain.User;
@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class UserFacade {
+public class UserService {
 
     private final GetUserUseCase getUserUseCase;
     private final CreateUserUseCase createUserUseCase;

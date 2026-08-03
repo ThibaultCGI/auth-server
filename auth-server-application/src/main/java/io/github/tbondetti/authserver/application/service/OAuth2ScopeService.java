@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
 import io.github.tbondetti.authserver.core.usecase.oauth2scope.CreateOAuth2ScopeUseCase;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class OAuth2ScopeFacade {
+public class OAuth2ScopeService {
 
     private final GetOAuth2ScopeUseCase getOAuth2ScopeUseCase;
     private final CreateOAuth2ScopeUseCase createOAuth2ScopeUseCase;

@@ -7,7 +7,7 @@ import io.github.tbondetti.authserver.web.api.dto.CreateOAuth2ClientRequest;
 import io.github.tbondetti.authserver.web.api.mapper.OAuth2ClientWebMapper;
 import io.github.tbondetti.authserver.web.api.response.CreateOAuth2ClientResponse;
 import io.github.tbondetti.authserver.web.api.response.OAuth2ClientResponse;
-import io.github.tbondetti.authserver.web.facade.OAuth2ClientFacade;
+import io.github.tbondetti.authserver.application.service.OAuth2ClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,13 +29,13 @@ class OAuth2ClientControllerTest {
     private OAuth2ClientController subject;
 
     @Mock
-    private OAuth2ClientFacade oauth2ClientFacade;
+    private OAuth2ClientService oauth2ClientService;
 
     @Test
     void getOAuth2ClientOk() {
         final String clientId = "clientId";
         final OAuth2Client client = OAuth2Client.builder().build();
-        when(this.oauth2ClientFacade.getOAuth2Client(clientId)).thenReturn(client);
+        when(this.oauth2ClientService.getOAuth2Client(clientId)).thenReturn(client);
 
         try (final MockedStatic<OAuth2ClientWebMapper> utilities = mockStatic(OAuth2ClientWebMapper.class)) {
             final OAuth2ClientResponse expected = OAuth2ClientResponse.builder().build();
@@ -55,7 +55,7 @@ class OAuth2ClientControllerTest {
         );
 
         final OAuth2CreatedClient client = OAuth2CreatedClient.builder().build();
-        when(this.oauth2ClientFacade.createOAuth2Client(
+        when(this.oauth2ClientService.createOAuth2Client(
                 clientName,
                 applicationCode
         )).thenReturn(client);
@@ -81,7 +81,7 @@ class OAuth2ClientControllerTest {
 
         this.subject.assignScope(clientId, request);
 
-        verify(this.oauth2ClientFacade).assignScope(
+        verify(this.oauth2ClientService).assignScope(
                 clientId,
                 applicationCode,
                 code

@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ApplicationFacade {
+public class ApplicationService {
 
     private final CreateApplicationUseCase createApplicationUseCase;
     private final GetApplicationUseCase getApplicationUseCase;

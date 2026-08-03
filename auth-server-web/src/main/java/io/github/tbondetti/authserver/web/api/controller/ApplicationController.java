@@ -2,7 +2,7 @@ package io.github.tbondetti.authserver.web.api.controller;
 
 import io.github.tbondetti.authserver.web.api.dto.CreateApplicationRequest;
 import io.github.tbondetti.authserver.web.api.response.ApplicationResponse;
-import io.github.tbondetti.authserver.web.facade.ApplicationFacade;
+import io.github.tbondetti.authserver.application.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,17 +20,17 @@ import static io.github.tbondetti.authserver.web.api.mapper.ApplicationWebMapper
 @RequiredArgsConstructor
 public class ApplicationController {
 
-    private final ApplicationFacade applicationFacade;
+    private final ApplicationService applicationService;
 
     @GetMapping("/{code}")
     public ApplicationResponse getApplication(@PathVariable final String code) {
-        return toResponse(this.applicationFacade.getApplication(code));
+        return toResponse(this.applicationService.getApplication(code));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApplicationResponse createApplication(@RequestBody final CreateApplicationRequest request) {
-        return toResponse(this.applicationFacade.createApplication(
+        return toResponse(this.applicationService.createApplication(
                 request.code(),
                 request.name(),
                 request.description()

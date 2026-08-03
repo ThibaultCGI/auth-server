@@ -4,7 +4,7 @@ import io.github.tbondetti.authserver.web.api.dto.AssignOAuth2ScopeRequest;
 import io.github.tbondetti.authserver.web.api.dto.CreateOAuth2ClientRequest;
 import io.github.tbondetti.authserver.web.api.response.CreateOAuth2ClientResponse;
 import io.github.tbondetti.authserver.web.api.response.OAuth2ClientResponse;
-import io.github.tbondetti.authserver.web.facade.OAuth2ClientFacade;
+import io.github.tbondetti.authserver.application.service.OAuth2ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,17 +24,17 @@ import static io.github.tbondetti.authserver.web.api.mapper.OAuth2ClientWebMappe
 @RequiredArgsConstructor
 public class OAuth2ClientController {
 
-    private final OAuth2ClientFacade oauth2ClientFacade;
+    private final OAuth2ClientService oauth2ClientService;
 
     @GetMapping("/{clientId}")
     public OAuth2ClientResponse getOAuth2Client(@PathVariable final String clientId) {
-        return toResponse(this.oauth2ClientFacade.getOAuth2Client(clientId));
+        return toResponse(this.oauth2ClientService.getOAuth2Client(clientId));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CreateOAuth2ClientResponse createOAuth2Client(@RequestBody final CreateOAuth2ClientRequest request) {
-        return toCreateResponse(this.oauth2ClientFacade.createOAuth2Client(
+        return toCreateResponse(this.oauth2ClientService.createOAuth2Client(
                 request.clientName(),
                 request.applicationCode()
         ));
@@ -46,7 +46,7 @@ public class OAuth2ClientController {
             @PathVariable final String clientId,
             @RequestBody final AssignOAuth2ScopeRequest request
     ) {
-        this.oauth2ClientFacade.assignScope(
+        this.oauth2ClientService.assignScope(
                 clientId,
                 request.applicationCode(),
                 request.code()

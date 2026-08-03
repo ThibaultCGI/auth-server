@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase;
@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ApplicationFacadeTest {
+class ApplicationServiceTest {
 
     @InjectMocks
-    private ApplicationFacade subject;
+    private ApplicationService subject;
 
     @Mock
     private CreateApplicationUseCase createApplicationUseCase;

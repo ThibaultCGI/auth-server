@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.usecase.role.CreateRoleUseCase;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class RoleFacade {
+public class RoleService {
 
     private final CreateRoleUseCase createRoleUseCase;
     private final GetRoleUseCase getRoleUseCase;

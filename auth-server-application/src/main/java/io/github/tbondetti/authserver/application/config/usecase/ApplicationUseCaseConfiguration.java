@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.config.usecase;
+package io.github.tbondetti.authserver.application.config.usecase;
 
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
 import io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase;

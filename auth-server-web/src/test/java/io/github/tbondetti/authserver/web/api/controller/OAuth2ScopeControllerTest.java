@@ -4,7 +4,7 @@ import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
 import io.github.tbondetti.authserver.web.api.dto.CreateOAuth2ScopeRequest;
 import io.github.tbondetti.authserver.web.api.mapper.OAuth2ScopeWebMapper;
 import io.github.tbondetti.authserver.web.api.response.OAuth2ScopeResponse;
-import io.github.tbondetti.authserver.web.facade.OAuth2ScopeFacade;
+import io.github.tbondetti.authserver.application.service.OAuth2ScopeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ class OAuth2ScopeControllerTest {
     private OAuth2ScopeController subject;
 
     @Mock
-    private OAuth2ScopeFacade oauth2ScopeFacade;
+    private OAuth2ScopeService oauth2ScopeService;
 
 
     @Test
@@ -34,7 +34,7 @@ class OAuth2ScopeControllerTest {
 
         final OAuth2Scope scope = OAuth2Scope.builder().build();
 
-        when(this.oauth2ScopeFacade.getOAuth2Scope(applicationCode, code)).thenReturn(scope);
+        when(this.oauth2ScopeService.getOAuth2Scope(applicationCode, code)).thenReturn(scope);
 
         try (final MockedStatic<OAuth2ScopeWebMapper> utilities = mockStatic(OAuth2ScopeWebMapper.class)) {
             final OAuth2ScopeResponse expected = OAuth2ScopeResponse.builder().build();
@@ -60,7 +60,7 @@ class OAuth2ScopeControllerTest {
 
         final OAuth2Scope scope = OAuth2Scope.builder().build();
 
-        when(this.oauth2ScopeFacade.createOAuth2Scope(
+        when(this.oauth2ScopeService.createOAuth2Scope(
                 applicationCode,
                 code,
                 name,

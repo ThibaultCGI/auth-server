@@ -1,4 +1,4 @@
-package io.github.tbondetti.authserver.web.facade;
+package io.github.tbondetti.authserver.application.service;
 
 import io.github.tbondetti.authserver.core.domain.Role;
 import io.github.tbondetti.authserver.core.usecase.role.CreateRoleUseCase;
@@ -17,10 +17,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RoleFacadeTest {
+class RoleServiceTest {
 
     @InjectMocks
-    private RoleFacade subject;
+    private RoleService subject;
 
     @Mock
     private CreateRoleUseCase createRoleUseCase;
