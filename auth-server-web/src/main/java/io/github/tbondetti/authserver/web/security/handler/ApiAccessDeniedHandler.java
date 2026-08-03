@@ -21,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class ApiAccessDeniedHandler implements AccessDeniedHandler {
 
-    static final String ACCES_REFUSE = "Accès refusé";
+    static final String ACCESS_DENIED_MESSAGE = "Accès refusé";
 
     private final ObjectMapper objectMapper;
 
@@ -34,7 +34,7 @@ public class ApiAccessDeniedHandler implements AccessDeniedHandler {
 
         final ApiErrorResponse body = ApiErrorResponse.builder()
                 .code(ACCESS_DENIED)
-                .description(ACCES_REFUSE)
+                .description(ACCESS_DENIED_MESSAGE)
                 .build();
 
         response.setStatus(SC_FORBIDDEN);
