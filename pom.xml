@@ -28,10 +28,10 @@
 
 	<modules>
 		<module>auth-server-core</module>
+		<module>auth-server-web</module>
 		<module>auth-server-infrastructure</module>
 		<module>auth-server-boot</module>
 		<module>auth-server-coverage-report</module>
-		<module>auth-server-web</module>
 	</modules>
 
 	<properties>

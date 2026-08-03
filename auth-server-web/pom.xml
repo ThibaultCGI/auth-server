@@ -34,11 +34,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security-oauth2-authorization-server</artifactId>
-        </dependency>
-
         <!-- Pour utilisation de Transactional en attendant un module application -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,10 +52,5 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security-oauth2-authorization-server-test</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>
