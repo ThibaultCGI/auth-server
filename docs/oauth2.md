@@ -278,7 +278,7 @@ ne connaît pas :
 
 La sécurité dépend des ports du Core :
 
-```java
+```
 OAuth2ClientRepositoryPort
 OAuth2ScopeRepositoryPort
 ```
