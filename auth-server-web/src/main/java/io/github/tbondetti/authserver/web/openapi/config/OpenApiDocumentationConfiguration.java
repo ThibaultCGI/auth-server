@@ -16,7 +16,7 @@ import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConsta
 import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.SECURITY_SCHEME_SCHEME;
 
 @Configuration
-public class OpenApiConfiguration {
+public class OpenApiDocumentationConfiguration {
 
     private Contact contact() {
         return new Contact()
