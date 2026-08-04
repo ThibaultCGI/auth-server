@@ -2,9 +2,9 @@ package io.github.tbondetti.authserver.web.openapi.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.CODE_MAX_LENGTH;
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.DESCRIPTION_MAX_LENGTH;
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_CODE_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_DESCRIPTION_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_NAME_MAX_LENGTH;
 import static io.github.tbondetti.authserver.web.openapi.constants.ApplicationOpenApiConstants.CODE_DESCRIPTION;
 import static io.github.tbondetti.authserver.web.openapi.constants.ApplicationOpenApiConstants.CODE_EXAMPLE;
 import static io.github.tbondetti.authserver.web.openapi.constants.ApplicationOpenApiConstants.DESCRIPTION_DESCRIPTION;
@@ -17,7 +17,7 @@ public interface ApplicationResponseApi {
     @Schema(
             description = CODE_DESCRIPTION,
             example = CODE_EXAMPLE,
-            maxLength = CODE_MAX_LENGTH,
+            maxLength = APPLICATION_CODE_MAX_LENGTH,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     String code();
@@ -25,7 +25,7 @@ public interface ApplicationResponseApi {
     @Schema(
             description = NAME_DESCRIPTION,
             example = NAME_EXAMPLE,
-            maxLength = NAME_MAX_LENGTH,
+            maxLength = APPLICATION_NAME_MAX_LENGTH,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     String name();
@@ -33,7 +33,7 @@ public interface ApplicationResponseApi {
     @Schema(
             description = DESCRIPTION_DESCRIPTION,
             example = DESCRIPTION_EXAMPLE,
-            maxLength = DESCRIPTION_MAX_LENGTH
+            maxLength = APPLICATION_DESCRIPTION_MAX_LENGTH
     )
     String description();
 }

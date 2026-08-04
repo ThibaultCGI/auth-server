@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.CODE_MAX_LENGTH;
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.DESCRIPTION_MAX_LENGTH;
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_CODE_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_DESCRIPTION_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_NAME_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
@@ -27,9 +27,9 @@ public class CreateApplicationUseCase {
             final String name,
             final String description
     ) {
-        final String normalizedCode = validateAndNormalizeCode(code, CODE_MAX_LENGTH);
-        final String normalizedName = validateAndNormalizeName(name, NAME_MAX_LENGTH);
-        final String normalizedDescription = normalizeAndValidateDescription(description, DESCRIPTION_MAX_LENGTH);
+        final String normalizedCode = validateAndNormalizeCode(code, APPLICATION_CODE_MAX_LENGTH);
+        final String normalizedName = validateAndNormalizeName(name, APPLICATION_NAME_MAX_LENGTH);
+        final String normalizedDescription = normalizeAndValidateDescription(description, APPLICATION_DESCRIPTION_MAX_LENGTH);
 
         this.ensureCodeIsUnique(normalizedCode);
 
