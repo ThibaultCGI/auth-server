@@ -15,6 +15,10 @@ public class OpenApiConstants {
 
     public static final String CONTACT_NAME = "Thibault BONDETTI";
 
+    public static final String SECURITY_SCHEME_NAME = "basicAuth";
+
+    public static final String SECURITY_SCHEME_SCHEME = "basic";
+
     public static final String RESPONSE_400_BAD_REQUEST = "Requête invalide.";
 
     public static final String RESPONSE_401_UNAUTHORIZED = "Authentification requise.";

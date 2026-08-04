@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import static io.github.tbondetti.authserver.web.openapi.constants.OAuth2ClientOpenApiConstants.CREATE_DESCRIPTION;
@@ -20,6 +21,7 @@ import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConsta
 import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.RESPONSE_401_UNAUTHORIZED;
 import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.RESPONSE_403_FORBIDDEN;
 import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.RESPONSE_500_INTERNAL_SERVER_ERROR;
+import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.SECURITY_SCHEME_NAME;
 
 @Tag(
         name = TAG,
@@ -30,6 +32,9 @@ public interface OAuth2ClientApi {
     @Operation(
             summary = CREATE_SUMMARY,
             description = CREATE_DESCRIPTION
+    )
+    @SecurityRequirement(
+            name = SECURITY_SCHEME_NAME
     )
     @ApiResponse(
             responseCode = "201",
