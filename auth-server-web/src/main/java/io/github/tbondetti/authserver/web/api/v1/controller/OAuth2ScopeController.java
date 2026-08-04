@@ -1,9 +1,9 @@
 package io.github.tbondetti.authserver.web.api.v1.controller;
 
 import io.github.tbondetti.authserver.application.service.OAuth2ScopeService;
-import io.github.tbondetti.authserver.web.api.v1.dto.CreateOAuth2ScopeRequest;
-import io.github.tbondetti.authserver.web.api.v1.response.OAuth2ScopeResponse;
 import io.github.tbondetti.authserver.web.openapi.api.OAuth2ScopeApi;
+import io.github.tbondetti.authserver.web.openapi.dto.CreateOAuth2ScopeRequestApi;
+import io.github.tbondetti.authserver.web.openapi.response.OAuth2ScopeResponseApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +29,7 @@ public class OAuth2ScopeController implements OAuth2ScopeApi {
             value = "/{applicationCode}/{code}",
             produces = APPLICATION_JSON_VALUE
     )
-    public OAuth2ScopeResponse getOAuth2Scope(
+    public OAuth2ScopeResponseApi getOAuth2Scope(
             @PathVariable final String applicationCode,
             @PathVariable final String code
     ) {
@@ -41,7 +41,7 @@ public class OAuth2ScopeController implements OAuth2ScopeApi {
             produces = APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public OAuth2ScopeResponse createOAuth2Scope(@RequestBody final CreateOAuth2ScopeRequest request) {
+    public OAuth2ScopeResponseApi createOAuth2Scope(@RequestBody final CreateOAuth2ScopeRequestApi request) {
         return toResponse(this.oauth2ScopeService.createOAuth2Scope(
                 request.applicationCode(),
                 request.code(),

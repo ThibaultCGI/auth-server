@@ -1,9 +1,9 @@
 package io.github.tbondetti.authserver.web.api.v1.controller;
 
 import io.github.tbondetti.authserver.application.service.ApplicationService;
-import io.github.tbondetti.authserver.web.api.v1.dto.CreateApplicationRequest;
-import io.github.tbondetti.authserver.web.api.v1.response.ApplicationResponse;
 import io.github.tbondetti.authserver.web.openapi.api.ApplicationApi;
+import io.github.tbondetti.authserver.web.openapi.dto.CreateApplicationRequestApi;
+import io.github.tbondetti.authserver.web.openapi.response.ApplicationResponseApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +28,7 @@ public class ApplicationController implements ApplicationApi {
             value = "/{code}",
             produces = APPLICATION_JSON_VALUE
     )
-    public ApplicationResponse getApplication(@PathVariable final String code) {
+    public ApplicationResponseApi getApplication(@PathVariable final String code) {
         return toResponse(this.applicationService.getApplication(code));
     }
 
@@ -37,7 +37,7 @@ public class ApplicationController implements ApplicationApi {
             produces = APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public ApplicationResponse createApplication(@RequestBody final CreateApplicationRequest request) {
+    public ApplicationResponseApi createApplication(@RequestBody final CreateApplicationRequestApi request) {
         return toResponse(this.applicationService.createApplication(
                 request.code(),
                 request.name(),

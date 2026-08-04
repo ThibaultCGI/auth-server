@@ -1,10 +1,10 @@
 package io.github.tbondetti.authserver.web.openapi.api;
 
-import io.github.tbondetti.authserver.web.api.v1.dto.AssignOAuth2ScopeRequest;
-import io.github.tbondetti.authserver.web.api.v1.dto.CreateOAuth2ClientRequest;
-import io.github.tbondetti.authserver.web.api.v1.error.ApiErrorResponse;
-import io.github.tbondetti.authserver.web.api.v1.response.CreateOAuth2ClientResponse;
-import io.github.tbondetti.authserver.web.api.v1.response.OAuth2ClientResponse;
+import io.github.tbondetti.authserver.web.openapi.dto.AssignOAuth2ScopeRequestApi;
+import io.github.tbondetti.authserver.web.openapi.dto.CreateOAuth2ClientRequestApi;
+import io.github.tbondetti.authserver.web.openapi.response.ApiErrorResponseApi;
+import io.github.tbondetti.authserver.web.openapi.response.CreateOAuth2ClientResponseApi;
+import io.github.tbondetti.authserver.web.openapi.response.OAuth2ClientResponseApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -57,7 +57,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_400_BAD_REQUEST,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -66,7 +66,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_401_UNAUTHORIZED,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -75,7 +75,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_403_FORBIDDEN,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -84,19 +84,19 @@ public interface OAuth2ClientApi {
             description = RESPONSE_500_INTERNAL_SERVER_ERROR,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
-    CreateOAuth2ClientResponse createOAuth2Client(@RequestBody(
+    CreateOAuth2ClientResponseApi createOAuth2Client(@RequestBody(
             description = CREATE_REQUEST_DESCRIPTION,
             required = true,
             content = @Content(
                     schema = @Schema(
-                            implementation = CreateOAuth2ClientRequest.class
+                            implementation = CreateOAuth2ClientRequestApi.class
                     )
             )
-    ) final CreateOAuth2ClientRequest request);
+    ) final CreateOAuth2ClientRequestApi request);
 
     @Operation(
             summary = GET_SUMMARY,
@@ -114,7 +114,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_401_UNAUTHORIZED,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -123,7 +123,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_403_FORBIDDEN,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -132,11 +132,11 @@ public interface OAuth2ClientApi {
             description = RESPONSE_500_INTERNAL_SERVER_ERROR,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
-    OAuth2ClientResponse getOAuth2Client(
+    OAuth2ClientResponseApi getOAuth2Client(
             @Parameter(
                     description = CLIENT_ID_PARAMETER_DESCRIPTION,
                     required = true,
@@ -161,7 +161,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_400_BAD_REQUEST,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -170,7 +170,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_401_UNAUTHORIZED,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -179,7 +179,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_403_FORBIDDEN,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -188,7 +188,7 @@ public interface OAuth2ClientApi {
             description = RESPONSE_500_INTERNAL_SERVER_ERROR,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -198,18 +198,18 @@ public interface OAuth2ClientApi {
                     required = true,
                     example = CLIENT_ID_EXAMPLE
             )
-            String clientId,
+            final String clientId,
 
             @RequestBody(
                     description = ASSIGN_SCOPE_REQUEST_DESCRIPTION,
                     required = true,
                     content = @Content(
                             schema = @Schema(
-                                    implementation = AssignOAuth2ScopeRequest.class
+                                    implementation = AssignOAuth2ScopeRequestApi.class
                             )
                     )
             )
-            AssignOAuth2ScopeRequest request
+            final AssignOAuth2ScopeRequestApi request
     );
 
 }

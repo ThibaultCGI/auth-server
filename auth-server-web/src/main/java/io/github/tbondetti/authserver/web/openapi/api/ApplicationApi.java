@@ -1,8 +1,8 @@
 package io.github.tbondetti.authserver.web.openapi.api;
 
-import io.github.tbondetti.authserver.web.api.v1.dto.CreateApplicationRequest;
-import io.github.tbondetti.authserver.web.api.v1.error.ApiErrorResponse;
-import io.github.tbondetti.authserver.web.api.v1.response.ApplicationResponse;
+import io.github.tbondetti.authserver.web.openapi.dto.CreateApplicationRequestApi;
+import io.github.tbondetti.authserver.web.openapi.response.ApiErrorResponseApi;
+import io.github.tbondetti.authserver.web.openapi.response.ApplicationResponseApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -47,7 +47,7 @@ public interface ApplicationApi {
             description = RESPONSE_200_OK,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApplicationResponse.class
+                            implementation = ApplicationResponseApi.class
                     )
             )
     )
@@ -56,7 +56,7 @@ public interface ApplicationApi {
             description = RESPONSE_401_UNAUTHORIZED,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -65,7 +65,7 @@ public interface ApplicationApi {
             description = RESPONSE_403_FORBIDDEN,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -74,11 +74,11 @@ public interface ApplicationApi {
             description = RESPONSE_500_INTERNAL_SERVER_ERROR,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
-    ApplicationResponse getApplication(
+    ApplicationResponseApi getApplication(
             @Parameter(
                     description = CODE_PARAMETER_DESCRIPTION,
                     required = true,
@@ -99,7 +99,7 @@ public interface ApplicationApi {
             description = RESPONSE_201_CREATED,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApplicationResponse.class
+                            implementation = ApplicationResponseApi.class
                     )
             )
     )
@@ -108,7 +108,7 @@ public interface ApplicationApi {
             description = RESPONSE_400_BAD_REQUEST,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -117,7 +117,7 @@ public interface ApplicationApi {
             description = RESPONSE_401_UNAUTHORIZED,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -126,7 +126,7 @@ public interface ApplicationApi {
             description = RESPONSE_403_FORBIDDEN,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -135,20 +135,20 @@ public interface ApplicationApi {
             description = RESPONSE_500_INTERNAL_SERVER_ERROR,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
-    ApplicationResponse createApplication(
+    ApplicationResponseApi createApplication(
             @RequestBody(
                     description = CREATE_REQUEST_DESCRIPTION,
                     required = true,
                     content = @Content(
                             schema = @Schema(
-                                    implementation = CreateApplicationRequest.class
+                                    implementation = CreateApplicationRequestApi.class
                             )
                     )
             )
-            final CreateApplicationRequest request
+            final CreateApplicationRequestApi request
     );
 }

@@ -1,16 +1,16 @@
-package io.github.tbondetti.authserver.web.openapi.config;
+package io.github.tbondetti.authserver.security.openapi.config;
 
 import io.swagger.v3.oas.models.info.Info;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.API_VERSION;
-import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.AUTHORIZATION_SERVER_DESCRIPTION;
-import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.AUTHORIZATION_SERVER_DISPLAY_NAME;
-import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.AUTHORIZATION_SERVER_GROUP;
-import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.AUTHORIZATION_SERVER_PATH_OAUTH2;
-import static io.github.tbondetti.authserver.web.openapi.constants.OpenApiConstants.AUTHORIZATION_SERVER_PATH_WELL_KNOWN;
+import static io.github.tbondetti.authserver.security.openapi.constants.AuthorizationServerOpenApiConstants.API_VERSION;
+import static io.github.tbondetti.authserver.security.openapi.constants.AuthorizationServerOpenApiConstants.AUTHORIZATION_SERVER_DESCRIPTION;
+import static io.github.tbondetti.authserver.security.openapi.constants.AuthorizationServerOpenApiConstants.AUTHORIZATION_SERVER_DISPLAY_NAME;
+import static io.github.tbondetti.authserver.security.openapi.constants.AuthorizationServerOpenApiConstants.AUTHORIZATION_SERVER_GROUP;
+import static io.github.tbondetti.authserver.security.openapi.constants.AuthorizationServerOpenApiConstants.AUTHORIZATION_SERVER_PATH_OAUTH2;
+import static io.github.tbondetti.authserver.security.openapi.constants.AuthorizationServerOpenApiConstants.AUTHORIZATION_SERVER_PATH_WELL_KNOWN;
 
 @Configuration
 public class AuthorizationServerOpenApiConfiguration {

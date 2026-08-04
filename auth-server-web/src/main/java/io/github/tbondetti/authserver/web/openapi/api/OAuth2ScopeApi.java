@@ -1,8 +1,8 @@
 package io.github.tbondetti.authserver.web.openapi.api;
 
-import io.github.tbondetti.authserver.web.api.v1.dto.CreateOAuth2ScopeRequest;
-import io.github.tbondetti.authserver.web.api.v1.error.ApiErrorResponse;
-import io.github.tbondetti.authserver.web.api.v1.response.OAuth2ScopeResponse;
+import io.github.tbondetti.authserver.web.openapi.dto.CreateOAuth2ScopeRequestApi;
+import io.github.tbondetti.authserver.web.openapi.response.ApiErrorResponseApi;
+import io.github.tbondetti.authserver.web.openapi.response.OAuth2ScopeResponseApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,7 +49,7 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_200_OK,
             content = @Content(
                     schema = @Schema(
-                            implementation = OAuth2ScopeResponse.class
+                            implementation = OAuth2ScopeResponseApi.class
                     )
             )
     )
@@ -58,7 +58,7 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_401_UNAUTHORIZED,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -67,7 +67,7 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_403_FORBIDDEN,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -76,11 +76,11 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_500_INTERNAL_SERVER_ERROR,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
-    OAuth2ScopeResponse getOAuth2Scope(
+    OAuth2ScopeResponseApi getOAuth2Scope(
             @Parameter(
                     description = APPLICATION_CODE_PARAMETER_DESCRIPTION,
                     required = true,
@@ -108,7 +108,7 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_201_CREATED,
             content = @Content(
                     schema = @Schema(
-                            implementation = OAuth2ScopeResponse.class
+                            implementation = OAuth2ScopeResponseApi.class
                     )
             )
     )
@@ -117,7 +117,7 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_400_BAD_REQUEST,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -126,7 +126,7 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_401_UNAUTHORIZED,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -135,7 +135,7 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_403_FORBIDDEN,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
@@ -144,20 +144,20 @@ public interface OAuth2ScopeApi {
             description = RESPONSE_500_INTERNAL_SERVER_ERROR,
             content = @Content(
                     schema = @Schema(
-                            implementation = ApiErrorResponse.class
+                            implementation = ApiErrorResponseApi.class
                     )
             )
     )
-    OAuth2ScopeResponse createOAuth2Scope(
+    OAuth2ScopeResponseApi createOAuth2Scope(
             @RequestBody(
                     description = CREATE_REQUEST_DESCRIPTION,
                     required = true,
                     content = @Content(
                             schema = @Schema(
-                                    implementation = CreateOAuth2ScopeRequest.class
+                                    implementation = CreateOAuth2ScopeRequestApi.class
                             )
                     )
             )
-            final CreateOAuth2ScopeRequest request
+            final CreateOAuth2ScopeRequestApi request
     );
 }
