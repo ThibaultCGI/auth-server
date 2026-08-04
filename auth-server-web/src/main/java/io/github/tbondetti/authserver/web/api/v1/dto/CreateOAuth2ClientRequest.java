@@ -1,6 +1,6 @@
 package io.github.tbondetti.authserver.web.api.v1.dto;
 
-import io.github.tbondetti.authserver.web.openapi.dto.CreateOAuth2ClientRequestApi;
+import io.github.tbondetti.authserver.openapi.administration.dto.CreateOAuth2ClientRequestApi;
 
 public record CreateOAuth2ClientRequest(
         String clientName,

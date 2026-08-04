@@ -1,6 +1,6 @@
 package io.github.tbondetti.authserver.web.api.v1.response;
 
-import io.github.tbondetti.authserver.web.openapi.response.CreateOAuth2ClientResponseApi;
+import io.github.tbondetti.authserver.openapi.administration.response.CreateOAuth2ClientResponseApi;
 import lombok.Builder;
 
 @Builder

@@ -1,9 +1,9 @@
 package io.github.tbondetti.authserver.web.api.v1.controller;
 
 import io.github.tbondetti.authserver.application.service.OAuth2ScopeService;
-import io.github.tbondetti.authserver.web.openapi.api.OAuth2ScopeApi;
-import io.github.tbondetti.authserver.web.openapi.dto.CreateOAuth2ScopeRequestApi;
-import io.github.tbondetti.authserver.web.openapi.response.OAuth2ScopeResponseApi;
+import io.github.tbondetti.authserver.openapi.administration.api.OAuth2ScopeApi;
+import io.github.tbondetti.authserver.openapi.administration.dto.CreateOAuth2ScopeRequestApi;
+import io.github.tbondetti.authserver.openapi.administration.response.OAuth2ScopeResponseApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
