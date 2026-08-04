@@ -3,6 +3,7 @@ package io.github.tbondetti.authserver.web.api.v1.controller;
 import io.github.tbondetti.authserver.application.service.ApplicationService;
 import io.github.tbondetti.authserver.web.api.v1.dto.CreateApplicationRequest;
 import io.github.tbondetti.authserver.web.api.v1.response.ApplicationResponse;
+import io.github.tbondetti.authserver.web.openapi.api.ApplicationApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,20 +15,27 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.tbondetti.authserver.web.api.v1.mapper.ApplicationWebMapper.toResponse;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/api/v1/applications")
 @RequiredArgsConstructor
-public class ApplicationController {
+public class ApplicationController implements ApplicationApi {
 
     private final ApplicationService applicationService;
 
-    @GetMapping("/{code}")
+    @GetMapping(
+            value = "/{code}",
+            produces = APPLICATION_JSON_VALUE
+    )
     public ApplicationResponse getApplication(@PathVariable final String code) {
         return toResponse(this.applicationService.getApplication(code));
     }
 
-    @PostMapping
+    @PostMapping(
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE
+    )
     @ResponseStatus(HttpStatus.CREATED)
     public ApplicationResponse createApplication(@RequestBody final CreateApplicationRequest request) {
         return toResponse(this.applicationService.createApplication(
