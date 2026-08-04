@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static io.github.tbondetti.authserver.web.api.v1.mapper.OAuth2ClientWebMapper.toCreateResponse;
 import static io.github.tbondetti.authserver.web.api.v1.mapper.OAuth2ClientWebMapper.toResponse;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
 @RestController
@@ -27,12 +28,18 @@ public class OAuth2ClientController implements OAuth2ClientApi {
 
     private final OAuth2ClientService oauth2ClientService;
 
-    @GetMapping("/{clientId}")
+    @GetMapping(
+            value = "/{clientId}",
+            produces = APPLICATION_JSON_VALUE
+ )
     public OAuth2ClientResponse getOAuth2Client(@PathVariable final String clientId) {
         return toResponse(this.oauth2ClientService.getOAuth2Client(clientId));
     }
 
-    @PostMapping
+    @PostMapping(
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE
+    )
     @ResponseStatus(HttpStatus.CREATED)
     public CreateOAuth2ClientResponse createOAuth2Client(@RequestBody final CreateOAuth2ClientRequest request) {
         return toCreateResponse(this.oauth2ClientService.createOAuth2Client(
@@ -41,7 +48,11 @@ public class OAuth2ClientController implements OAuth2ClientApi {
         ));
     }
 
-    @PostMapping("/{clientId}/scopes")
+    @PostMapping(
+            value = "/{clientId}/scopes",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE
+    )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void assignScope(
             @PathVariable final String clientId,

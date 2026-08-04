@@ -6,7 +6,9 @@ import lombok.experimental.UtilityClass;
 public class OAuth2ScopeRules {
 
     public static final int SCOPE_CODE_MAX_LENGTH = 100;
+
     public static final int SCOPE_NAME_MAX_LENGTH = 100;
+
     public static final int SCOPE_DESCRIPTION_MAX_LENGTH = 500;
 
 }

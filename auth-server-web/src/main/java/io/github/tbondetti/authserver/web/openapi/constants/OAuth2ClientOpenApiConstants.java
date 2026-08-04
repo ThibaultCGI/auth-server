@@ -34,4 +34,19 @@ public class OAuth2ClientOpenApiConstants {
 
     public static final String RESPONSE_201_CREATED = "OAuth2 client créée.";
 
+    public static final String GET_SUMMARY = "Récupérer un client OAuth2";
+
+    public static final String GET_DESCRIPTION = "Retourne les informations d'un client OAuth2.";
+
+    public static final String RESPONSE_200_OK = "Client OAuth2 trouvé.";
+
+    public static final String CLIENT_ID_PARAMETER_DESCRIPTION = "Identifiant du client OAuth2.";
+
+    public static final String ASSIGN_SCOPE_SUMMARY = "Attribuer un scope OAuth2";
+
+    public static final String ASSIGN_SCOPE_DESCRIPTION = "Attribue un scope existant à un client OAuth2.";
+
+    public static final String ASSIGN_SCOPE_REQUEST_DESCRIPTION = "Scope à attribuer au client.";
+
+    public static final String RESPONSE_204_NO_CONTENT = "Scope attribué avec succès.";
 }
