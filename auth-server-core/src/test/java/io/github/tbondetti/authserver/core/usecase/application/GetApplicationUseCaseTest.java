@@ -1,7 +1,7 @@
 package io.github.tbondetti.authserver.core.usecase.application;
 
 import io.github.tbondetti.authserver.core.domain.Application;
-import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
+import io.github.tbondetti.authserver.core.exception.AuthServerNotFoundException;
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
 import io.github.tbondetti.authserver.core.utils.CommonValidationUtils;
 import org.junit.jupiter.api.Test;
@@ -42,15 +42,14 @@ class GetApplicationUseCaseTest {
 
             when(this.applicationRepositoryPort.findByCode(normalizedCode)).thenReturn(Optional.empty());
 
-            final AuthServerFunctionalException exception = assertThrows(
-                    AuthServerFunctionalException.class,
+            final AuthServerNotFoundException exception = assertThrows(
+                    AuthServerNotFoundException.class,
                     () -> this.subject.execute(givenCode)
             );
 
             assertSame(APPLICATION_NOT_FOUND, exception.getCode());
             assertEquals(ERROR_APPLICATION_NOT_FOUND.formatted(normalizedCode), exception.getMessage());
         }
-
     }
 
     @Test

@@ -1,7 +1,7 @@
 package io.github.tbondetti.authserver.core.usecase.oauth2client;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
-import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
+import io.github.tbondetti.authserver.core.exception.AuthServerNotFoundException;
 import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
 import io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils;
 import org.junit.jupiter.api.Test;
@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GetOAuth2ClientUseCaseTest {
+
     @InjectMocks
     private GetOAuth2ClientUseCase subject;
 
@@ -41,8 +42,8 @@ class GetOAuth2ClientUseCaseTest {
 
             when(this.oauth2ClientRepositoryPort.findByClientId(normalizedClientId)).thenReturn(Optional.empty());
 
-            final AuthServerFunctionalException exception = assertThrows(
-                    AuthServerFunctionalException.class,
+            final AuthServerNotFoundException exception = assertThrows(
+                    AuthServerNotFoundException.class,
                     () -> this.subject.execute(clientId)
             );
 

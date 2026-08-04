@@ -2,7 +2,7 @@ package io.github.tbondetti.authserver.core.usecase.oauth2scope;
 
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
-import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
+import io.github.tbondetti.authserver.core.exception.AuthServerNotFoundException;
 import io.github.tbondetti.authserver.core.port.OAuth2ScopeRepositoryPort;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class GetOAuth2ScopeUseCase {
         return this.oauth2ScopeRepositoryPort.findByApplicationCodeAndCode(
                 application.code(),
                 normalizedCode
-        ).orElseThrow(() -> new AuthServerFunctionalException(
+        ).orElseThrow(() -> new AuthServerNotFoundException(
                 SCOPE_NOT_FOUND,
                 ERROR_SCOPE_NOT_FOUND.formatted(normalizedCode, application.code())
         ));

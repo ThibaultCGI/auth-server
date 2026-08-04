@@ -1,7 +1,7 @@
 package io.github.tbondetti.authserver.core.usecase.application;
 
 import io.github.tbondetti.authserver.core.domain.Application;
-import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
+import io.github.tbondetti.authserver.core.exception.AuthServerNotFoundException;
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ public class GetApplicationUseCase {
         final String normalizedCode = normalizeCode(code);
 
         return this.applicationRepositoryPort.findByCode(normalizedCode).orElseThrow(
-                () -> new AuthServerFunctionalException(
+                () -> new AuthServerNotFoundException(
                         APPLICATION_NOT_FOUND,
                         ERROR_APPLICATION_NOT_FOUND.formatted(normalizedCode)
                 )

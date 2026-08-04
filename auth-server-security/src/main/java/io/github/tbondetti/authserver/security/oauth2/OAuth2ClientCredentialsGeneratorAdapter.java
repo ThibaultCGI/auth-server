@@ -4,6 +4,8 @@ import io.github.tbondetti.authserver.core.port.OAuth2ClientCredentialsGenerator
 
 import java.security.SecureRandom;
 
+import static io.github.tbondetti.authserver.core.constants.OAuth2ClientRules.CLIENT_SECRET_MAX_LENGTH;
+
 public class OAuth2ClientCredentialsGeneratorAdapter implements OAuth2ClientCredentialsGeneratorPort {
 
     static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -11,7 +13,6 @@ public class OAuth2ClientCredentialsGeneratorAdapter implements OAuth2ClientCred
     static final int CLIENT_ID_SEQUENCE_COUNT = 4;
     static final int CLIENT_ID_SEQUENCE_LENGTH = 6;
     static final String CLIENT_ID_SEQUENCE_SEPARATOR = "-";
-    static final int CLIENT_SECRET_LENGTH = 50;
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
@@ -31,7 +32,7 @@ public class OAuth2ClientCredentialsGeneratorAdapter implements OAuth2ClientCred
 
     @Override
     public String generateClientSecret() {
-        return generateRandomString(CLIENT_SECRET_LENGTH);
+        return generateRandomString(CLIENT_SECRET_MAX_LENGTH);
     }
 
     static int generatedClientIdLength() {

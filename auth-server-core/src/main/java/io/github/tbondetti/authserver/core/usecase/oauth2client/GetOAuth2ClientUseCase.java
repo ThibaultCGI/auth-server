@@ -1,7 +1,7 @@
 package io.github.tbondetti.authserver.core.usecase.oauth2client;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
-import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
+import io.github.tbondetti.authserver.core.exception.AuthServerNotFoundException;
 import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ public class GetOAuth2ClientUseCase {
         final String normalizedClientId = normalizeClientId(clientId);
 
         return this.oauth2ClientRepositoryPort.findByClientId(normalizedClientId).orElseThrow(
-                () -> new AuthServerFunctionalException(
+                () -> new AuthServerNotFoundException(
                         CLIENT_NOT_FOUND,
                         ERROR_CLIENT_NOT_FOUND.formatted(normalizedClientId)
                 )
