@@ -305,7 +305,7 @@ Conserver des use cases indépendants du framework.
 
 Les use cases ne sont pas annotés :
 
-```java
+```
 @Component
 @Service
 @Repository

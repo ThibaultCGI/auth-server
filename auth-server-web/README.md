@@ -78,19 +78,19 @@ Le module Web fournit les implémentations associées.
 
 Exemples :
 
-```java
+```
 ApplicationController
         implements
 ApplicationApi
 ```
 
-```java
+```
 OAuth2ClientController
         implements
 OAuth2ClientApi
 ```
 
-```java
+```
 OAuth2ScopeController
         implements
 OAuth2ScopeApi
@@ -100,7 +100,7 @@ Les DTO REST peuvent également implémenter les interfaces documentaires défin
 
 Exemple :
 
-```java
+```
 ApplicationResponse
         implements
 ApplicationResponseApi
