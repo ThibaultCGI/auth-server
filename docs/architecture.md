@@ -16,6 +16,7 @@ L'architecture retenue est une architecture hexagonale (Ports & Adapters) permet
 - le métier ;
 - les cas d'utilisation ;
 - les services applicatifs ;
+- les contrats HTTP ;
 - les adaptateurs techniques ;
 - la persistance ;
 - la sécurité ;
@@ -26,24 +27,24 @@ L'architecture retenue est une architecture hexagonale (Ports & Adapters) permet
 # Vue d'ensemble
 
 ```text
-                ┌────────────────────┐
-                │ auth-server-boot   │
-                └──────────┬─────────┘
-                           │
-        ┌──────────────────┼──────────────────┐
-        │                  │                  │
-        ▼                  ▼                  ▼
+                                                     ┌────────────────────┐
+                                                     │ auth-server-boot   │
+                                                     └──────────┬─────────┘
+                                                                │
+         ┌──────────────────────────────────────────────────────┴──────────────┬──────────────────────────────────────┐
+         │                                                                     │                                      │
+         ▼                                                                     ▼                                      ▼
 
-auth-server-web   auth-server-security   auth-server-persistence
-        │                  │                  │
-        └──────────┬───────┴──────────┬───────┘
-                   ▼                  ▼
-
-            auth-server-application
-                        │
-                        ▼
-
-                 auth-server-core
+┌─────────────────┐             ┌─────────────────────┐             ┌──────────────────────┐             ┌─────────────────────────┐
+│ auth-server-web ├─────────►   │ auth-server-openapi │             │ auth-server-security │             │ auth-server-persistence │
+└────────┬────────┘             └──────────┬──────────┘             └──────────┬───────────┘             └────────────┬────────────┘
+         │                                 │                                   │                                      │
+         │                                 │                                   │                                      │
+         ▼                                 │                                   ▼                                      │
+                                           │                                                                          │
+┌─────────────────────────┐                │                           ┌─────────────────┐                            │
+│ auth-server-application │────────────────┴───────────────────────►   │ auth-server-core│   ◄────────────────────────┘
+└─────────────────────────┘                                            └─────────────────┘
 ```
 
 ---
@@ -62,7 +63,8 @@ Il ne dépend :
 - ni de JPA ;
 - ni de PostgreSQL ;
 - ni de Spring Security ;
-- ni d'OAuth2.
+- ni de Spring Authorization Server ;
+- ni d'OpenAPI.
 
 ### Contenu
 
@@ -102,6 +104,7 @@ core
 - AssignRoleToUserUseCase
 - CreateApplicationUseCase
 - CreateOAuth2ClientUseCase
+- CreateOAuth2ScopeUseCase
 - AuthenticateUserUseCase
 
 ---
@@ -124,9 +127,9 @@ application
 
 ### Responsabilités
 
-- gestion des transactions ;
 - orchestration des cas d'usage ;
-- exposition de services applicatifs ;
+- gestion des transactions ;
+- exposition des services applicatifs ;
 - intégration du Core avec Spring.
 
 ### Exemples
@@ -136,6 +139,73 @@ application
 - ApplicationService
 - OAuth2ClientService
 - OAuth2ScopeService
+
+---
+
+## auth-server-openapi
+
+### Responsabilité
+
+Le module `auth-server-openapi` centralise les contrats HTTP et la documentation OpenAPI du projet.
+
+### Contenu
+
+```text
+openapi
+├── administration
+├── iam
+├── authorizationserver
+└── common
+```
+
+### Responsabilités
+
+- définition des contrats HTTP ;
+- documentation OpenAPI ;
+- DTO documentaires ;
+- réponses documentaires ;
+- constantes de documentation ;
+- configuration des groupes Swagger.
+
+### Organisation
+
+```text
+administration
+├── api
+├── dto
+├── response
+├── constants
+└── config
+
+iam
+├── api
+├── dto
+├── response
+├── constants
+└── config
+
+authorizationserver
+├── api
+├── dto
+├── response
+├── constants
+└── config
+
+common
+├── constants
+└── config
+```
+
+### Principe
+
+Les contrats OpenAPI sont définis dans ce module puis implémentés par les adaptateurs HTTP.
+
+Exemples :
+
+- ApplicationApi
+- OAuth2ClientApi
+- OAuth2ScopeApi
+- AuthorizationServerApi
 
 ---
 
@@ -160,10 +230,18 @@ web
 ### Responsabilités
 
 - endpoints REST ;
-- validation des requêtes ;
+- implémentation des contrats OpenAPI ;
 - mapping HTTP ↔ métier ;
 - gestion des erreurs API ;
 - configuration de la sécurité Web.
+
+### Exemples
+
+- ApplicationController
+- OAuth2ClientController
+- OAuth2ScopeController
+- UserController
+- RoleController
 
 ---
 
@@ -192,10 +270,71 @@ persistence
 - implémentations des ports ;
 - migrations Liquibase.
 
+### Exemples
+
+- UserRepositoryAdapter
+- RoleRepositoryAdapter
+- ApplicationRepositoryAdapter
+- OAuth2ClientRepositoryAdapter
+- OAuth2ScopeRepositoryAdapter
+
 ---
 
 ## auth-server-security
 
 ### Responsabilité
 
-Le module `auth-server-security` implémente les besoins de sécurité
+Le module `auth-server-security` implémente les besoins de sécurité du système.
+
+### Contenu
+
+```text
+security
+├── configuration
+├── repository
+├── adapter
+├── authentication
+└── authorizationserver
+```
+
+### Responsabilités
+
+- authentification ;
+- autorisation ;
+- configuration Spring Security ;
+- configuration OAuth2 Authorization Server ;
+- gestion des clients OAuth2 ;
+- émission des jetons OAuth2 ;
+- implémentation des ports de sécurité du Core.
+
+### Exemples
+
+- SecurityAdapterConfiguration
+- OAuth2AuthorizationServerConfiguration
+- OAuth2RegisteredClientRepository
+- PasswordEncoderAdapter
+
+---
+
+## auth-server-boot
+
+### Responsabilité
+
+Le module `auth-server-boot` joue le rôle de Composition Root.
+
+### Responsabilités
+
+- démarrage de l'application ;
+- assemblage des modules ;
+- chargement de la configuration Spring ;
+- démarrage du conteneur Spring Boot.
+
+### Principe
+
+Le module `auth-server-boot` est le seul module autorisé à connaître simultanément :
+
+- auth-server-web ;
+- auth-server-security ;
+- auth-server-persistence.
+
+Il assure l'assemblage complet du système.

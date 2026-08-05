@@ -24,6 +24,7 @@ L'objectif principal est d'approfondir la compréhension des mécanismes d'authe
 - Spring Boot 4
 - Spring Security
 - Spring Authorization Server
+- SpringDoc OpenAPI
 - PostgreSQL
 - Liquibase
 - Maven
@@ -51,24 +52,24 @@ L'objectif principal est d'approfondir la compréhension des mécanismes d'authe
 Le projet est organisé selon les principes de l'architecture hexagonale (Ports & Adapters).
 
 ```text
-                ┌────────────────────┐
-                │ auth-server-boot   │
-                └──────────┬─────────┘
-                           │
-        ┌──────────────────┼──────────────────┐
-        │                  │                  │
-        ▼                  ▼                  ▼
+                                                     ┌────────────────────┐
+                                                     │ auth-server-boot   │
+                                                     └──────────┬─────────┘
+                                                                │
+         ┌──────────────────────────────────────────────────────┴──────────────┬──────────────────────────────────────┐
+         │                                                                     │                                      │
+         ▼                                                                     ▼                                      ▼
 
-auth-server-web   auth-server-security   auth-server-persistence
-        │                  │                  │
-        └──────────┬───────┴──────────┬───────┘
-                   ▼                  ▼
-
-            auth-server-application
-                        │
-                        ▼
-
-                 auth-server-core
+┌─────────────────┐             ┌─────────────────────┐             ┌──────────────────────┐             ┌─────────────────────────┐
+│ auth-server-web ├──────────►  │ auth-server-openapi │             │ auth-server-security │             │ auth-server-persistence │
+└────────┬────────┘             └──────────┬──────────┘             └──────────┬───────────┘             └────────────┬────────────┘
+         │                                 │                                   │                                      │
+         │                                 │                                   │                                      │
+         ▼                                 │                                   ▼                                      │
+                                           │                                                                          │
+┌─────────────────────────┐                │                           ┌─────────────────┐                            │
+│ auth-server-application │────────────────┴────────────────────────►  │ auth-server-core│  ◄─────────────────────────┘
+└─────────────────────────┘                                            └─────────────────┘
 ```
 
 ---
@@ -79,7 +80,7 @@ auth-server-web   auth-server-security   auth-server-persistence
 
 Cœur métier de l'application.
 
-Responsabilités :
+### Responsabilités
 
 - Domaines métier
 - Use cases
@@ -87,7 +88,7 @@ Responsabilités :
 - Exceptions métier
 - Règles métier
 
-Documentation :
+### Documentation
 
 ```text
 auth-server-core/README.md
@@ -99,16 +100,38 @@ auth-server-core/README.md
 
 Couche applicative.
 
-Responsabilités :
+### Responsabilités
 
 - Orchestration des use cases
 - Gestion des transactions
+- Exposition des services applicatifs
 - Configuration Spring des composants métier
 
-Documentation :
+### Documentation
 
 ```text
 auth-server-application/README.md
+```
+
+---
+
+## auth-server-openapi
+
+Module de contrats HTTP et de documentation OpenAPI.
+
+### Responsabilités
+
+- Contrats d'API
+- DTO documentaires
+- Réponses documentaires
+- Documentation Swagger
+- Groupes OpenAPI
+- Documentation OAuth2 Authorization Server
+
+### Documentation
+
+```text
+auth-server-openapi/README.md
 ```
 
 ---
@@ -117,14 +140,16 @@ auth-server-application/README.md
 
 Adaptateur HTTP entrant.
 
-Responsabilités :
+### Responsabilités
 
 - API REST
-- DTO
+- Contrôleurs HTTP
+- Implémentation des contrats OpenAPI
+- DTO HTTP
 - Gestion des erreurs HTTP
-- Sécurisation des endpoints
+- Sécurisation des endpoints Web
 
-Documentation :
+### Documentation
 
 ```text
 auth-server-web/README.md
@@ -136,14 +161,14 @@ auth-server-web/README.md
 
 Adaptateur de persistance.
 
-Responsabilités :
+### Responsabilités
 
 - Entités JPA
 - Repositories Spring Data
 - Implémentations des ports de persistance
 - Migrations Liquibase
 
-Documentation :
+### Documentation
 
 ```text
 auth-server-persistence/README.md
@@ -155,15 +180,17 @@ auth-server-persistence/README.md
 
 Adaptateur de sécurité.
 
-Responsabilités :
+### Responsabilités
 
 - OAuth2 Authorization Server
+- Spring Security
 - UserDetailsService
 - PasswordEncoder
 - Génération des identifiants OAuth2
+- Gestion des tokens OAuth2
 - Intégration Spring Security
 
-Documentation :
+### Documentation
 
 ```text
 auth-server-security/README.md
@@ -175,13 +202,13 @@ auth-server-security/README.md
 
 Point d'entrée de l'application.
 
-Responsabilités :
+### Responsabilités
 
 - Démarrage Spring Boot
 - Assemblage des modules
 - Composition Root
 
-Documentation :
+### Documentation
 
 ```text
 auth-server-boot/README.md
@@ -197,8 +224,10 @@ Le projet suit les règles suivantes :
 - Le métier ne connaît pas Spring.
 - Le métier ne connaît pas JPA.
 - Le métier ne connaît pas Spring Security.
+- Le métier ne connaît pas OpenAPI.
 - Les accès aux données passent par des ports.
-- Les implémentations techniques sont fournies par des adapters.
+- Les implémentations techniques sont fournies par des adaptateurs.
+- Les contrats HTTP sont centralisés dans le module OpenAPI.
 - Le module Boot est le seul autorisé à assembler l'ensemble des composants.
 
 ---
@@ -216,8 +245,9 @@ Par exemple :
 ```text
 docs/
 ├── architecture.md
-├── oauth2.md
-├── openapi.yaml
+├── decisions.md
+├── dependencies.md
+├── diagrams
 └── ...
 ```
 
@@ -239,7 +269,7 @@ Le projet est développé avec une forte attention portée à :
 
 Projet en cours de développement.
 
-Fonctionnalités déjà disponibles :
+## Fonctionnalités disponibles
 
 - Gestion des utilisateurs
 - Gestion des rôles
@@ -248,10 +278,13 @@ Fonctionnalités déjà disponibles :
 - Gestion des clients OAuth2
 - OAuth2 Client Credentials Flow
 - API REST sécurisée
+- Documentation OpenAPI centralisée
+- Swagger découpés par domaine fonctionnel
+- Module dédié `auth-server-openapi`
 - Persistance PostgreSQL
 - Gestion des migrations Liquibase
 
-Fonctionnalités envisagées :
+## Fonctionnalités envisagées
 
 - Bean Validation
 - OpenID Connect
@@ -259,3 +292,9 @@ Fonctionnalités envisagées :
 - Révocation de jetons
 - Consentement utilisateur
 - Administration avancée
+
+---
+
+# Licence
+
+Projet personnel à vocation pédagogique et expérimentale.
