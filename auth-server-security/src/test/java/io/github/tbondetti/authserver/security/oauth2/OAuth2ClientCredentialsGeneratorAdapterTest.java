@@ -8,11 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.github.tbondetti.authserver.core.constants.OAuth2ClientRules.CLIENT_SECRET_MAX_LENGTH;
 import static io.github.tbondetti.authserver.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.ALPHABET;
 import static io.github.tbondetti.authserver.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_COUNT;
 import static io.github.tbondetti.authserver.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_LENGTH;
 import static io.github.tbondetti.authserver.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_ID_SEQUENCE_SEPARATOR;
-import static io.github.tbondetti.authserver.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.CLIENT_SECRET_LENGTH;
 import static io.github.tbondetti.authserver.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.generateRandomString;
 import static io.github.tbondetti.authserver.security.oauth2.OAuth2ClientCredentialsGeneratorAdapter.generatedClientIdLength;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +43,7 @@ class OAuth2ClientCredentialsGeneratorAdapterTest {
             CLIENT_ID_SEQUENCE_LENGTH,
             15,
             30,
-            CLIENT_SECRET_LENGTH
+            CLIENT_SECRET_MAX_LENGTH
     })
     void generateRandomStringOK(final int sequenceLength) {
         final String generated = generateRandomString(sequenceLength);
@@ -58,12 +58,12 @@ class OAuth2ClientCredentialsGeneratorAdapterTest {
     void generateClientSecretOk() {
         try(final MockedStatic<OAuth2ClientCredentialsGeneratorAdapter> utilities = mockStatic(OAuth2ClientCredentialsGeneratorAdapter.class, CALLS_REAL_METHODS)) {
             final String clientSecret = "clientSecret";
-            utilities.when(() -> generateRandomString(CLIENT_SECRET_LENGTH)).thenReturn(clientSecret); // déjà testé
+            utilities.when(() -> generateRandomString(CLIENT_SECRET_MAX_LENGTH)).thenReturn(clientSecret); // déjà testé
 
             assertSame(clientSecret, this.subject.generateClientSecret());
 
             utilities.verify(
-                    () -> generateRandomString(CLIENT_SECRET_LENGTH),
+                    () -> generateRandomString(CLIENT_SECRET_MAX_LENGTH),
                     times(1)
             );
         }

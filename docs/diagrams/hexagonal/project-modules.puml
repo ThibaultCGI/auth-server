@@ -4,24 +4,29 @@ title Architecture modulaire
 skinparam shadowing false
 skinparam roundcorner 10
 
-rectangle "auth-server-core" as core
-
-rectangle "auth-server-application" as application
-rectangle "auth-server-web" as web
-
-rectangle "auth-server-persistence" as persistence
-rectangle "auth-server-security" as security
+top to bottom direction
 
 rectangle "auth-server-boot" as boot
 
-web --> application
-application --> core
+rectangle "auth-server-web" as web
+rectangle "auth-server-openapi" as openapi
+rectangle "auth-server-security" as security
+rectangle "auth-server-persistence" as persistence
 
-persistence --> core
-security --> core
+rectangle "auth-server-application" as application
+
+rectangle "auth-server-core" as core
 
 boot --> web
-boot --> persistence
 boot --> security
+boot --> persistence
+
+web --> application
+web --> openapi
+
+application --> core
+openapi --> core
+security --> core
+persistence --> core
 
 @enduml

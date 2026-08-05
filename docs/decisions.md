@@ -46,6 +46,7 @@ Le projet est organisé sous la forme des modules Maven suivants :
 
 - auth-server-core
 - auth-server-application
+- auth-server-openapi
 - auth-server-web
 - auth-server-persistence
 - auth-server-security
@@ -57,6 +58,7 @@ Séparer clairement :
 
 - le métier ;
 - l'orchestration applicative ;
+- les contrats HTTP ;
 - l'exposition HTTP ;
 - la persistance ;
 - la sécurité ;
@@ -392,10 +394,9 @@ Centraliser l'assemblage de l'application.
 
 Le module Boot est le seul module autorisé à connaître simultanément :
 
-- web
-- application
-- persistence
-- security
+- web ;
+- security ;
+- persistence.
 
 ---
 
@@ -472,6 +473,59 @@ Les avertissements peuvent être conservés lorsqu'ils sont justifiés et docume
 
 ---
 
+# ADR-023 - Introduction du module auth-server-openapi
+
+## Décision
+
+Les contrats HTTP et la documentation OpenAPI sont regroupés dans un module dédié :
+
+- auth-server-openapi
+
+## Motivation
+
+Initialement, la documentation OpenAPI était portée directement par les modules exposant les APIs.
+
+L'introduction d'un module dédié permet de :
+
+- centraliser les contrats HTTP ;
+- partager les définitions OpenAPI ;
+- réduire le couplage entre la documentation et les implémentations ;
+- considérer OpenAPI comme un contrat indépendant.
+
+## Conséquences
+
+Le module :
+
+- auth-server-web
+
+dépend désormais du module :
+
+- auth-server-openapi.
+
+Le module OpenAPI contient notamment :
+
+- les interfaces API ;
+- les DTO documentaires ;
+- les réponses documentaires ;
+- les constantes OpenAPI ;
+- les groupes Swagger.
+
+Les implémentations HTTP restent localisées dans le module :
+
+- auth-server-web.
+
+Le module OpenAPI dépend uniquement de :
+
+- auth-server-core.
+
+L'architecture distingue désormais explicitement :
+
+- le contrat métier (`auth-server-core`) ;
+- le contrat HTTP (`auth-server-openapi`) ;
+- les implémentations techniques (`web`, `security`, `persistence`).
+
+---
+
 # Principes directeurs
 
 Le développement du projet est guidé par les principes suivants :
@@ -483,4 +537,5 @@ Le développement du projet est guidé par les principes suivants :
 - les dépendances vont toujours vers le métier ;
 - les transactions sont gérées dans la couche Application ;
 - la sécurité reste indépendante de la persistance ;
+- les contrats HTTP sont centralisés dans le module OpenAPI ;
 - le code doit rester simple, lisible et testable.

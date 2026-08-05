@@ -23,6 +23,12 @@ auth-server-application
         ↓
 auth-server-core
 
+auth-server-web
+        ↓
+auth-server-openapi
+        ↓
+auth-server-core
+
 auth-server-persistence
         ↓
 auth-server-core
@@ -30,6 +36,7 @@ auth-server-core
 auth-server-security
         ↓
 auth-server-core
+
 ```
 
 Le Core est le centre du système.

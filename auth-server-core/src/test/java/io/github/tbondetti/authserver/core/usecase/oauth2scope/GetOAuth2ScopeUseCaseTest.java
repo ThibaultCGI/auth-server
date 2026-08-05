@@ -2,7 +2,7 @@ package io.github.tbondetti.authserver.core.usecase.oauth2scope;
 
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
-import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
+import io.github.tbondetti.authserver.core.exception.AuthServerNotFoundException;
 import io.github.tbondetti.authserver.core.port.OAuth2ScopeRepositoryPort;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
 import io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils;
@@ -60,8 +60,8 @@ class GetOAuth2ScopeUseCaseTest {
                     normalizedScopeCode
             )).thenReturn(Optional.empty());
 
-            final AuthServerFunctionalException exception = assertThrows(
-                    AuthServerFunctionalException.class,
+            final AuthServerNotFoundException exception = assertThrows(
+                    AuthServerNotFoundException.class,
                     () -> this.subject.execute(
                             givenApplicationCode,
                             givenScopeCode

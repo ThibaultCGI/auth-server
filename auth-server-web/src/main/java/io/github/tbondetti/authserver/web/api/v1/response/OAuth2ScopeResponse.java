@@ -1,0 +1,12 @@
+package io.github.tbondetti.authserver.web.api.v1.response;
+
+import io.github.tbondetti.authserver.openapi.administration.response.OAuth2ScopeResponseApi;
+import lombok.Builder;
+
+@Builder
+public record OAuth2ScopeResponse(
+        String applicationCode,
+        String code,
+        String name,
+        String description
+) implements OAuth2ScopeResponseApi { }

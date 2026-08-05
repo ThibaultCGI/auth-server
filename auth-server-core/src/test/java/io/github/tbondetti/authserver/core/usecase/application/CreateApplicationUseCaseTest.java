@@ -15,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.CODE_MAX_LENGTH;
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.DESCRIPTION_MAX_LENGTH;
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_CODE_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_DESCRIPTION_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_NAME_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase.ERROR_CODE_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
@@ -83,13 +83,13 @@ class CreateApplicationUseCaseTest {
              final MockedStatic<UUID> uUIDUtilities = mockStatic(UUID.class)
         ) {
             final String normalizedCode = "normalizedCode";
-            commonUtilities.when(() -> validateAndNormalizeCode(givenCode, CODE_MAX_LENGTH)).thenReturn(normalizedCode);
+            commonUtilities.when(() -> validateAndNormalizeCode(givenCode, APPLICATION_CODE_MAX_LENGTH)).thenReturn(normalizedCode);
 
             final String normalizedName = "normalizedName";
-            commonUtilities.when(() -> validateAndNormalizeName(givenName, NAME_MAX_LENGTH)).thenReturn(normalizedName);
+            commonUtilities.when(() -> validateAndNormalizeName(givenName, APPLICATION_NAME_MAX_LENGTH)).thenReturn(normalizedName);
 
             final String normalizedDescription = "normalizedDescription";
-            commonUtilities.when(() -> normalizeAndValidateDescription(givenDescription, DESCRIPTION_MAX_LENGTH)).thenReturn(normalizedDescription);
+            commonUtilities.when(() -> normalizeAndValidateDescription(givenDescription, APPLICATION_DESCRIPTION_MAX_LENGTH)).thenReturn(normalizedDescription);
 
             doNothing().when(this.subject).ensureCodeIsUnique(normalizedCode); // déjà testé
 
