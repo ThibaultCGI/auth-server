@@ -1,5 +1,8 @@
 package io.github.tbondetti.authserver.openapi.authorizationserver.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class AuthorizationServerClaimsNames {
 
     public static final String GRANT_TYPE = "grantType";

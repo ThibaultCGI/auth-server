@@ -1,5 +1,8 @@
 package io.github.tbondetti.authserver.openapi.administration.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class AdministrationClaimsNames {
 
     public static final String CODE = "code";
