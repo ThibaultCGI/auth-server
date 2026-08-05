@@ -1,9 +1,12 @@
 package io.github.tbondetti.authserver.openapi.administration.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.OAuth2ClientRules.CLIENT_NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.openapi.administration.constants.AdministrationClaimsNames.APPLICATION_CODE;
+import static io.github.tbondetti.authserver.openapi.administration.constants.AdministrationClaimsNames.CLIENT_NAME;
 import static io.github.tbondetti.authserver.openapi.administration.constants.OAuth2ClientOpenApiConstants.APPLICATION_CODE_DESCRIPTION;
 import static io.github.tbondetti.authserver.openapi.administration.constants.OAuth2ClientOpenApiConstants.APPLICATION_CODE_EXAMPLE;
 import static io.github.tbondetti.authserver.openapi.administration.constants.OAuth2ClientOpenApiConstants.CLIENT_NAME_DESCRIPTION;
@@ -17,6 +20,7 @@ public interface CreateOAuth2ClientRequestApi {
             maxLength = CLIENT_NAME_MAX_LENGTH,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @JsonProperty(CLIENT_NAME)
     String clientName();
 
     @Schema(
@@ -25,6 +29,7 @@ public interface CreateOAuth2ClientRequestApi {
             maxLength = APPLICATION_CODE_MAX_LENGTH,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @JsonProperty(APPLICATION_CODE)
     String applicationCode();
 
 

@@ -1,10 +1,14 @@
 package io.github.tbondetti.authserver.openapi.administration.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.openapi.administration.constants.AdministrationClaimsNames.CODE;
+import static io.github.tbondetti.authserver.openapi.administration.constants.AdministrationClaimsNames.DESCRIPTION;
+import static io.github.tbondetti.authserver.openapi.administration.constants.AdministrationClaimsNames.NAME;
 import static io.github.tbondetti.authserver.openapi.administration.constants.ApplicationOpenApiConstants.CODE_DESCRIPTION;
 import static io.github.tbondetti.authserver.openapi.administration.constants.ApplicationOpenApiConstants.CODE_EXAMPLE;
 import static io.github.tbondetti.authserver.openapi.administration.constants.ApplicationOpenApiConstants.DESCRIPTION_DESCRIPTION;
@@ -20,6 +24,7 @@ public interface CreateApplicationRequestApi {
             maxLength = APPLICATION_CODE_MAX_LENGTH,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @JsonProperty(CODE)
     String code();
 
     @Schema(
@@ -28,6 +33,7 @@ public interface CreateApplicationRequestApi {
             maxLength = APPLICATION_NAME_MAX_LENGTH,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @JsonProperty(NAME)
     String name();
 
     @Schema(
@@ -35,5 +41,6 @@ public interface CreateApplicationRequestApi {
             example = DESCRIPTION_EXAMPLE,
             maxLength = APPLICATION_DESCRIPTION_MAX_LENGTH
     )
+    @JsonProperty(DESCRIPTION)
     String description();
 }

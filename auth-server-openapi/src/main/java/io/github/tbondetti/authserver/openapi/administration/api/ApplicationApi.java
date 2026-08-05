@@ -1,7 +1,7 @@
 package io.github.tbondetti.authserver.openapi.administration.api;
 
 import io.github.tbondetti.authserver.openapi.administration.dto.CreateApplicationRequestApi;
-import io.github.tbondetti.authserver.openapi.administration.response.ApiErrorResponseApi;
+import io.github.tbondetti.authserver.openapi.common.response.ApiErrorResponseApi;
 import io.github.tbondetti.authserver.openapi.administration.response.ApplicationResponseApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
