@@ -7,6 +7,12 @@ import org.mockito.MockedStatic;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.ONE_HUNDRED_NON_NUMERIC_STRING_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.ONE_HUNDRED_STRING_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.TWO_HUNDRED_STRING_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_CODE_HAS_INVALID_CARACTER;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_CODE_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_CODE_TOO_LONG;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_DESCRIPTION_TOO_LONG;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_NAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_NAME_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_CODE_HAS_INVALID_CARACTER;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_CODE_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_CODE_IS_TOO_LONG;
@@ -14,13 +20,6 @@ import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NAME_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NAME_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeNullableString;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ALPHABET;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_CODE_HAS_INVALID_CARACTER;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_CODE_IS_REQUIRED;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_CODE_TOO_LONG;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_DESCRIPTION_TOO_LONG;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_NAME_IS_REQUIRED;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_NAME_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeCode;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeName;
@@ -49,7 +48,7 @@ class OAuth2ScopeValidationUtilsTest {
         );
 
         assertSame(SCOPE_CODE_IS_REQUIRED, exception1.getCode());
-        assertSame(ERROR_CODE_IS_REQUIRED, exception1.getMessage());
+        assertSame(ERROR_SCOPE_CODE_IS_REQUIRED, exception1.getMessage());
 
         final AuthServerFunctionalException exception2 = assertThrows(
                 AuthServerFunctionalException.class,
@@ -57,7 +56,7 @@ class OAuth2ScopeValidationUtilsTest {
         );
 
         assertSame(SCOPE_CODE_IS_REQUIRED, exception2.getCode());
-        assertSame(ERROR_CODE_IS_REQUIRED, exception2.getMessage());
+        assertSame(ERROR_SCOPE_CODE_IS_REQUIRED, exception2.getMessage());
 
         try (MockedStatic<OAuth2ScopeValidationUtils> utilities = mockStatic(OAuth2ScopeValidationUtils.class, CALLS_REAL_METHODS)) {
             final String code1 = "code1";
@@ -71,7 +70,7 @@ class OAuth2ScopeValidationUtilsTest {
             );
 
             assertSame(SCOPE_CODE_IS_TOO_LONG, exception3.getCode());
-            assertSame(ERROR_CODE_TOO_LONG, exception3.getMessage());
+            assertSame(ERROR_SCOPE_CODE_TOO_LONG, exception3.getMessage());
 
             final String code2 = "code2";
             final String normalizedCode2 = "normalizedCode2";
@@ -84,10 +83,7 @@ class OAuth2ScopeValidationUtilsTest {
             );
 
             assertSame(SCOPE_CODE_HAS_INVALID_CARACTER, exception4.getCode());
-            assertEquals(
-                    ERROR_CODE_HAS_INVALID_CARACTER.formatted(ALPHABET),
-                    exception4.getMessage()
-            );
+            assertEquals(ERROR_SCOPE_CODE_HAS_INVALID_CARACTER, exception4.getMessage());
 
             final String code3 = "code3";
 
@@ -111,7 +107,7 @@ class OAuth2ScopeValidationUtilsTest {
         );
 
         assertSame(SCOPE_NAME_IS_REQUIRED, exception1.getCode());
-        assertSame(ERROR_NAME_IS_REQUIRED, exception1.getMessage());
+        assertSame(ERROR_SCOPE_NAME_IS_REQUIRED, exception1.getMessage());
 
         final AuthServerFunctionalException exception2 = assertThrows(
                 AuthServerFunctionalException.class,
@@ -119,7 +115,7 @@ class OAuth2ScopeValidationUtilsTest {
         );
 
         assertSame(SCOPE_NAME_IS_REQUIRED, exception2.getCode());
-        assertSame(ERROR_NAME_IS_REQUIRED, exception2.getMessage());
+        assertSame(ERROR_SCOPE_NAME_IS_REQUIRED, exception2.getMessage());
 
         try (MockedStatic<OAuth2ScopeValidationUtils> utilities = mockStatic(OAuth2ScopeValidationUtils.class, CALLS_REAL_METHODS)) {
             final String name1 = "name1";
@@ -134,7 +130,7 @@ class OAuth2ScopeValidationUtilsTest {
             );
 
             assertSame(SCOPE_NAME_IS_TOO_LONG, exception3.getCode());
-            assertSame(ERROR_NAME_TOO_LONG, exception3.getMessage());
+            assertSame(ERROR_SCOPE_NAME_TOO_LONG, exception3.getMessage());
 
             final String name2 = "name2";
 
@@ -174,7 +170,7 @@ class OAuth2ScopeValidationUtilsTest {
             );
 
             assertSame(SCOPE_DESCRIPTION_IS_TOO_LONG, exception.getCode());
-            assertSame(ERROR_DESCRIPTION_TOO_LONG, exception.getMessage());
+            assertSame(ERROR_SCOPE_DESCRIPTION_TOO_LONG, exception.getMessage());
 
             final String description2 = "description2";
 

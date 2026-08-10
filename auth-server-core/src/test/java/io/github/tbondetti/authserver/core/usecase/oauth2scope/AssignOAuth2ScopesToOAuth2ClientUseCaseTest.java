@@ -11,8 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_ALREADY_ASSIGNED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_ALREADY_ASSIGNED;
-import static io.github.tbondetti.authserver.core.usecase.oauth2scope.AssignOAuth2ScopesToOAuth2ClientUseCase.ERROR_SCOPE_ALREADY_ASSIGNED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;

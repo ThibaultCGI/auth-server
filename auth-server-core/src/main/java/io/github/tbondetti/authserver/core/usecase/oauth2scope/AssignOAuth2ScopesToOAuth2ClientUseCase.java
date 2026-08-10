@@ -7,12 +7,11 @@ import io.github.tbondetti.authserver.core.port.OAuth2ClientScopeRepositoryPort;
 import io.github.tbondetti.authserver.core.usecase.oauth2client.GetOAuth2ClientUseCase;
 import lombok.RequiredArgsConstructor;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_ALREADY_ASSIGNED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_ALREADY_ASSIGNED;
 
 @RequiredArgsConstructor
 public class AssignOAuth2ScopesToOAuth2ClientUseCase {
-
-    static final String ERROR_SCOPE_ALREADY_ASSIGNED = "Le scope %s est déjà assigné au client %s";
 
     private final OAuth2ClientScopeRepositoryPort oauth2ClientScopeRepositoryPort;
     private final GetOAuth2ScopeUseCase getOAuth2ScopeUseCase;

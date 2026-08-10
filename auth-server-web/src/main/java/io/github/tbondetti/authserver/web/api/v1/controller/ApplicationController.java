@@ -2,8 +2,9 @@ package io.github.tbondetti.authserver.web.api.v1.controller;
 
 import io.github.tbondetti.authserver.application.service.ApplicationService;
 import io.github.tbondetti.authserver.openapi.administration.api.ApplicationApi;
-import io.github.tbondetti.authserver.openapi.administration.dto.CreateApplicationRequestApi;
-import io.github.tbondetti.authserver.openapi.administration.response.ApplicationResponseApi;
+import io.github.tbondetti.authserver.web.api.v1.dto.CreateApplicationRequest;
+import io.github.tbondetti.authserver.web.api.v1.response.ApplicationResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,24 +21,28 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api/v1/applications")
 @RequiredArgsConstructor
-public class ApplicationController implements ApplicationApi {
+public class ApplicationController implements ApplicationApi<CreateApplicationRequest> {
 
     private final ApplicationService applicationService;
 
+    @Override
     @GetMapping(
             value = "/{code}",
             produces = APPLICATION_JSON_VALUE
     )
-    public ApplicationResponseApi getApplication(@PathVariable final String code) {
+    public ApplicationResponse getApplication(@PathVariable final String code) {
         return toResponse(this.applicationService.getApplication(code));
     }
 
+    @Override
     @PostMapping(
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public ApplicationResponseApi createApplication(@RequestBody final CreateApplicationRequestApi request) {
+    public ApplicationResponse createApplication(
+            @Valid @RequestBody final CreateApplicationRequest request
+    ) {
         return toResponse(this.applicationService.createApplication(
                 request.code(),
                 request.name(),

@@ -11,4 +11,6 @@ public class OAuth2ScopeRules {
 
     public static final int SCOPE_DESCRIPTION_MAX_LENGTH = 500;
 
+    public static final String SCOPE_CODE_PATTERN = "[a-z.-]+";
+
 }

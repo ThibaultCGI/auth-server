@@ -12,8 +12,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.*;
-import static io.github.tbondetti.authserver.openapi.common.constants.OpenApiConstants.*;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.JWKS_DESCRIPTION;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.JWKS_RESPONSE_200;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.JWKS_SUMMARY;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.TAG;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.TAG_DESCRIPTION;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.TOKEN_DESCRIPTION;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.TOKEN_REQUEST_DESCRIPTION;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.TOKEN_RESPONSE_200;
+import static io.github.tbondetti.authserver.openapi.authorizationserver.constants.AuthorizationServerOpenApiConstants.TOKEN_SUMMARY;
+import static io.github.tbondetti.authserver.openapi.common.constants.OpenApiConstants.RESPONSE_400_BAD_REQUEST;
+import static io.github.tbondetti.authserver.openapi.common.constants.OpenApiConstants.RESPONSE_401_UNAUTHORIZED;
+import static io.github.tbondetti.authserver.openapi.common.constants.OpenApiConstants.SECURITY_SCHEME_NAME;
 
 @Tag(
         name = TAG,

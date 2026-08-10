@@ -6,10 +6,10 @@ import org.mockito.MockedStatic;
 
 import static io.github.tbondetti.authserver.core.constants.TestConstants.FIFTY_STRING_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.TestConstants.TWO_HUNDRED_STRING_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CLIENT_NAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CLIENT_NAME_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_NAME_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_NAME_IS_TOO_LONG;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.ERROR_CLIENT_NAME_IS_REQUIRED;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.ERROR_CLIENT_NAME_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.normalizeClientId;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.normalizeClientName;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.validateAndNormalizeClientName;

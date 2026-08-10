@@ -2,8 +2,9 @@ package io.github.tbondetti.authserver.web.api.v1.controller;
 
 import io.github.tbondetti.authserver.application.service.OAuth2ScopeService;
 import io.github.tbondetti.authserver.openapi.administration.api.OAuth2ScopeApi;
-import io.github.tbondetti.authserver.openapi.administration.dto.CreateOAuth2ScopeRequestApi;
-import io.github.tbondetti.authserver.openapi.administration.response.OAuth2ScopeResponseApi;
+import io.github.tbondetti.authserver.web.api.v1.dto.CreateOAuth2ScopeRequest;
+import io.github.tbondetti.authserver.web.api.v1.response.OAuth2ScopeResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,27 +22,29 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api/v1/scopes")
 @RequiredArgsConstructor
-public class OAuth2ScopeController implements OAuth2ScopeApi {
+public class OAuth2ScopeController implements OAuth2ScopeApi<CreateOAuth2ScopeRequest> {
 
     private final OAuth2ScopeService oauth2ScopeService;
 
+    @Override
     @GetMapping(
             value = "/{applicationCode}/{code}",
             produces = APPLICATION_JSON_VALUE
     )
-    public OAuth2ScopeResponseApi getOAuth2Scope(
+    public OAuth2ScopeResponse getOAuth2Scope(
             @PathVariable final String applicationCode,
             @PathVariable final String code
     ) {
         return toResponse(this.oauth2ScopeService.getOAuth2Scope(applicationCode, code));
     }
 
+    @Override
     @PostMapping(
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public OAuth2ScopeResponseApi createOAuth2Scope(@RequestBody final CreateOAuth2ScopeRequestApi request) {
+    public OAuth2ScopeResponse createOAuth2Scope(@Valid @RequestBody final CreateOAuth2ScopeRequest request) {
         return toResponse(this.oauth2ScopeService.createOAuth2Scope(
                 request.applicationCode(),
                 request.code(),

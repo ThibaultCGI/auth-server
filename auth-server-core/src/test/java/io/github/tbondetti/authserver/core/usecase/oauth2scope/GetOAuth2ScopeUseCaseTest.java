@@ -15,8 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NOT_FOUND;
-import static io.github.tbondetti.authserver.core.usecase.oauth2scope.GetOAuth2ScopeUseCase.ERROR_SCOPE_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;

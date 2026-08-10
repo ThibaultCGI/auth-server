@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CLIENT_ID_GENERATION_FAILED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_ID_GENERATION_FAILED;
-import static io.github.tbondetti.authserver.core.usecase.oauth2client.CreateOAuth2ClientUseCase.ERROR_CLIENT_ID_GENERATION_FAILED;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.validateAndNormalizeClientName;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;

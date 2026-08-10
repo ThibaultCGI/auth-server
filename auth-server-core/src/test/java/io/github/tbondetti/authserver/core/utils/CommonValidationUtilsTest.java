@@ -4,16 +4,16 @@ import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalExcepti
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CODE_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CODE_TOO_LONG;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_DESCRIPTION_TOO_LONG;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_NAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_NAME_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.DESCRIPTION_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.NAME_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.NAME_IS_TOO_LONG;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.ERROR_CODE_IS_REQUIRED;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.ERROR_CODE_TOO_LONG;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.ERROR_DESCRIPTION_TOO_LONG;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.ERROR_NAME_IS_REQUIRED;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.ERROR_NAME_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeNullableString;

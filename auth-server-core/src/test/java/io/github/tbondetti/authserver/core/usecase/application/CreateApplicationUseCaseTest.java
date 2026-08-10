@@ -3,7 +3,7 @@ package io.github.tbondetti.authserver.core.usecase.application;
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
-import io.github.tbondetti.authserver.core.utils.CommonValidationUtils;
+import io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,14 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_CODE_MAX_LENGTH;
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_DESCRIPTION_MAX_LENGTH;
-import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_APPLICATION_CODE_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_CODE_ALREADY_EXISTS;
-import static io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase.ERROR_CODE_MUST_BE_UNIQUE;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeName;
+import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.normalizeAndValidateDescription;
+import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.validateAndNormalizeCode;
+import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.validateAndNormalizeName;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -56,7 +53,7 @@ class CreateApplicationUseCaseTest {
         );
 
         assertSame(APPLICATION_CODE_ALREADY_EXISTS, exception.getCode());
-        assertEquals(ERROR_CODE_MUST_BE_UNIQUE, exception.getMessage());
+        assertEquals(ERROR_APPLICATION_CODE_MUST_BE_UNIQUE, exception.getMessage());
     }
 
     @Test
@@ -79,17 +76,17 @@ class CreateApplicationUseCaseTest {
         final UUID uuid = randomUUID();
 
 
-        try (final MockedStatic<CommonValidationUtils> commonUtilities = mockStatic(CommonValidationUtils.class);
+        try (final MockedStatic<ApplicationValidationUtils> commonUtilities = mockStatic(ApplicationValidationUtils.class);
              final MockedStatic<UUID> uUIDUtilities = mockStatic(UUID.class)
         ) {
             final String normalizedCode = "normalizedCode";
-            commonUtilities.when(() -> validateAndNormalizeCode(givenCode, APPLICATION_CODE_MAX_LENGTH)).thenReturn(normalizedCode);
+            commonUtilities.when(() -> validateAndNormalizeCode(givenCode)).thenReturn(normalizedCode);
 
             final String normalizedName = "normalizedName";
-            commonUtilities.when(() -> validateAndNormalizeName(givenName, APPLICATION_NAME_MAX_LENGTH)).thenReturn(normalizedName);
+            commonUtilities.when(() -> validateAndNormalizeName(givenName)).thenReturn(normalizedName);
 
             final String normalizedDescription = "normalizedDescription";
-            commonUtilities.when(() -> normalizeAndValidateDescription(givenDescription, APPLICATION_DESCRIPTION_MAX_LENGTH)).thenReturn(normalizedDescription);
+            commonUtilities.when(() -> normalizeAndValidateDescription(givenDescription)).thenReturn(normalizedDescription);
 
             doNothing().when(this.subject).ensureCodeIsUnique(normalizedCode); // déjà testé
 

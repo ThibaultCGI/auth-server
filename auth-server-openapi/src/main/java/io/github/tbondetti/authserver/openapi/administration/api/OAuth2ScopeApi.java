@@ -1,8 +1,8 @@
 package io.github.tbondetti.authserver.openapi.administration.api;
 
 import io.github.tbondetti.authserver.openapi.administration.dto.CreateOAuth2ScopeRequestApi;
-import io.github.tbondetti.authserver.openapi.common.response.ApiErrorResponseApi;
 import io.github.tbondetti.authserver.openapi.administration.response.OAuth2ScopeResponseApi;
+import io.github.tbondetti.authserver.openapi.common.response.ApiErrorResponseApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +35,7 @@ import static io.github.tbondetti.authserver.openapi.common.constants.OpenApiCon
         name = TAG,
         description = TAG_DESCRIPTION
 )
-public interface OAuth2ScopeApi {
+public interface OAuth2ScopeApi<C extends CreateOAuth2ScopeRequestApi> {
 
     @Operation(
             summary = GET_SUMMARY,
@@ -158,6 +158,6 @@ public interface OAuth2ScopeApi {
                             )
                     )
             )
-            final CreateOAuth2ScopeRequestApi request
+            final C request
     );
 }
