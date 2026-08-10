@@ -1,8 +1,8 @@
 package io.github.tbondetti.authserver.openapi.administration.api;
 
 import io.github.tbondetti.authserver.openapi.administration.dto.CreateOAuth2ScopeRequestApi;
-import io.github.tbondetti.authserver.openapi.common.response.ApiErrorResponseApi;
 import io.github.tbondetti.authserver.openapi.administration.response.OAuth2ScopeResponseApi;
+import io.github.tbondetti.authserver.openapi.common.response.ApiErrorResponseApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
