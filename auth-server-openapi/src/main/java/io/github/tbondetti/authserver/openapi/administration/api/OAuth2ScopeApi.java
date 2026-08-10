@@ -35,7 +35,7 @@ import static io.github.tbondetti.authserver.openapi.common.constants.OpenApiCon
         name = TAG,
         description = TAG_DESCRIPTION
 )
-public interface OAuth2ScopeApi {
+public interface OAuth2ScopeApi<C extends CreateOAuth2ScopeRequestApi> {
 
     @Operation(
             summary = GET_SUMMARY,
@@ -158,6 +158,6 @@ public interface OAuth2ScopeApi {
                             )
                     )
             )
-            final CreateOAuth2ScopeRequestApi request
+            final C request
     );
 }

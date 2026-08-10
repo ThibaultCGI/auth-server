@@ -39,7 +39,10 @@ import static io.github.tbondetti.authserver.openapi.common.constants.OpenApiCon
         name = TAG,
         description = TAG_DESCRIPTION
 )
-public interface OAuth2ClientApi {
+public interface OAuth2ClientApi<
+        C extends CreateOAuth2ClientRequestApi,
+        A extends AssignOAuth2ScopeRequestApi
+> {
 
     @Operation(
             summary = CREATE_SUMMARY,
@@ -96,7 +99,7 @@ public interface OAuth2ClientApi {
                             implementation = CreateOAuth2ClientRequestApi.class
                     )
             )
-    ) final CreateOAuth2ClientRequestApi request);
+    ) final C request);
 
     @Operation(
             summary = GET_SUMMARY,
@@ -209,7 +212,7 @@ public interface OAuth2ClientApi {
                             )
                     )
             )
-            final AssignOAuth2ScopeRequestApi request
+            final A request
     );
 
 }

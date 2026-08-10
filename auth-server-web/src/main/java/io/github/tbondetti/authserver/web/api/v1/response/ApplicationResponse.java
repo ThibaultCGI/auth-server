@@ -5,7 +5,10 @@ import lombok.Builder;
 
 @Builder
 public record ApplicationResponse(
+
         String code,
+
         String name,
+
         String description
 ) implements ApplicationResponseApi { }

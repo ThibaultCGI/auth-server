@@ -14,7 +14,6 @@ import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NAME_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_NAME_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeNullableString;
-import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ALPHABET;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_CODE_HAS_INVALID_CARACTER;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_CODE_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.ERROR_CODE_TOO_LONG;
@@ -84,10 +83,7 @@ class OAuth2ScopeValidationUtilsTest {
             );
 
             assertSame(SCOPE_CODE_HAS_INVALID_CARACTER, exception4.getCode());
-            assertEquals(
-                    ERROR_CODE_HAS_INVALID_CARACTER.formatted(ALPHABET),
-                    exception4.getMessage()
-            );
+            assertEquals(ERROR_CODE_HAS_INVALID_CARACTER, exception4.getMessage());
 
             final String code3 = "code3";
 
