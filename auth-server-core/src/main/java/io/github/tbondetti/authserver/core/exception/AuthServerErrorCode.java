@@ -55,4 +55,5 @@ public enum AuthServerErrorCode {
     SCOPE_DESCRIPTION_IS_TOO_LONG,
 
     ERREUR_TECHNIQUE,
+    VALIDATION_ERROR,
 }

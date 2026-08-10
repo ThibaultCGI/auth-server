@@ -19,7 +19,7 @@ import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APP
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_NAME_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_CODE_ALREADY_EXISTS;
-import static io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase.ERROR_CODE_MUST_BE_UNIQUE;
+import static io.github.tbondetti.authserver.core.usecase.application.CreateApplicationUseCase.ERROR_CODE_APPLICATION_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeName;
@@ -56,7 +56,7 @@ class CreateApplicationUseCaseTest {
         );
 
         assertSame(APPLICATION_CODE_ALREADY_EXISTS, exception.getCode());
-        assertEquals(ERROR_CODE_MUST_BE_UNIQUE, exception.getMessage());
+        assertEquals(ERROR_CODE_APPLICATION_MUST_BE_UNIQUE, exception.getMessage());
     }
 
     @Test

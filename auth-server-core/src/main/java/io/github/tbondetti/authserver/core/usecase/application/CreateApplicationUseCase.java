@@ -10,6 +10,7 @@ import java.util.Optional;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_DESCRIPTION_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_APPLICATION_CODE_MUST_BE_UNIQUE;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_CODE_ALREADY_EXISTS;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.validateAndNormalizeCode;
@@ -18,7 +19,6 @@ import static java.util.UUID.randomUUID;
 
 @RequiredArgsConstructor
 public class CreateApplicationUseCase {
-    static final String ERROR_CODE_MUST_BE_UNIQUE = "Le code doit être unique.";
 
     private final ApplicationRepositoryPort applicationRepositoryPort;
 
@@ -47,7 +47,7 @@ public class CreateApplicationUseCase {
         final Optional<Application> optionalApplication = this.applicationRepositoryPort.findByCode(normalizedCode);
 
         if (optionalApplication.isPresent()) {
-            throw new AuthServerFunctionalException(APPLICATION_CODE_ALREADY_EXISTS, ERROR_CODE_MUST_BE_UNIQUE);
+            throw new AuthServerFunctionalException(APPLICATION_CODE_ALREADY_EXISTS, ERROR_APPLICATION_CODE_MUST_BE_UNIQUE);
         }
     }
 }

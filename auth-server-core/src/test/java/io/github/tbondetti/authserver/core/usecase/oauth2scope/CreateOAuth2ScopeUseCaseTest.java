@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_CODE_ALREADY_EXISTS_FOR_APPLICATION;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_CODE_ALREADY_EXISTS_FOR_APPLICATION;
-import static io.github.tbondetti.authserver.core.usecase.oauth2scope.CreateOAuth2ScopeUseCase.ERROR_SCOPE_CODE_ALREADY_EXISTS_FOR_APPLICATION;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.validateAndNormalizeCode;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.validateAndNormalizeName;

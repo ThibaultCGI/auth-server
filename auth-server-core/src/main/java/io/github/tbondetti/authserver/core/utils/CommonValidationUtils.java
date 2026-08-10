@@ -3,6 +3,11 @@ package io.github.tbondetti.authserver.core.utils;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
 import lombok.experimental.UtilityClass;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CODE_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CODE_TOO_LONG;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_DESCRIPTION_TOO_LONG;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_NAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_NAME_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CODE_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.DESCRIPTION_IS_TOO_LONG;
@@ -13,15 +18,6 @@ import static java.util.Objects.isNull;
 
 @UtilityClass
 public class CommonValidationUtils {
-
-    static final String ERROR_CODE_IS_REQUIRED = "Le code est obligatoire.";
-    static final String ERROR_CODE_TOO_LONG = "Le code ne doit pas dépasser les %s caractères.";
-
-
-    static final String ERROR_NAME_IS_REQUIRED = "Le nom est obligatoire et ne peut pas être vide.";
-    static final String ERROR_NAME_TOO_LONG = "Le nom ne doit pas dépasser les %s caractères.";
-
-    static final String ERROR_DESCRIPTION_TOO_LONG = "La description ne doit pas dépasser les %s caractères.";
 
     public static String normalizeCode(final String code) {
         return code.trim().toUpperCase(ROOT);

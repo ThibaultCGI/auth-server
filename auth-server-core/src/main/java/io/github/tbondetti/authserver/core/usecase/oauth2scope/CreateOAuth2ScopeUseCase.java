@@ -7,6 +7,7 @@ import io.github.tbondetti.authserver.core.port.OAuth2ScopeRepositoryPort;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
 import lombok.RequiredArgsConstructor;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_SCOPE_CODE_ALREADY_EXISTS_FOR_APPLICATION;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.SCOPE_CODE_ALREADY_EXISTS_FOR_APPLICATION;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.normalizeAndValidateDescription;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ScopeValidationUtils.validateAndNormalizeCode;
@@ -15,8 +16,6 @@ import static java.util.UUID.randomUUID;
 
 @RequiredArgsConstructor
 public class CreateOAuth2ScopeUseCase {
-
-    static final String ERROR_SCOPE_CODE_ALREADY_EXISTS_FOR_APPLICATION = "Le code du scope doit être unique pour l'application.";
 
     private final OAuth2ScopeRepositoryPort oauth2ScopeRepositoryPort;
     private final GetApplicationUseCase getApplicationUseCase;

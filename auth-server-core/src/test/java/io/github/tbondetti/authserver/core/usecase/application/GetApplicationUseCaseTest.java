@@ -13,8 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_APPLICATION_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_NOT_FOUND;
-import static io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase.ERROR_APPLICATION_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;

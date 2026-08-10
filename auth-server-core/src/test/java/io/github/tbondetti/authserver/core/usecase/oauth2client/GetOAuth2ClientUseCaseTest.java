@@ -13,8 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CLIENT_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_NOT_FOUND;
-import static io.github.tbondetti.authserver.core.usecase.oauth2client.GetOAuth2ClientUseCase.ERROR_CLIENT_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.normalizeClientId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;

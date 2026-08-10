@@ -10,6 +10,7 @@ import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
 import lombok.RequiredArgsConstructor;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CLIENT_ID_GENERATION_FAILED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_ID_GENERATION_FAILED;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.validateAndNormalizeClientName;
 import static java.util.UUID.randomUUID;
@@ -18,7 +19,6 @@ import static java.util.UUID.randomUUID;
 public class CreateOAuth2ClientUseCase {
 
     static final int MAX_CLIENT_ID_GENERATION_ATTEMPTS = 5;
-    static final String ERROR_CLIENT_ID_GENERATION_FAILED = "Impossible de générer un client ID unique après plusieurs tentatives.";
 
     private final OAuth2ClientRepositoryPort oauth2ClientRepositoryPort;
     private final OAuth2ClientCredentialsGeneratorPort oauth2ClientCredentialsGeneratorPort;

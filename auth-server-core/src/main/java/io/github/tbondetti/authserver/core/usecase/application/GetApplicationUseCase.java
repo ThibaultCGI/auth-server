@@ -5,12 +5,12 @@ import io.github.tbondetti.authserver.core.exception.AuthServerNotFoundException
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
 import lombok.RequiredArgsConstructor;
 
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_APPLICATION_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
 
 @RequiredArgsConstructor
 public class GetApplicationUseCase {
-    static final String ERROR_APPLICATION_NOT_FOUND = "Aucune application avec le code %s n'est présente dans le référentiel.";
 
     private final ApplicationRepositoryPort applicationRepositoryPort;
 

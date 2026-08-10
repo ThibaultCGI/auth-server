@@ -11,6 +11,7 @@ import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APP
 public record CreateApplicationRequest(
         @NotBlank
         @Size(
+                message = " ",
                 max = APPLICATION_CODE_MAX_LENGTH
         )
         String code,

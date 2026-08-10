@@ -4,14 +4,14 @@ import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalExcepti
 import lombok.experimental.UtilityClass;
 
 import static io.github.tbondetti.authserver.core.constants.OAuth2ClientRules.CLIENT_NAME_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CLIENT_NAME_IS_REQUIRED;
+import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CLIENT_NAME_IS_TOO_LONG;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_NAME_IS_REQUIRED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_NAME_IS_TOO_LONG;
 import static java.util.Objects.isNull;
 
 @UtilityClass
 public class OAuth2ClientValidationUtils {
-    static final String ERROR_CLIENT_NAME_IS_REQUIRED = "Le nom du client est obligatoire.";
-    static final String ERROR_CLIENT_NAME_IS_TOO_LONG = "Le nom du client ne doit pas dépasser les 255 caractères.";
 
     public static String normalizeClientId(final String clientId) {
         return clientId.trim();
