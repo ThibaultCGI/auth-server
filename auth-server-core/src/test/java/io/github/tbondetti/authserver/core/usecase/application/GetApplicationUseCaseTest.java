@@ -3,7 +3,7 @@ package io.github.tbondetti.authserver.core.usecase.application;
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.exception.AuthServerNotFoundException;
 import io.github.tbondetti.authserver.core.port.ApplicationRepositoryPort;
-import io.github.tbondetti.authserver.core.utils.CommonValidationUtils;
+import io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_APPLICATION_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_NOT_FOUND;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
+import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.normalizeCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,7 +36,7 @@ class GetApplicationUseCaseTest {
         final String givenCode = "givenCode";
 
 
-        try(final MockedStatic<CommonValidationUtils> utilities = mockStatic(CommonValidationUtils.class)) {
+        try(final MockedStatic<ApplicationValidationUtils> utilities = mockStatic(ApplicationValidationUtils.class)) {
             final String normalizedCode = "normalizedCode";
             utilities.when(() -> normalizeCode(givenCode)).thenReturn(normalizedCode);
 
@@ -56,7 +56,7 @@ class GetApplicationUseCaseTest {
     void executeOk() {
         final String givenCode = "givenCode";
 
-        try(final MockedStatic<CommonValidationUtils> utilities = mockStatic(CommonValidationUtils.class)) {
+        try(final MockedStatic<ApplicationValidationUtils> utilities = mockStatic(ApplicationValidationUtils.class)) {
             final String normalizedCode = "normalizedCode";
             utilities.when(() -> normalizeCode(givenCode)).thenReturn(normalizedCode);
 
