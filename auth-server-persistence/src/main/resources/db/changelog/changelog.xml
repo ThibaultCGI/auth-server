@@ -24,4 +24,9 @@
             file="changesets/V003-create-scope.xml"
     />
 
+    <include
+            relativeToChangelogFile="true"
+            file="changesets/V004-create-grant-types-and-complete-oauth2-client.xml"
+    />
+
 </databaseChangeLog>

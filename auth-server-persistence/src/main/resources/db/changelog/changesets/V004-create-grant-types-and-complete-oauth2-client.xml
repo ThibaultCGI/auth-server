@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.liquibase.org/xml/ns/dbchangelog
+            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        "
+>
+
+    <changeSet
+            id="V004-01-create-oauth2-client-redirect-uri-table"
+            author="thibault.bondetti"
+    >
+        <createTable tableName="oauth2_client_redirect_uri" >
+            <column
+                    name="id_oauth2_client"
+                    type="UUID"
+            >
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                    name="redirect_uri"
+                    type="VARCHAR(255)"
+            >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="oauth2_client_redirect_uri"
+                columnNames="id_oauth2_client, redirect_uri"
+                constraintName="pk_oauth2_client_redirect_uri"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="oauth2_client_redirect_uri"
+                baseColumnNames="id_oauth2_client"
+                referencedTableName="oauth2_client"
+                referencedColumnNames="id_oauth2_client"
+                constraintName="fk_oauth2_client_redirect_uri_oauth2_client"
+                onDelete="CASCADE"
+        />
+
+        <createIndex
+                tableName="oauth2_client_redirect_uri"
+                indexName="ix_oauth2_client_redirect_uri_id_oauth2_client"
+        >
+            <column name="id_oauth2_client" />
+        </createIndex>
+
+        <createIndex
+                tableName="oauth2_client_redirect_uri"
+                indexName="ix_oauth2_client_redirect_uri_redirect_uri">
+            <column name="redirect_uri"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet
+            id="V004-02-create-grant-type-table"
+            author="thibault.bondetti"
+    >
+        <createTable tableName="grant_type">
+            <column
+                    name="grant_type"
+                    type="VARCHAR(255)"
+            >
+                <constraints
+                        nullable="false"
+                        primaryKey="true"
+                        primaryKeyName="pk_grant_type"
+                />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet
+            id="V004-03-init-grant-type-values"
+            author="thibault.bondetti"
+    >
+        <insert tableName="grant_type">
+            <column
+                    name="grant_type"
+                    value="CLIENT_CREDENTIALS"
+            />
+        </insert>
+
+        <insert tableName="grant_type">
+            <column
+                    name="grant_type"
+                    value="AUTHORIZATION_CODE"
+            />
+        </insert>
+
+        <insert tableName="grant_type">
+            <column
+                    name="grant_type"
+                    value="REFRESH_TOKEN"
+            />
+        </insert>
+    </changeSet>
+
+    <changeSet
+            id="V004-04-create-oauth2-client-grant-type-table"
+            author="thibault.bondetti"
+    >
+
+        <createTable tableName="oauth2_client_grant_type" >
+            <column
+                    name="id_oauth2_client"
+                    type="UUID"
+            >
+                <constraints nullable="false"/>
+            </column>
+
+            <column
+                    name="grant_type"
+                    type="VARCHAR(255)"
+            >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="oauth2_client_grant_type"
+                columnNames="id_oauth2_client, grant_type"
+                constraintName="pk_oauth2_client_grant_type"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="oauth2_client_grant_type"
+                baseColumnNames="id_oauth2_client"
+                referencedTableName="oauth2_client"
+                referencedColumnNames="id_oauth2_client"
+                constraintName="fk_oauth2_client_grant_type_oauth2_client"
+                onDelete="CASCADE"
+        />
+
+        <addForeignKeyConstraint
+                baseTableName="oauth2_client_grant_type"
+                baseColumnNames="grant_type"
+                referencedTableName="grant_type"
+                referencedColumnNames="grant_type"
+                constraintName="fk_oauth2_client_grant_type_grant_type"
+                onDelete="CASCADE"
+        />
+
+        <createIndex
+                indexName="ix_oauth2_client_grant_type_id_oauth2_client"
+                tableName="oauth2_client_grant_type"
+        >
+            <column name="id_oauth2_client" />
+        </createIndex>
+
+        <createIndex
+                indexName="ix_oauth2_client_grant_type_grant_type"
+                tableName="oauth2_client_grant_type"
+        >
+            <column name="grant_type" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
