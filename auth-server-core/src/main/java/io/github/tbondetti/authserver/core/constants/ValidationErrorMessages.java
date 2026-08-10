@@ -2,6 +2,9 @@ package io.github.tbondetti.authserver.core.constants;
 
 import lombok.experimental.UtilityClass;
 
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_CODE_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_DESCRIPTION_MAX_LENGTH;
+import static io.github.tbondetti.authserver.core.constants.ApplicationRules.APPLICATION_NAME_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.OAuth2ClientRules.CLIENT_NAME_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.OAuth2ScopeRules.SCOPE_CODE_MAX_LENGTH;
 import static io.github.tbondetti.authserver.core.constants.OAuth2ScopeRules.SCOPE_DESCRIPTION_MAX_LENGTH;
@@ -14,9 +17,21 @@ public class ValidationErrorMessages {
 
     public static final String FORMAT_DONNEE_INCORRECT = "Format de donnée incorrect.";
 
+    /* APPLICATION */
+
     public static final String ERROR_APPLICATION_NOT_FOUND = "Aucune application avec le code %s n'est présente dans le référentiel.";
 
     public static final String ERROR_APPLICATION_CODE_MUST_BE_UNIQUE = "Le code de l'application doit être unique.";
+
+    public static final String ERROR_APPLICATION_CODE_IS_REQUIRED = "Le code de l'application est obligatoire.";
+
+    public static final String ERROR_APPLICATION_CODE_IS_TOO_LONG = "Le code de l'application ne doit pas dépasser les " + APPLICATION_CODE_MAX_LENGTH + " caractères.";
+
+    public static final String ERROR_APPLICATION_NAME_IS_REQUIRED = "Le nom de l'application est obligatoire et ne peut pas être vide.";
+
+    public static final String ERROR_APPLICATION_NAME_IS_TOO_LONG = "Le nom de l'application ne doit pas dépasser les " + APPLICATION_NAME_MAX_LENGTH + " caractères.";
+
+    public static final String ERROR_APPLICATION_DESCRIPTION_IS_TOO_LONG = "La description de l'application ne doit pas dépasser les " + APPLICATION_DESCRIPTION_MAX_LENGTH + " caractères.";
 
     public static final String ERROR_CODE_IS_REQUIRED = "Le code est obligatoire.";
 

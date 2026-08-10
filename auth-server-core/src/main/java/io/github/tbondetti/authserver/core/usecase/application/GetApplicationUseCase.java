@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_APPLICATION_NOT_FOUND;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.APPLICATION_NOT_FOUND;
-import static io.github.tbondetti.authserver.core.utils.CommonValidationUtils.normalizeCode;
+import static io.github.tbondetti.authserver.core.utils.ApplicationValidationUtils.normalizeCode;
 
 @RequiredArgsConstructor
 public class GetApplicationUseCase {
