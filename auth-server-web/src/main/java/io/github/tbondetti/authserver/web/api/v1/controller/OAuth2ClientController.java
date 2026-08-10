@@ -6,6 +6,7 @@ import io.github.tbondetti.authserver.web.api.v1.dto.AssignOAuth2ScopeRequest;
 import io.github.tbondetti.authserver.web.api.v1.dto.CreateOAuth2ClientRequest;
 import io.github.tbondetti.authserver.web.api.v1.response.CreateOAuth2ClientResponse;
 import io.github.tbondetti.authserver.web.api.v1.response.OAuth2ClientResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +44,7 @@ public class OAuth2ClientController implements OAuth2ClientApi<CreateOAuth2Clien
             produces = APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateOAuth2ClientResponse createOAuth2Client(@RequestBody final CreateOAuth2ClientRequest request) {
+    public CreateOAuth2ClientResponse createOAuth2Client(@Valid @RequestBody final CreateOAuth2ClientRequest request) {
         return toCreateResponse(this.oauth2ClientService.createOAuth2Client(
                 request.clientName(),
                 request.applicationCode()
@@ -59,7 +60,7 @@ public class OAuth2ClientController implements OAuth2ClientApi<CreateOAuth2Clien
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void assignScope(
             @PathVariable final String clientId,
-            @RequestBody final AssignOAuth2ScopeRequest request
+            @Valid @RequestBody final AssignOAuth2ScopeRequest request
     ) {
         this.oauth2ClientService.assignScope(
                 clientId,
