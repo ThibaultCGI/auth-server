@@ -6,12 +6,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -48,6 +50,17 @@ public class OAuth2ClientEntity {
             nullable = false
     )
     private String clientSecret;
+
+    @OneToMany(
+            mappedBy = "id.idOauth2Client"
+    )
+    private Set<OAuth2ClientGrantTypeEntity> grantTypes;
+
+    @OneToMany(
+            mappedBy = "id.idOauth2Client"
+    )
+    private Set<OAuth2ClientRedirectUriEntity> redirectUris;
+
 
     @JoinColumn(
             name = "id_application",
