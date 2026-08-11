@@ -80,7 +80,7 @@ public class OAuth2ClientValidationUtils {
         }
     }
 
-    public static Set<URI> normalizeRedirectUris(final Collection<String> redirectUris) {
+        public static Set<URI> normalizeRedirectUris(final Collection<String> redirectUris) {
         if (isNull(redirectUris)) {
             return Set.of();
         }
