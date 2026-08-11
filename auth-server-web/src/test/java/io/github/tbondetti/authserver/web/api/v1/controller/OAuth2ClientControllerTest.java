@@ -15,6 +15,9 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collection;
+import java.util.List;
+
 import static io.github.tbondetti.authserver.web.api.v1.mapper.OAuth2ClientWebMapper.toCreateResponse;
 import static io.github.tbondetti.authserver.web.api.v1.mapper.OAuth2ClientWebMapper.toResponse;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -49,15 +52,21 @@ class OAuth2ClientControllerTest {
     void createOAuth2ClientOk() {
         final String clientName = "clientName";
         final String applicationCode = "applicationCode";
+        final Collection<String> grantTypes = List.of("a", "b");
+        final Collection<String> redirectUris = List.of("d", "e");
         final CreateOAuth2ClientRequest request = new CreateOAuth2ClientRequest(
                 clientName,
-                applicationCode
+                applicationCode,
+                grantTypes,
+                redirectUris
         );
 
         final OAuth2CreatedClient client = OAuth2CreatedClient.builder().build();
         when(this.oauth2ClientService.createOAuth2Client(
                 clientName,
-                applicationCode
+                applicationCode,
+                grantTypes,
+                redirectUris
         )).thenReturn(client);
 
         try (final MockedStatic<OAuth2ClientWebMapper> utilities = mockStatic(OAuth2ClientWebMapper.class)) {
