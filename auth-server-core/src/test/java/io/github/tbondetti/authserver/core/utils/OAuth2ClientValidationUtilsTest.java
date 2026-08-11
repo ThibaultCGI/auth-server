@@ -151,9 +151,10 @@ class OAuth2ClientValidationUtilsTest {
         assertSame(CLIENT_GRANT_TYPE_IS_REQUIRED, exception2.getCode());
         assertSame(ERROR_CLIENT_GRANT_TYPE_IS_REQUIRED, exception2.getMessage());
 
+        final Set<OAuth2ClientGrantType> refreshToken = Set.of(REFRESH_TOKEN);
         final AuthServerFunctionalException exception3 = assertThrows(
                 AuthServerFunctionalException.class,
-                () -> validateGrantTypes(Set.of(REFRESH_TOKEN))
+                () -> validateGrantTypes(refreshToken)
         );
 
         assertSame(
@@ -281,9 +282,10 @@ class OAuth2ClientValidationUtilsTest {
     @Test
     void validateRedirectUrisOk() {
 
+        final Set<OAuth2ClientGrantType> grantTypes = Set.of(AUTHORIZATION_CODE);
         final AuthServerFunctionalException exception1 = assertThrows(
                 AuthServerFunctionalException.class,
-                () -> validateRedirectUris(Set.of(AUTHORIZATION_CODE), null)
+                () -> validateRedirectUris(grantTypes, null)
         );
 
         assertSame(CLIENT_REDIRECT_URI_IS_REQUIRED, exception1.getCode());
@@ -291,7 +293,7 @@ class OAuth2ClientValidationUtilsTest {
 
         final AuthServerFunctionalException exception2 = assertThrows(
                 AuthServerFunctionalException.class,
-                () -> validateRedirectUris(Set.of(AUTHORIZATION_CODE), Set.of())
+                () -> validateRedirectUris(grantTypes, Set.of())
         );
 
         assertSame(CLIENT_REDIRECT_URI_IS_REQUIRED, exception2.getCode());
