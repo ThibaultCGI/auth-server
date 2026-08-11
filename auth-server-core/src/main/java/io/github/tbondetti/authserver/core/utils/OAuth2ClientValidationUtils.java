@@ -119,7 +119,7 @@ public class OAuth2ClientValidationUtils {
             );
         }
 
-        if (uri.getHost() == null || uri.getHost().isBlank()) {
+        if (uri.getHost() == null) {
             throw new AuthServerFunctionalException(
                     CLIENT_REDIRECT_URI_INVALID,
                     ERROR_CLIENT_REDIRECT_URI_INVALID.formatted(uri)
