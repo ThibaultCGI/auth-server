@@ -23,6 +23,14 @@ public class OAuth2ClientOpenApiConstants {
 
     public static final String CLIENT_SECRET_DESCRIPTION = "Secret du client OAuth2.";
 
+    public static final String CLIENT_GRANT_TYPE_DESCRIPTION = "Grant type du client OAuth2.";
+
+    public static final String CLIENT_GRANT_TYPE_EXAMPLE = "authorization_code";
+
+    public static final String CLIENT_REDIRECT_URIS_DESCRIPTION = "URIs de redirection du client OAuth2.";
+
+    public static final String CLIENT_REDIRECT_URIS_EXAMPLE = "https://mysinglepageapp.com/home";
+
     @SuppressWarnings("java:S6418")
     public static final String CLIENT_SECRET_EXAMPLE = "w6icNtSsfDee1G6E09Tob4waUcja50YFIWkYXvRl4QLKAYwx6I";
 

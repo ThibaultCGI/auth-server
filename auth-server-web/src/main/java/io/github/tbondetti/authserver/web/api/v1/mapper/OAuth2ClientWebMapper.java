@@ -2,9 +2,13 @@ package io.github.tbondetti.authserver.web.api.v1.mapper;
 
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
 import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
+import io.github.tbondetti.authserver.core.enums.OAuth2ClientGrantType;
 import io.github.tbondetti.authserver.web.api.v1.response.CreateOAuth2ClientResponse;
 import io.github.tbondetti.authserver.web.api.v1.response.OAuth2ClientResponse;
 import lombok.experimental.UtilityClass;
+
+import java.net.URI;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class OAuth2ClientWebMapper {
@@ -14,6 +18,8 @@ public class OAuth2ClientWebMapper {
                 .clientId(client.clientId())
                 .clientName(client.clientName())
                 .applicationCode(client.applicationCode())
+                .grantTypes(client.grantTypes().stream().map(OAuth2ClientGrantType::getValue).collect(Collectors.toSet()))
+                .redirectUris(client.redirectUris().stream().map(URI::toString).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -23,6 +29,8 @@ public class OAuth2ClientWebMapper {
                 .clientName(client.clientName())
                 .clientSecret(client.clientSecret())
                 .applicationCode(client.applicationCode())
+                .grantTypes(client.grantTypes().stream().map(OAuth2ClientGrantType::getValue).collect(Collectors.toSet()))
+                .redirectUris(client.redirectUris().stream().map(URI::toString).collect(Collectors.toSet()))
                 .build();
     }
 }

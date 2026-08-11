@@ -14,6 +14,6 @@ public record OAuth2Client(
         String clientName,
         String clientSecretHash,
         String applicationCode,
-        Set<URI> redirectUris,
-        Set<OAuth2ClientGrantType> grantTypes
+        Set<OAuth2ClientGrantType> grantTypes,
+        Set<URI> redirectUris
 ) { }

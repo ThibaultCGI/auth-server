@@ -55,6 +55,16 @@ public class ValidationErrorMessages {
 
     public static final String ERROR_CLIENT_NAME_IS_TOO_LONG = "Le nom du client ne doit pas dépasser les " + CLIENT_NAME_MAX_LENGTH + CARACTERES;
 
+    public static final String ERROR_CLIENT_REDIRECT_URI_INVALID = "L'URI de redirection %s n'est pas valide.";
+
+    public static final String ERROR_CLIENT_GRANT_TYPE_INVALID = "Le grant type %s n'est pas valide.";
+
+    public static final String ERROR_CLIENT_GRANT_TYPE_IS_REQUIRED = "Au moins un grant type est obligatoire pour le client.";
+
+    public static final String ERROR_CLIENT_REDIRECT_URI_IS_REQUIRED = "Au moins une URI de redirection doit être renseignée pour le grant type AUTHORIZATION_CODE.";
+
+    public static final String ERROR_CLIENT_GRANT_TYPE_REFRESH_TOKEN_REQUIRES_AUTHORIZATION_CODE = "Le grant type REFRESH_TOKEN requiert le grant type AUTHORIZATION_CODE.";
+
     /* SCOPE */
 
     public static final String ERROR_SCOPE_NOT_FOUND = "Aucun scope avec code %s n'a été trouvé pour l'application %s";

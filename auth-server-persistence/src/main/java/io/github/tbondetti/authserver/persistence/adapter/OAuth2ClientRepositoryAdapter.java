@@ -28,7 +28,8 @@ public class OAuth2ClientRepositoryAdapter implements OAuth2ClientRepositoryPort
 
     @Override
     public Optional<OAuth2Client> findByClientId(final String clientId) {
-        return this.oauth2ClientJpaRepository.findByClientId(clientId).map(OAuth2ClientMapper::toDomain);
+        return this.oauth2ClientJpaRepository.findByClientId(clientId)
+                .map(OAuth2ClientMapper::toDomain);
     }
 
     @Override

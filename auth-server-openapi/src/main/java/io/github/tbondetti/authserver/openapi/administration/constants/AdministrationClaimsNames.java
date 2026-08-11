@@ -19,4 +19,8 @@ public class AdministrationClaimsNames {
 
     public static final String CLIENT_SECRET = "clientSecret";
 
+    public static final String GRANT_TYPES = "grantTypes";
+
+    public static final String REDIRECT_URIS = "redirectUris";
+
 }

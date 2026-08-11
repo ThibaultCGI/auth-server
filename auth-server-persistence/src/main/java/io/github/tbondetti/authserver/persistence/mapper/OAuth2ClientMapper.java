@@ -18,16 +18,16 @@ import java.util.stream.Collectors;
 public class OAuth2ClientMapper {
 
     public static OAuth2Client toDomain(final OAuth2ClientEntity entity) {
+        final Set<OAuth2ClientGrantType> grantTypes = entity.getGrantTypes().stream()
+                .map(OAuth2ClientGrantTypeEntity::getId)
+                .map(OAuth2ClientGrantTypeId::getGrantType)
+                .collect(Collectors.toSet())
+                ;
+
         final Set<URI> redirectUris = entity.getRedirectUris().stream()
                 .map(OAuth2ClientRedirectUriEntity::getId)
                 .map(OAuth2ClientRedirectUriId::getRedirectUri)
                 .map(UriMapper::toDomain)
-                .collect(Collectors.toSet())
-                ;
-
-        final Set<OAuth2ClientGrantType> grantTypes = entity.getGrantTypes().stream()
-                .map(OAuth2ClientGrantTypeEntity::getId)
-                .map(OAuth2ClientGrantTypeId::getGrantType)
                 .collect(Collectors.toSet())
                 ;
 
@@ -37,8 +37,8 @@ public class OAuth2ClientMapper {
                 .clientName(entity.getClientName())
                 .clientSecretHash(entity.getClientSecret())
                 .applicationCode(entity.getApplication().getCode())
-                .redirectUris(redirectUris)
                 .grantTypes(grantTypes)
+                .redirectUris(redirectUris)
                 .build();
     }
 

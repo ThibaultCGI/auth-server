@@ -14,6 +14,6 @@ public record OAuth2CreatedClient( // record à n'utiliser qu'au moment de la cr
         String clientName,
         String clientSecret,
         String applicationCode,
-        Set<URI> redirectUris,
-        Set<OAuth2ClientGrantType> grantTypes
+        Set<OAuth2ClientGrantType> grantTypes,
+        Set<URI> redirectUris
 ) { }

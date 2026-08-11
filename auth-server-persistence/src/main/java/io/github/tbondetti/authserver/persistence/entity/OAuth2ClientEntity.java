@@ -1,5 +1,6 @@
 package io.github.tbondetti.authserver.persistence.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -54,12 +55,16 @@ public class OAuth2ClientEntity {
     private String clientSecret;
 
     @OneToMany(
-            mappedBy = "oauth2Client"
+            mappedBy = "oauth2Client",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private Set<OAuth2ClientRedirectUriEntity> redirectUris;
 
     @OneToMany(
-            mappedBy = "oauth2Client"
+            mappedBy = "oauth2Client",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private Set<OAuth2ClientGrantTypeEntity> grantTypes;
 
