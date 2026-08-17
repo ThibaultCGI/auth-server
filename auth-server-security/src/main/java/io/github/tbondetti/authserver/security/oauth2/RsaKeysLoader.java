@@ -156,7 +156,7 @@ public class RsaKeysLoader {
     ) {
         try {
             return keyStore.getCertificate(alias);
-        } catch (KeyStoreException e) {
+        } catch (final KeyStoreException e) {
             throw new AuthServerTechnicalException(ERREUR_TECHNIQUE, ERREUR_GET_CERTIFICATE.formatted(alias), e);
         }
     }
