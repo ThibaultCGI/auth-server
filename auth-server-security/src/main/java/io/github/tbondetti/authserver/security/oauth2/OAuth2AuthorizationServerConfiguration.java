@@ -1,12 +1,14 @@
 package io.github.tbondetti.authserver.security.oauth2;
 
+import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import io.github.tbondetti.authserver.core.exception.AuthServerTechnicalException;
 import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
+import io.github.tbondetti.authserver.security.properties.JwtKeyStoreProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -14,29 +16,29 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.ERREUR_TECHNIQUE;
-import static java.security.KeyPairGenerator.getInstance;
-import static java.util.UUID.randomUUID;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableConfigurationProperties(JwtKeyStoreProperties.class)
 public class OAuth2AuthorizationServerConfiguration {
 
-    static final String ALGORITHM_RSA = "RSA";
+    static final String ERREUR_NO_ACTIVE_KEY = "Aucune clé active n'a été trouvée dans le key store.";
 
     private final RegisteredClientRepository registeredClientRepository;
+    private final JwtKeyStoreProperties jwtKeyStoreProperties;
+    private final RsaKeysLoader rsaKeysLoader;
+
 
     @SuppressWarnings("java:S4502")
     @Bean
@@ -96,36 +98,27 @@ public class OAuth2AuthorizationServerConfiguration {
 
     }
 
-
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
-        final RSAKey rsaKey = generateRsaKey();
-        final JWKSet jwkSet = new JWKSet(rsaKey);
+        final List<JWK> keys = this.rsaKeysLoader.loadAll().stream().map(JWK.class::cast).toList();
+        final JWKSet jwkSet = new JWKSet(keys);
 
-        return (jwkSelector, _) -> jwkSelector.select(jwkSet);
+        return (selector, _) -> selector.select(jwkSet);
     }
 
-    private static RSAKey generateRsaKey() {
-        try {
-            final KeyPairGenerator keyPairGenerator = getInstance(ALGORITHM_RSA);
-            keyPairGenerator.initialize(2048);
+    @Bean
+    public JwtEncoder jwtEncoder(
+            final JWKSource<SecurityContext> jwkSource
+    ) {
+        final NimbusJwtEncoder encoder = new NimbusJwtEncoder(jwkSource);
 
-            final KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        encoder.setJwkSelector(jwks -> jwks.stream()
+                .filter(jwk -> this.jwtKeyStoreProperties.activeAlias().equals(jwk.getKeyID()))
+                .findFirst()
+                .orElseThrow(() -> new AuthServerTechnicalException(ERREUR_TECHNIQUE, ERREUR_NO_ACTIVE_KEY))
+        );
 
-            final RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-            final RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-
-            return new RSAKey.Builder(publicKey)
-                    .privateKey(privateKey)
-                    .keyID(randomUUID().toString())
-                    .build();
-        } catch (final NoSuchAlgorithmException e) {
-            throw new AuthServerTechnicalException(
-                    ERREUR_TECHNIQUE,
-                    "Erreur lors de la génération de la clé RSA",
-                    e
-            );
-        }
+        return encoder;
     }
 
     @Bean
