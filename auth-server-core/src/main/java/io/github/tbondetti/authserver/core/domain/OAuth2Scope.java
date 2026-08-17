@@ -19,7 +19,7 @@ public record OAuth2Scope(
 
     public String completeCode() {
         if (OPENID.equalsIgnoreCase(this.code)) {
-            return this.code;
+            return OPENID;
         }
 
         return COMPLETE_CODE_FORMAT.formatted(this.applicationCode, this.code).toLowerCase(ROOT);
