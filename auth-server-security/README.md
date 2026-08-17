@@ -14,6 +14,7 @@ Le module est responsable de :
 - l'implémentation de l'Authorization Server OAuth2 ;
 - l'implémentation du fournisseur OpenID Connect (OpenID Provider) ;
 - la génération et la personnalisation des tokens JWT ;
+- la gestion des clés cryptographiques ;
 - l'intégration de Spring Security avec le domaine métier.
 
 ---
@@ -47,6 +48,7 @@ Le module joue le rôle d'adaptateur sortant vers les frameworks de sécurité.
 security
 ├── encoder
 ├── oauth2
+├── properties
 ├── userdetails
 └── ...
 ```
@@ -109,7 +111,9 @@ Le module :
 - génère les Access Tokens ;
 - génère les ID Tokens ;
 - signe les JWT en RSA ;
-- personnalise les claims via `OAuth2JwtCustomizer`.
+- personnalise les claims via `OAuth2JwtCustomizer` ;
+- charge les clés de signature depuis un keystore PKCS12 ;
+- sélectionne explicitement la clé active utilisée pour signer les nouveaux JWT.
 
 ---
 
@@ -310,6 +314,107 @@ Les clés publiques utilisées pour signer les JWT sont exposées via :
 /oauth2/jwks
 ```
 
+Exemple :
+
+```json
+{
+  "keys": [
+    {
+      "kid": "old-key"
+    },
+    {
+      "kid": "auth-server"
+    }
+  ]
+}
+```
+
+---
+
+# Gestion des clés cryptographiques
+
+## Keystore PKCS12
+
+Les clés RSA utilisées pour signer les JWT sont stockées dans un keystore PKCS12.
+
+Exemple :
+
+```text
+auth-server.p12
+├── old-key
+└── auth-server
+```
+
+Le keystore est chargé au démarrage de l'application.
+
+---
+
+## Clé active
+
+Une clé active est utilisée pour signer les nouveaux JWT.
+
+Configuration :
+
+```properties
+jwt.keystore.active-alias=auth-server
+```
+
+Exemple :
+
+```text
+Keystore
+├── old-key
+└── auth-server
+
+Clé active
+└── auth-server
+```
+
+---
+
+## Rotation des clés
+
+Le module supporte plusieurs clés RSA simultanément.
+
+Principe :
+
+```text
+Anciennes clés
+       │
+       ▼
+publiées dans le JWKS
+
+Nouvelle clé active
+       │
+       ▼
+utilisée pour signer les JWT
+```
+
+Cette approche permet la rotation progressive des clés cryptographiques sans invalider immédiatement les anciens tokens.
+
+---
+
+## Signature des JWT
+
+Les nouveaux JWT sont signés à l'aide de la clé active configurée.
+
+Exemple de header JWT :
+
+```json
+{
+  "alg": "RS256",
+  "kid": "auth-server"
+}
+```
+
+Le champ :
+
+```text
+kid
+```
+
+permet aux clients de retrouver automatiquement la clé publique correspondante dans le JWKS.
+
 ---
 
 # JWT
@@ -359,6 +464,14 @@ client_id
 
 ✅ Signature RSA
 
+✅ Keystore PKCS12
+
+✅ Clé active configurable
+
+✅ JWKS multi-clés
+
+✅ Préparation à la rotation des clés
+
 ✅ Personnalisation des claims JWT
 
 ---
@@ -370,7 +483,7 @@ client_id
 - Token Introspection
 - Endpoint UserInfo personnalisé
 - OIDC Logout
-- Rotation des clés cryptographiques
+- Rotation automatique des clés cryptographiques
 - Audit de sécurité
 
 ---
@@ -380,3 +493,15 @@ client_id
 Le module `auth-server-security` regroupe l'ensemble des mécanismes OAuth2, OpenID Connect et Spring Security du projet.
 
 Son rôle est d'intégrer les frameworks de sécurité au domaine métier tout en respectant les principes de l'architecture hexagonale et en conservant une indépendance totale vis-à-vis des détails de persistance.
+
+Le module supporte désormais :
+
+- OAuth2 ;
+- OpenID Connect ;
+- JWT signés en RSA ;
+- JWKS multi-clés ;
+- keystore PKCS12 ;
+- clé active configurable ;
+- préparation à la rotation des clés cryptographiques.
+
+Ces capacités rapprochent le projet du comportement attendu d'un Authorization Server OAuth2/OpenID Connect utilisé en environnement réel.
