@@ -4,16 +4,28 @@
 
 Le module `auth-server-openapi` centralise les contrats HTTP et la documentation OpenAPI du projet.
 
-Il constitue le point d'entrée documentaire de toutes les API exposées par le système.
+Il constitue le contrat HTTP de référence de l'application et rassemble :
+
+- les interfaces documentant les APIs REST ;
+- les DTO documentaires ;
+- les réponses documentaires ;
+- les configurations Swagger/OpenAPI ;
+- la documentation OAuth2 ;
+- la documentation OpenID Connect.
 
 Son rôle est comparable à celui du module `auth-server-core` :
 
-- `auth-server-core` définit les contrats métier ;
-- `auth-server-openapi` définit les contrats HTTP.
+```text
+auth-server-core
+→ contrats métier
+
+auth-server-openapi
+→ contrats HTTP
+```
 
 ---
 
-## Position dans l'architecture
+# Position dans l'architecture
 
 ```text
                          auth-server-web
@@ -27,18 +39,18 @@ Son rôle est comparable à celui du module `auth-server-core` :
                        auth-server-core
 ```
 
-Le module OpenAPI est utilisé par les adaptateurs HTTP afin d'exposer une documentation cohérente et centralisée.
+Le module OpenAPI est utilisé par les adaptateurs HTTP afin d'exposer une documentation cohérente, centralisée et indépendante des implémentations techniques.
 
 ---
 
-## Dépendances
+# Dépendances
 
 ```text
 auth-server-openapi
 └── auth-server-core
 ```
 
-Le module OpenAPI dépend uniquement du Core.
+Le module dépend uniquement du Core.
 
 Il ne dépend pas :
 
@@ -49,19 +61,20 @@ Il ne dépend pas :
 
 ---
 
-## Objectifs
+# Objectifs
 
 Le module OpenAPI a été introduit afin de :
 
 - centraliser la documentation HTTP ;
-- réduire le couplage avec les implémentations REST ;
+- réduire le couplage avec les contrôleurs REST ;
 - partager les contrats documentaires ;
 - simplifier l'évolution de la documentation ;
-- structurer les groupes Swagger par domaine fonctionnel.
+- structurer les groupes Swagger par domaine fonctionnel ;
+- documenter OAuth2 et OpenID Connect.
 
 ---
 
-## Organisation
+# Organisation
 
 ```text
 openapi
@@ -73,9 +86,9 @@ openapi
 
 ---
 
-## administration
+# administration
 
-Documentation des API d'administration OAuth2.
+Documentation des APIs d'administration.
 
 ```text
 administration
@@ -86,28 +99,28 @@ administration
 └── config
 ```
 
-### Responsabilités
+## Responsabilités
 
 - gestion des applications ;
 - gestion des clients OAuth2 ;
 - gestion des scopes OAuth2.
 
-### Exemples
+## Exemples
 
-#### API
+### API
 
 - ApplicationApi
 - OAuth2ClientApi
 - OAuth2ScopeApi
 
-#### DTO
+### DTO
 
 - CreateApplicationRequestApi
 - CreateOAuth2ClientRequestApi
 - CreateOAuth2ScopeRequestApi
 - AssignOAuth2ScopeRequestApi
 
-#### Responses
+### Réponses
 
 - ApplicationResponseApi
 - OAuth2ClientResponseApi
@@ -116,9 +129,9 @@ administration
 
 ---
 
-## iam
+# iam
 
-Documentation des API de gestion des identités et des rôles.
+Documentation des APIs de gestion des identités et des rôles.
 
 ```text
 iam
@@ -129,24 +142,24 @@ iam
 └── config
 ```
 
-### Responsabilités
+## Responsabilités
 
 - gestion des utilisateurs ;
 - gestion des rôles ;
 - gestion des habilitations.
 
-### Exemples
+## Exemples
 
-#### API
+### API
 
 - UserApi
 - RoleApi
 
 ---
 
-## authorizationserver
+# authorizationserver
 
-Documentation des endpoints standard OAuth2 et OpenID Connect.
+Documentation des endpoints standards OAuth2 et OpenID Connect.
 
 ```text
 authorizationserver
@@ -157,25 +170,50 @@ authorizationserver
 └── config
 ```
 
-### Responsabilités
+## Responsabilités
 
-- documentation des endpoints OAuth2 ;
-- documentation OIDC ;
+- documentation OAuth2 ;
+- documentation OpenID Connect ;
+- documentation des tokens ;
+- documentation des endpoints standardisés ;
 - configuration du groupe Swagger dédié à l'Authorization Server.
-
-### Endpoints concernés
-
-- `/oauth2/token`
-- `/oauth2/jwks`
-- `/oauth2/introspect`
-- `/oauth2/revoke`
-- `/.well-known/**`
 
 ---
 
-## common
+## Endpoints OAuth2
 
-Éléments communs à l'ensemble des groupes OpenAPI.
+```text
+/oauth2/authorize
+/oauth2/token
+```
+
+### Flows documentés
+
+- Authorization Code
+- Authorization Code + PKCE
+- Client Credentials
+
+---
+
+## Endpoints OpenID Connect
+
+```text
+/.well-known/openid-configuration
+/oauth2/jwks
+```
+
+### Fonctionnalités documentées
+
+- Discovery Endpoint ;
+- JWKS Endpoint ;
+- ID Tokens ;
+- Scope `openid`.
+
+---
+
+# common
+
+Composants communs à l'ensemble des groupes OpenAPI.
 
 ```text
 common
@@ -183,17 +221,18 @@ common
 └── config
 ```
 
-### Responsabilités
+## Responsabilités
 
-- constantes globales ;
+- constantes partagées ;
 - configuration OpenAPI commune ;
-- éléments partagés entre les domaines.
+- modèles réutilisables ;
+- schémas de sécurité communs.
 
 ---
 
-## Contrats HTTP
+# Contrats HTTP
 
-Le module définit les contrats documentaires de référence.
+Le module définit les contrats HTTP de référence.
 
 Exemple :
 
@@ -202,7 +241,7 @@ public interface ApplicationApi {
 }
 ```
 
-Ces contrats sont ensuite implémentés par les adaptateurs HTTP.
+Ces contrats sont implémentés dans le module Web.
 
 Exemple :
 
@@ -215,9 +254,9 @@ public class ApplicationController
 
 ---
 
-## DTO documentaires
+# DTO documentaires
 
-Le module contient les DTO utilisés pour décrire les requêtes et réponses exposées dans la documentation.
+Le module contient les DTO utilisés exclusivement pour la documentation OpenAPI.
 
 Exemple :
 
@@ -247,45 +286,86 @@ public record ApplicationResponse(
 
 ---
 
-## Groupes Swagger
+# Groupes Swagger
 
-Le projet est organisé autour de plusieurs groupes OpenAPI :
+Le projet est organisé autour de plusieurs groupes OpenAPI.
 
-### OAuth2 Administration API
+## OAuth2 Administration API
 
-Documentation des API d'administration :
+Documentation des APIs d'administration :
 
 - applications ;
 - clients OAuth2 ;
 - scopes OAuth2.
 
-### IAM Administration API
+---
 
-Documentation des API IAM :
+## IAM Administration API
+
+Documentation des APIs IAM :
 
 - utilisateurs ;
-- rôles.
-
-### OAuth2 Authorization Server API
-
-Documentation des endpoints standard OAuth2/OpenID Connect :
-
-- token ;
-- introspection ;
-- révocation ;
-- métadonnées ;
-- JWKS.
+- rôles ;
+- habilitations.
 
 ---
 
-## Dépendances autorisées
+## Authorization Server API
+
+Documentation des endpoints standards OAuth2 et OpenID Connect :
+
+### OAuth2
+
+- authorization endpoint ;
+- token endpoint ;
+- scopes ;
+- grant types.
+
+### OpenID Connect
+
+- discovery endpoint ;
+- JWKS endpoint ;
+- ID Tokens ;
+- claims OIDC.
+
+---
+
+# Documentation OAuth2
+
+Le module documente les flows actuellement supportés :
+
+```text
+Client Credentials
+Authorization Code + PKCE
+```
+
+ainsi que les schémas de sécurité OpenAPI associés.
+
+---
+
+# Documentation OpenID Connect
+
+Le module documente les fonctionnalités OIDC exposées par l'application :
+
+```text
+openid
+ID Token
+Discovery
+JWKS
+```
+
+et les endpoints standards associés.
+
+---
+
+# Dépendances autorisées
 
 - auth-server-core
 - SpringDoc OpenAPI
 
 ---
 
-## Dépendances interdites
+# Dépendances interdites
 
 - auth-server-web
 - auth-server-application
@@ -294,7 +374,7 @@ Documentation des endpoints standard OAuth2/OpenID Connect :
 
 ---
 
-## Principe
+# Principes d'architecture
 
 Le module OpenAPI ne contient aucune logique métier.
 
@@ -303,6 +383,62 @@ Il décrit uniquement :
 - les contrats HTTP ;
 - la documentation OpenAPI ;
 - l'organisation Swagger ;
-- les modèles documentaires.
+- les modèles documentaires ;
+- les schémas de sécurité ;
+- les spécifications OAuth2 et OpenID Connect exposées par le système.
 
-Il constitue le contrat HTTP du système, de la même manière que le Core constitue le contrat métier.
+Le module constitue le contrat HTTP du projet, de la même manière que le Core constitue son contrat métier.
+
+```text
+Core
+  │
+  └── Contrat métier
+
+OpenAPI
+  │
+  └── Contrat HTTP
+```
+
+---
+
+# État actuel
+
+## Fonctionnel
+
+✅ Documentation des APIs IAM
+
+✅ Documentation des APIs d'administration
+
+✅ Documentation OAuth2
+
+✅ Documentation OpenID Connect
+
+✅ Documentation des flows Authorization Code + PKCE
+
+✅ Documentation du flow Client Credentials
+
+✅ Swagger UI
+
+✅ Groupes OpenAPI par domaine
+
+✅ Contrats HTTP isolés du module Web
+
+---
+
+# Évolutions envisagées
+
+- Documentation des Refresh Tokens
+- Documentation de la révocation de tokens
+- Documentation de l'introspection
+- Documentation UserInfo
+- Exemples complets OAuth2/OIDC
+- Guides d'intégration pour les clients externes
+
+---
+
+# Conclusion
+
+Le module `auth-server-openapi` constitue la référence documentaire du projet.
+
+Il centralise l'ensemble des contrats HTTP et permet de documenter les APIs métier, les endpoints OAuth2 et les fonctionnalités OpenID Connect tout en conservant un découplage fort avec les implémentations techniques.
+``
