@@ -103,7 +103,7 @@ OpenID Connect
 
 OpenID Connect est activé dans Spring Authorization Server via :
 
-```java
+```
 .oidc(Customizer.withDefaults())
 ```
 
