@@ -55,7 +55,7 @@ public class OAuth2CorsConfiguration {
     /*
     Permet la gestion des requêtes CORS préflight vers les endpoints OAuth2 (/oauth2/token).
     Sans ce CorsFilter explicite, Swagger UI ne parvenait pas à récupérer un token OAuth2 depuis une origine différente
-    (http://localhost:8081 → http://localhost:8080).
+    (http://resource-server.local:8081 → http://auth-server.local:8080).
     */
     @Bean
     public CorsFilter corsFilter(final CorsConfigurationSource corsConfigurationSource) {
