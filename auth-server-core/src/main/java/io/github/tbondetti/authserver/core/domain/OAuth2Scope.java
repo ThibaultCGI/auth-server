@@ -14,9 +14,14 @@ public record OAuth2Scope(
         String name,
         String description
 ) {
-    static String COMPLETE_CODE_FORMAT = "%s:%s";
+    static final String COMPLETE_CODE_FORMAT = "%s:%s";
+    static final String OPENID = "openid";
 
     public String completeCode() {
+        if (OPENID.equalsIgnoreCase(this.code)) {
+            return this.code;
+        }
+
         return COMPLETE_CODE_FORMAT.formatted(this.applicationCode, this.code).toLowerCase(ROOT);
     }
 }

@@ -14,4 +14,10 @@ public class SecurityPaths {
     public static final String OPENAPI_DOCS_ALL = "/v3/api-docs/**";
 
     public static final String OPENAPI_DOCS_YAML = "/v3/api-docs.yaml";
+
+    public static final String FAVICON = "/favicon.ico";
+
+    public static final String ERROR = "/error";
+
+    public static final String DEFAULT_UI = "/default-ui.css";
 }
