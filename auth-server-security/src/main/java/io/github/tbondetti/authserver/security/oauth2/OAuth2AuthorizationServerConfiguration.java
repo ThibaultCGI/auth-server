@@ -113,7 +113,7 @@ public class OAuth2AuthorizationServerConfiguration {
         final NimbusJwtEncoder encoder = new NimbusJwtEncoder(jwkSource);
 
         encoder.setJwkSelector(jwks -> jwks.stream()
-                .filter(jwk -> this.jwtKeyStoreProperties.activeAlias().equals(jwk.getKeyID()))
+                .filter(jwk -> this.jwtKeyStoreProperties.isActive(jwk.getKeyID()))
                 .findFirst()
                 .orElseThrow(() -> new AuthServerTechnicalException(ERREUR_TECHNIQUE, ERREUR_NO_ACTIVE_KEY))
         );
