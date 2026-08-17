@@ -3,6 +3,7 @@ package io.github.tbondetti.authserver.core.usecase.oauth2client;
 import io.github.tbondetti.authserver.core.domain.Application;
 import io.github.tbondetti.authserver.core.domain.OAuth2Client;
 import io.github.tbondetti.authserver.core.domain.OAuth2CreatedClient;
+import io.github.tbondetti.authserver.core.enums.OAuth2ClientGrantType;
 import io.github.tbondetti.authserver.core.exception.AuthServerFunctionalException;
 import io.github.tbondetti.authserver.core.port.OAuth2ClientCredentialsGeneratorPort;
 import io.github.tbondetti.authserver.core.port.OAuth2ClientRepositoryPort;
@@ -10,9 +11,17 @@ import io.github.tbondetti.authserver.core.port.PasswordEncoderPort;
 import io.github.tbondetti.authserver.core.usecase.application.GetApplicationUseCase;
 import lombok.RequiredArgsConstructor;
 
+import java.net.URI;
+import java.util.Collection;
+import java.util.Set;
+
 import static io.github.tbondetti.authserver.core.constants.ValidationErrorMessages.ERROR_CLIENT_ID_GENERATION_FAILED;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_ID_GENERATION_FAILED;
+import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.normalizeGrantTypes;
+import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.normalizeRedirectUris;
 import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.validateAndNormalizeClientName;
+import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.validateGrantTypes;
+import static io.github.tbondetti.authserver.core.utils.OAuth2ClientValidationUtils.validateRedirectUris;
 import static java.util.UUID.randomUUID;
 
 @RequiredArgsConstructor
@@ -27,10 +36,20 @@ public class CreateOAuth2ClientUseCase {
 
     public OAuth2CreatedClient execute(
             final String clientName,
-            final String applicationCode
+            final String applicationCode,
+            final Collection<String> grantTypes,
+            final Collection<String> redirectUris
     ) {
         final String normalizedClientName = validateAndNormalizeClientName(clientName);
+
         final Application application = this.getApplicationUseCase.execute(applicationCode);
+
+        final Set<OAuth2ClientGrantType> normalizedGrantTypes = normalizeGrantTypes(grantTypes);
+        validateGrantTypes(normalizedGrantTypes);
+
+        final Set<URI> normalizedRedirectUris = normalizeRedirectUris(redirectUris);
+        validateRedirectUris(normalizedGrantTypes, normalizedRedirectUris);
+
         final String clientId = this.generateClientId();
         final String clientSecret = this.oauth2ClientCredentialsGeneratorPort.generateClientSecret();
 
@@ -42,6 +61,8 @@ public class CreateOAuth2ClientUseCase {
                 .clientName(normalizedClientName)
                 .clientSecretHash(clientSecretHash)
                 .applicationCode(application.code())
+                .grantTypes(normalizedGrantTypes)
+                .redirectUris(normalizedRedirectUris)
                 .build();
 
         final OAuth2Client clientSaved = this.oauth2ClientRepositoryPort.save(clientToSave);
@@ -52,6 +73,8 @@ public class CreateOAuth2ClientUseCase {
                 .clientName(clientSaved.clientName())
                 .clientSecret(clientSecret) // uniquement pour la création
                 .applicationCode(clientSaved.applicationCode())
+                .grantTypes(clientSaved.grantTypes())
+                .redirectUris(clientSaved.redirectUris())
                 .build();
     }
 

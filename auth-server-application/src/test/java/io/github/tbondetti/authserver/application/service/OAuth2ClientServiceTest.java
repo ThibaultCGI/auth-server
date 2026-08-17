@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collection;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -46,15 +49,19 @@ class OAuth2ClientServiceTest {
     void createOAuth2ClientOk() {
         final String clientName = "clientName";
         final String applicationCode = "applicationCode";
+        final Collection<String> grantTypes = List.of("test");
+        final Collection<String> redirectUris = List.of("test");
 
         final OAuth2CreatedClient client = OAuth2CreatedClient.builder().build();
 
         when(this.createOAuth2ClientUseCase.execute(
                 clientName,
-                applicationCode
+                applicationCode,
+                grantTypes,
+                redirectUris
         )).thenReturn(client);
 
-        assertSame(client, this.subject.createOAuth2Client(clientName, applicationCode));
+        assertSame(client, this.subject.createOAuth2Client(clientName, applicationCode, grantTypes, redirectUris));
     }
 
     @Test

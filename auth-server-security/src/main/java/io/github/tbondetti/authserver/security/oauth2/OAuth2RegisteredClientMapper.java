@@ -5,9 +5,9 @@ import io.github.tbondetti.authserver.core.domain.OAuth2Scope;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
+import java.net.URI;
 import java.util.List;
 
-import static org.springframework.security.oauth2.core.AuthorizationGrantType.CLIENT_CREDENTIALS;
 import static org.springframework.security.oauth2.core.ClientAuthenticationMethod.CLIENT_SECRET_BASIC;
 
 @UtilityClass
@@ -21,9 +21,13 @@ public class OAuth2RegisteredClientMapper {
                 .clientId(client.clientId())
                 .clientSecret(client.clientSecretHash())
                 .clientAuthenticationMethod(CLIENT_SECRET_BASIC)
-                .authorizationGrantType(CLIENT_CREDENTIALS);
+                ;
 
         scopes.stream().map(OAuth2Scope::completeCode).forEach(builder::scope);
+
+        client.grantTypes().stream().map(OAuth2GrantTypeMapper::toSpring).forEach(builder::authorizationGrantType);
+
+        client.redirectUris().stream().map(URI::toString).forEach(builder::redirectUri);
 
         return builder.build();
     }

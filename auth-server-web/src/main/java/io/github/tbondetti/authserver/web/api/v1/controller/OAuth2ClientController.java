@@ -47,7 +47,9 @@ public class OAuth2ClientController implements OAuth2ClientApi<CreateOAuth2Clien
     public CreateOAuth2ClientResponse createOAuth2Client(@Valid @RequestBody final CreateOAuth2ClientRequest request) {
         return toCreateResponse(this.oauth2ClientService.createOAuth2Client(
                 request.clientName(),
-                request.applicationCode()
+                request.applicationCode(),
+                request.grantTypes(),
+                request.redirectUris()
         ));
     }
 

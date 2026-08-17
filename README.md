@@ -12,17 +12,27 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ThibaultCGI_auth-server&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ThibaultCGI_auth-server)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ThibaultCGI_auth-server&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ThibaultCGI_auth-server)
 
-Projet personnel visant à construire un serveur d'authentification OAuth 2.1 / OpenID Connect moderne basé sur Java et Spring.
+Projet personnel visant à construire un serveur d'autorisation moderne basé sur :
 
-L'objectif principal est d'approfondir la compréhension des mécanismes d'authentification et d'autorisation tout en mettant en œuvre une architecture hexagonale modulaire, testable et maintenable.
+- OAuth 2.1
+- OpenID Connect 1.0
+- Spring Authorization Server
+- Spring Security
+
+L'objectif est d'approfondir la compréhension des mécanismes d'authentification et d'autorisation tout en appliquant les principes de l'architecture hexagonale à une application fortement modulaire, testable et maintenable.
+
+Le projet agit comme :
+
+- OAuth2 Authorization Server ;
+- OpenID Provider (OIDC).
 
 ---
 
 # Technologies
 
 - Java 25
-- Spring Boot 4
-- Spring Security
+- Spring Boot 4.1
+- Spring Security 7.1
 - Spring Authorization Server
 - SpringDoc OpenAPI
 - PostgreSQL
@@ -36,7 +46,7 @@ L'objectif principal est d'approfondir la compréhension des mécanismes d'authe
 
 # Objectifs du projet
 
-- Comprendre OAuth2
+- Comprendre OAuth 2.1
 - Comprendre OpenID Connect
 - Comprendre Spring Security
 - Comprendre Spring Authorization Server
@@ -44,6 +54,103 @@ L'objectif principal est d'approfondir la compréhension des mécanismes d'authe
 - Expérimenter l'architecture hexagonale
 - Construire une application fortement modulaire
 - Mettre en œuvre les bonnes pratiques de qualité logicielle
+
+---
+
+# Fonctionnalités implémentées
+
+## Gestion métier
+
+- Gestion des utilisateurs
+- Gestion des rôles
+- Gestion des applications
+- Gestion des scopes OAuth2
+- Gestion des clients OAuth2
+
+## OAuth2
+
+- Authorization Code Flow
+- Client Credentials Flow
+- PKCE
+- Validation des clients OAuth2
+- Gestion des scopes
+- Génération d'Access Tokens JWT
+- Signature RSA des JWT
+
+## OpenID Connect
+
+- Scope `openid`
+- Émission d'ID Tokens
+- Discovery Endpoint
+- Endpoint JWKS
+- Authentification utilisateur
+- Intégration avec des clients OIDC Spring Security
+
+## Infrastructure
+
+- PostgreSQL
+- Liquibase
+- OpenAPI
+- Swagger UI
+- Architecture multi-modules
+- Architecture hexagonale
+- Analyse continue SonarCloud
+- Couverture de tests
+
+---
+
+# Écosystème
+
+Le projet est actuellement validé à l'aide d'un client OpenID Connect de démonstration.
+
+```text
++----------------------+
+| test-oauth2-client   |
+| localhost:8082       |
++----------+-----------+
+           |
+           | OIDC
+           |
+           ▼
++----------------------+
+| auth-server          |
+| localhost:8080       |
++----------------------+
+```
+
+Le client utilise :
+
+- Authorization Code Flow
+- PKCE
+- OpenID Connect
+- Discovery Endpoint
+- JWKS Endpoint
+
+Cette intégration permet de valider l'interopérabilité du serveur avec un client OIDC réel.
+
+---
+
+# Endpoints standards exposés
+
+## OAuth2
+
+```text
+/oauth2/authorize
+/oauth2/token
+```
+
+## OpenID Connect
+
+```text
+/.well-known/openid-configuration
+/oauth2/jwks
+```
+
+## Authentification utilisateur
+
+```text
+/login
+```
 
 ---
 
@@ -64,7 +171,6 @@ Le projet est organisé selon les principes de l'architecture hexagonale (Ports 
 │ auth-server-web ├──────────►  │ auth-server-openapi │             │ auth-server-security │             │ auth-server-persistence │
 └────────┬────────┘             └──────────┬──────────┘             └──────────┬───────────┘             └────────────┬────────────┘
          │                                 │                                   │                                      │
-         │                                 │                                   │                                      │
          ▼                                 │                                   ▼                                      │
                                            │                                                                          │
 ┌─────────────────────────┐                │                           ┌─────────────────┐                            │
@@ -78,17 +184,15 @@ Le projet est organisé selon les principes de l'architecture hexagonale (Ports 
 
 ## auth-server-core
 
-Cœur métier de l'application.
+Responsable du domaine métier.
 
-### Responsabilités
-
-- Domaines métier
+- Domaines
 - Use cases
 - Ports
 - Exceptions métier
 - Règles métier
 
-### Documentation
+Documentation :
 
 ```text
 auth-server-core/README.md
@@ -98,16 +202,14 @@ auth-server-core/README.md
 
 ## auth-server-application
 
-Couche applicative.
+Responsable de la couche applicative.
 
-### Responsabilités
+- Orchestration des cas d'usage
+- Gestion transactionnelle
+- Services applicatifs
+- Configuration Spring métier
 
-- Orchestration des use cases
-- Gestion des transactions
-- Exposition des services applicatifs
-- Configuration Spring des composants métier
-
-### Documentation
+Documentation :
 
 ```text
 auth-server-application/README.md
@@ -117,18 +219,15 @@ auth-server-application/README.md
 
 ## auth-server-openapi
 
-Module de contrats HTTP et de documentation OpenAPI.
+Responsable du contrat HTTP.
 
-### Responsabilités
-
-- Contrats d'API
+- Documentation OpenAPI
+- Documentation OAuth2
+- Documentation OpenID Connect
+- Contrats REST
 - DTO documentaires
-- Réponses documentaires
-- Documentation Swagger
-- Groupes OpenAPI
-- Documentation OAuth2 Authorization Server
 
-### Documentation
+Documentation :
 
 ```text
 auth-server-openapi/README.md
@@ -140,16 +239,12 @@ auth-server-openapi/README.md
 
 Adaptateur HTTP entrant.
 
-### Responsabilités
-
-- API REST
-- Contrôleurs HTTP
+- Contrôleurs REST
+- Gestion des erreurs
 - Implémentation des contrats OpenAPI
-- DTO HTTP
-- Gestion des erreurs HTTP
-- Sécurisation des endpoints Web
+- Mapping HTTP ↔ métier
 
-### Documentation
+Documentation :
 
 ```text
 auth-server-web/README.md
@@ -161,14 +256,12 @@ auth-server-web/README.md
 
 Adaptateur de persistance.
 
-### Responsabilités
+- JPA
+- PostgreSQL
+- Repositories
+- Liquibase
 
-- Entités JPA
-- Repositories Spring Data
-- Implémentations des ports de persistance
-- Migrations Liquibase
-
-### Documentation
+Documentation :
 
 ```text
 auth-server-persistence/README.md
@@ -180,17 +273,15 @@ auth-server-persistence/README.md
 
 Adaptateur de sécurité.
 
-### Responsabilités
-
-- OAuth2 Authorization Server
 - Spring Security
+- Spring Authorization Server
+- OpenID Connect
+- JWT
+- JWKS
 - UserDetailsService
-- PasswordEncoder
-- Génération des identifiants OAuth2
-- Gestion des tokens OAuth2
-- Intégration Spring Security
+- OAuth2RegisteredClientRepository
 
-### Documentation
+Documentation :
 
 ```text
 auth-server-security/README.md
@@ -200,18 +291,69 @@ auth-server-security/README.md
 
 ## auth-server-boot
 
-Point d'entrée de l'application.
+Composition Root.
 
-### Responsabilités
-
-- Démarrage Spring Boot
+- Démarrage de l'application
 - Assemblage des modules
-- Composition Root
+- Configuration Spring
 
-### Documentation
+Documentation :
 
 ```text
 auth-server-boot/README.md
+```
+
+---
+
+# Flows supportés
+
+## Authorization Code + PKCE
+
+```text
+Client
+   │
+   ▼
+
+/oauth2/authorize
+
+   │
+   ▼
+
+Authentification utilisateur
+
+   │
+   ▼
+
+Authorization Code
+
+   │
+   ▼
+
+/oauth2/token
+
+   │
+   ▼
+
+Access Token
++
+ID Token
+```
+
+---
+
+## Client Credentials
+
+```text
+Client
+   │
+   ▼
+
+/oauth2/token
+
+   │
+   ▼
+
+Access Token
 ```
 
 ---
@@ -234,28 +376,23 @@ Le projet suit les règles suivantes :
 
 # Documentation
 
-La documentation du projet est disponible dans :
-
-```text
-docs/
-```
-
-Par exemple :
+La documentation technique est disponible dans :
 
 ```text
 docs/
 ├── architecture.md
 ├── decisions.md
 ├── dependencies.md
-├── diagrams
-└── ...
+├── oauth2.md
+├── oidc.md
+└── diagrams/
 ```
 
 ---
 
 # Qualité
 
-Le projet est développé avec une forte attention portée à :
+Le projet est développé avec une attention particulière portée à :
 
 - la couverture de tests ;
 - le découpage modulaire ;
@@ -267,7 +404,7 @@ Le projet est développé avec une forte attention portée à :
 
 # État du projet
 
-Projet en cours de développement.
+Projet en développement actif.
 
 ## Fonctionnalités disponibles
 
@@ -276,22 +413,34 @@ Projet en cours de développement.
 - Gestion des applications
 - Gestion des scopes OAuth2
 - Gestion des clients OAuth2
-- OAuth2 Client Credentials Flow
-- API REST sécurisée
-- Documentation OpenAPI centralisée
-- Swagger découpés par domaine fonctionnel
-- Module dédié `auth-server-openapi`
-- Persistance PostgreSQL
-- Gestion des migrations Liquibase
+- Client Credentials Flow
+- Authorization Code Flow
+- PKCE
+- OpenID Connect
+- Access Tokens JWT
+- ID Tokens JWT
+- Discovery Endpoint
+- JWKS Endpoint
+- OpenAPI
+- Swagger
+- PostgreSQL
+- Liquibase
 
 ## Fonctionnalités envisagées
 
-- Bean Validation
-- OpenID Connect
-- Audit
+### Court terme
+
+- Refresh Tokens
 - Révocation de jetons
 - Consentement utilisateur
-- Administration avancée
+- Audit
+
+### Long terme
+
+- UserInfo Endpoint personnalisé
+- OIDC Logout
+- Rotation des clés cryptographiques
+- Federation / Social Login
 
 ---
 

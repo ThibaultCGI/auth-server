@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+
 @Service
 @RequiredArgsConstructor
 public class OAuth2ClientService {
@@ -24,11 +26,15 @@ public class OAuth2ClientService {
     @Transactional
     public OAuth2CreatedClient createOAuth2Client(
             final String clientName,
-            final String applicationCode
+            final String applicationCode,
+            final Collection<String> grantTypes,
+            final Collection<String> redirectUris
     ) {
         return this.createOAuth2ClientUseCase.execute(
                 clientName,
-                applicationCode
+                applicationCode,
+                grantTypes,
+                redirectUris
         );
     }
 
