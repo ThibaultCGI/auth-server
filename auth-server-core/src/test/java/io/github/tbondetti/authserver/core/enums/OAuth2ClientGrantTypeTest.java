@@ -11,7 +11,10 @@ import static io.github.tbondetti.authserver.core.enums.OAuth2ClientGrantType.CL
 import static io.github.tbondetti.authserver.core.enums.OAuth2ClientGrantType.REFRESH_TOKEN;
 import static io.github.tbondetti.authserver.core.enums.OAuth2ClientGrantType.fromValue;
 import static io.github.tbondetti.authserver.core.exception.AuthServerErrorCode.CLIENT_GRANT_TYPE_INVALID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OAuth2ClientGrantTypeTest {
 
