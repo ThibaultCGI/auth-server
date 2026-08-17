@@ -169,7 +169,7 @@ class RsaKeysLoaderTest {
                     .keyID(alias)
                     .build();
 
-            assertEquals(expected, this.subject.buildRsaKey(keyStore, alias, keyPassword));
+            assertEquals(expected, buildRsaKey(keyStore, alias, keyPassword));
         }
     }
 
