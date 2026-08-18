@@ -246,6 +246,7 @@ Le module supporte actuellement :
 ```text
 Client Credentials
 Authorization Code + PKCE
+Refresh Token
 ```
 
 ---
@@ -434,6 +435,27 @@ application_code
 client_id
 ```
 
+# Token Settings
+
+## Durées de vie des tokens
+
+Configuration actuelle :
+
+```text
+Access Token  : 5 minutes
+Refresh Token : 30 jours
+```
+
+## Réutilisation des Refresh Tokens
+
+Configuration actuelle :
+
+```text
+reuseRefreshTokens = true
+```
+
+Le même Refresh Token peut être utilisé plusieurs fois pendant sa durée de validité.
+
 ---
 
 # État actuel
@@ -473,6 +495,12 @@ client_id
 ✅ Préparation à la rotation des clés
 
 ✅ Personnalisation des claims JWT
+
+✅ Refresh Tokens
+
+✅ Renouvellement automatique des Access Tokens
+
+✅ Configuration explicite des TokenSettings
 
 ---
 
