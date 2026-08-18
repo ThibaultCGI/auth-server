@@ -55,6 +55,10 @@ Le projet implémente les fonctionnalités suivantes :
 
 ✅ Validation des signatures JWT
 
+✅ JWKS multi-clés
+
+✅ Clé active de signature configurable
+
 ✅ Authentification OIDC avec Spring Security
 
 ---
@@ -198,7 +202,7 @@ ID Token
 ```json
 {
   "sub": "admin",
-  "iss": "http://localhost:8080",
+  "iss": "http://auth-server.local:8080",
   "aud": [
     "client-id"
   ],
@@ -206,6 +210,29 @@ ID Token
   "exp": 1786521000
 }
 ```
+
+---
+
+## Header JWT
+
+Les ID Tokens sont signés en RSA.
+
+Exemple de header :
+
+```json
+{
+  "alg": "RS256",
+  "kid": "auth-server"
+}
+```
+
+Le champ :
+
+```text
+kid
+```
+
+permet au client de retrouver la clé publique utilisée pour signer le token.
 
 ---
 
@@ -273,7 +300,7 @@ Retour :
 
 ```json
 {
-  "issuer": "http://localhost:8080",
+  "issuer": "http://auth-server.local:8080",
   "authorization_endpoint": "...",
   "token_endpoint": "...",
   "jwks_uri": "..."
@@ -289,13 +316,13 @@ L'issuer représente l'identité du fournisseur OIDC.
 Dans l'environnement local :
 
 ```text
-http://localhost:8080
+http://auth-server.local:8080
 ```
 
 Les clients OIDC utilisent généralement :
 
 ```properties
-spring.security.oauth2.client.provider.auth-server.issuer-uri=http://localhost:8080
+spring.security.oauth2.client.provider.auth-server.issuer-uri=http://auth-server.local:8080
 ```
 
 afin de découvrir automatiquement toute la configuration du fournisseur.
@@ -314,7 +341,7 @@ Le projet expose :
 
 ## Objectif
 
-Cet endpoint expose la ou les clés publiques utilisées pour signer les JWT.
+Cet endpoint expose les clés publiques utilisées pour signer les JWT.
 
 Les clients OIDC utilisent ces clés pour :
 
@@ -333,137 +360,4 @@ Authorization Server
         ▼
 
 ID Token signé
-
-        │
-        ▼
-
-JWKS Endpoint
-
-        │
-        ▼
-
-Validation cryptographique
-par le client
 ```
-
----
-
-# Authentification utilisateur
-
-L'authentification des utilisateurs repose sur Spring Security.
-
-Lorsque l'utilisateur tente d'accéder à :
-
-```text
-/oauth2/authorize
-```
-
-sans être authentifié :
-
-```text
-Redirection vers /login
-```
-
----
-
-# Session utilisateur
-
-Le flow Authorization Code nécessite une session HTTP utilisateur.
-
-Le projet utilise :
-
-```text
-SessionCreationPolicy.IF_REQUIRED
-```
-
-sur les endpoints OAuth2 / OIDC.
-
----
-
-# PKCE
-
-Le projet supporte PKCE.
-
-Le client peut fournir :
-
-```text
-code_challenge
-code_challenge_method
-```
-
-lors de la requête d'autorisation.
-
-Le serveur valide ensuite le :
-
-```text
-code_verifier
-```
-
-lors de l'échange du code.
-
----
-
-# Sécurité
-
-Les mécanismes de sécurité actuellement utilisés sont :
-
-✅ Authorization Code Flow
-
-✅ PKCE
-
-✅ Signature RSA des JWT
-
-✅ Validation cryptographique via JWKS
-
-✅ Gestion de session Spring Security
-
-✅ Protection contre la Session Fixation
-
-✅ Validation des scopes
-
----
-
-# Limitations actuelles
-
-Les fonctionnalités suivantes ne sont pas encore implémentées :
-
-```text
-UserInfo Endpoint personnalisé
-Refresh Tokens OIDC
-OIDC Logout
-Federation
-Social Login
-```
-
----
-
-# Évolutions envisagées
-
-## OpenID Connect
-
-- Endpoint UserInfo personnalisé
-- Claims enrichies
-- OIDC Logout
-- Rotation des clés cryptographiques
-
-## Sécurité
-
-- Persistance des clés RSA
-- Rotation automatique des clés
-- Audit des authentifications
-
----
-
-# Conclusion
-
-Le projet fournit désormais une implémentation fonctionnelle d'OpenID Connect basée sur Spring Authorization Server.
-
-Les clients peuvent :
-
-- découvrir automatiquement le fournisseur ;
-- authentifier des utilisateurs ;
-- obtenir un ID Token ;
-- valider sa signature ;
-- exploiter les claims de l'utilisateur connecté.
-
-L'implémentation repose entièrement sur les standards OpenID Connect et s'intègre naturellement avec les clients Spring Security.

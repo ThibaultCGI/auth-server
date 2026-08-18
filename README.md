@@ -76,6 +76,10 @@ Le projet agit comme :
 - Gestion des scopes
 - Génération d'Access Tokens JWT
 - Signature RSA des JWT
+- Keystore PKCS12
+- Gestion de plusieurs clés RSA
+- Clé active configurable
+- Préparation à la rotation des clés cryptographiques
 
 ## OpenID Connect
 
@@ -83,6 +87,7 @@ Le projet agit comme :
 - Émission d'ID Tokens
 - Discovery Endpoint
 - Endpoint JWKS
+- JWKS multi-clés
 - Authentification utilisateur
 - Intégration avec des clients OIDC Spring Security
 
@@ -104,18 +109,20 @@ Le projet agit comme :
 Le projet est actuellement validé à l'aide d'un client OpenID Connect de démonstration.
 
 ```text
-+----------------------+
-| test-oauth2-client   |
-| localhost:8082       |
-+----------+-----------+
-           |
-           | OIDC
-           |
-           ▼
-+----------------------+
-| auth-server          |
-| localhost:8080       |
-+----------------------+
++----------------------------+
+| test-oauth2-client         |
+| oauth2-client-server.local |
+| 8082                       |
++-------------+--------------+
+              |
+              | OIDC
+              |
+              ▼
++----------------------------+
+| auth-server                |
+| auth-server.local          |
+| 8080                       |
++----------------------------+
 ```
 
 Le client utilise :
@@ -278,6 +285,9 @@ Adaptateur de sécurité.
 - OpenID Connect
 - JWT
 - JWKS
+- Keystore PKCS12
+- Gestion de plusieurs clés RSA
+- Rotation de clés
 - UserDetailsService
 - OAuth2RegisteredClientRepository
 
@@ -358,6 +368,94 @@ Access Token
 
 ---
 
+# Gestion des clés JWT
+
+## Keystore PKCS12
+
+Les clés RSA utilisées pour signer les JWT sont persistées dans un keystore PKCS12.
+
+Exemple :
+
+```text
+auth-server.p12
+├── old-key
+└── auth-server
+```
+
+Cette approche évite la génération d'une nouvelle clé à chaque démarrage du serveur.
+
+---
+
+## JWKS multi-clés
+
+Le endpoint :
+
+```text
+/oauth2/jwks
+```
+
+peut exposer plusieurs clés simultanément.
+
+Exemple :
+
+```json
+{
+  "keys": [
+    {
+      "kid": "old-key"
+    },
+    {
+      "kid": "auth-server"
+    }
+  ]
+}
+```
+
+---
+
+## Clé active
+
+Une clé active est utilisée pour signer les nouveaux JWT.
+
+Configuration :
+
+```properties
+jwt.keystore.active-alias=auth-server
+```
+
+Exemple de header JWT :
+
+```json
+{
+  "alg": "RS256",
+  "kid": "auth-server"
+}
+```
+
+---
+
+## Rotation des clés
+
+Le projet supporte la coexistence de plusieurs clés RSA.
+
+Principe :
+
+```text
+Anciennes clés
+       │
+       ▼
+publiées dans le JWKS
+
+Nouvelle clé active
+       │
+       ▼
+utilisée pour signer les nouveaux JWT
+```
+
+Cette approche prépare la mise en œuvre future d'une véritable stratégie de rotation des clés cryptographiques.
+
+---
+
 # Principes d'architecture
 
 Le projet suit les règles suivantes :
@@ -421,6 +519,9 @@ Projet en développement actif.
 - ID Tokens JWT
 - Discovery Endpoint
 - JWKS Endpoint
+- JWKS multi-clés
+- Keystore PKCS12
+- Clé active configurable
 - OpenAPI
 - Swagger
 - PostgreSQL
@@ -439,7 +540,7 @@ Projet en développement actif.
 
 - UserInfo Endpoint personnalisé
 - OIDC Logout
-- Rotation des clés cryptographiques
+- Rotation automatique des clés cryptographiques
 - Federation / Social Login
 
 ---
