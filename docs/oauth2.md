@@ -26,6 +26,7 @@ Il est responsable :
 - de l'émission des Refresh Tokens ;
 - de l'émission des ID Tokens ;
 - de la gestion des autorisations ;
+- de la révocation des tokens ;
 - de l'exposition des endpoints OAuth2 et OIDC.
 
 ---
@@ -236,17 +237,85 @@ Access Token expiré
         ▼
 
 Refresh Token
-
         │
         ▼
 
 Nouvel Access Token
-
         │
         ▼
 
 Mise à jour automatique
 du OAuth2AuthorizedClient
+```
+
+---
+
+# Token Revocation
+
+## Endpoint
+
+Le serveur expose le endpoint :
+
+```text
+/oauth2/revoke
+```
+
+conformément à la RFC 7009.
+
+---
+
+## Authentification
+
+L'authentification du client OAuth2 est requise.
+
+Exemple :
+
+```http
+POST /oauth2/revoke
+Authorization: Basic <client_id:client_secret>
+```
+
+---
+
+## Révocation d'un Refresh Token
+
+Exemple :
+
+```text
+token=<refresh_token>
+```
+
+Le token devient immédiatement inutilisable.
+
+---
+
+## Validation
+
+Scénario validé :
+
+```text
+Refresh Token valide
+        │
+        ▼
+
+POST /oauth2/revoke
+
+        │
+        ▼
+
+200 OK
+
+        │
+        ▼
+
+POST /oauth2/token
+
+grant_type=refresh_token
+
+        │
+        ▼
+
+invalid_grant
 ```
 
 ---
@@ -291,6 +360,30 @@ Exemple de claims :
 
 ---
 
+## UserInfo Endpoint
+
+Le serveur expose :
+
+```text
+/userinfo
+```
+
+Réponse actuellement validée :
+
+```json
+{
+  "sub": "admin"
+}
+```
+
+Le endpoint est automatiquement découvert via :
+
+```text
+/.well-known/openid-configuration
+```
+
+---
+
 ## OIDC Discovery
 
 Le serveur expose :
@@ -304,6 +397,7 @@ Permettant aux clients de découvrir automatiquement :
 - l'issuer ;
 - l'endpoint d'autorisation ;
 - l'endpoint de token ;
+- le UserInfo Endpoint ;
 - le JWKS endpoint ;
 - les informations OIDC.
 
@@ -590,10 +684,12 @@ Exemple :
 Refresh Token
         │
         ▼
+
 Utilisation
 
         │
         ▼
+
 Toujours valide
 ```
 
@@ -684,7 +780,11 @@ Le découplage est assuré via les ports métier.
 
 ✅ Discovery Endpoint
 
+✅ UserInfo Endpoint
+
 ✅ JWKS Endpoint
+
+✅ Token Revocation Endpoint
 
 ✅ Access Tokens JWT
 
@@ -706,13 +806,12 @@ Le découplage est assuré via les ports métier.
 
 ## OAuth2
 
-- Token Revocation
 - Token Introspection
 - Rotation des Refresh Tokens
 
 ## OpenID Connect
 
-- UserInfo Endpoint
+- Enrichissement du UserInfo Endpoint
 - Claims personnalisées enrichies
 - Logout OIDC
 
@@ -734,6 +833,8 @@ Les fonctionnalités supportées incluent notamment :
 - Client Credentials ;
 - Authorization Code + PKCE ;
 - Refresh Tokens ;
+- UserInfo Endpoint ;
+- Token Revocation Endpoint ;
 - OpenID Connect ;
 - JWT signés en RSA ;
 - JWKS multi-clés ;
