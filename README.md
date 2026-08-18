@@ -80,6 +80,9 @@ Le projet agit comme :
 - Gestion de plusieurs clés RSA
 - Clé active configurable
 - Préparation à la rotation des clés cryptographiques
+- Refresh Tokens
+- Renouvellement automatique des Access Tokens
+- Configuration explicite des TokenSettings
 
 ## OpenID Connect
 
@@ -526,6 +529,7 @@ Projet en développement actif.
 - Swagger
 - PostgreSQL
 - Liquibase
+- Refresh Tokens
 
 ## Fonctionnalités envisagées
 

@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static io.github.tbondetti.authserver.core.enums.OAuth2ClientGrantType.CLIENT_CREDENTIALS;
+import static io.github.tbondetti.authserver.core.enums.OAuth2ClientGrantType.AUTHORIZATION_CODE;
+import static io.github.tbondetti.authserver.core.enums.OAuth2ClientGrantType.REFRESH_TOKEN;
+import static io.github.tbondetti.authserver.security.oauth2.OAuth2RegisteredClientMapper.TOKEN_SETTINGS;
 import static io.github.tbondetti.authserver.security.oauth2.OAuth2RegisteredClientMapper.toRegisteredClient;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,8 +31,8 @@ class OAuth2RegisteredClientMapperTest {
                 .id(id)
                 .clientId(clientId)
                 .clientSecretHash(clientSecretHash)
-                .grantTypes(Set.of(CLIENT_CREDENTIALS))
-                .redirectUris(Set.of(URI.create("uri")))
+                .grantTypes(Set.of(AUTHORIZATION_CODE, REFRESH_TOKEN))
+                .redirectUris(Set.of(URI.create("uri1"), URI.create("uri2")))
                 .build();
 
         final OAuth2Scope scope1 = OAuth2Scope.builder()
@@ -40,17 +42,20 @@ class OAuth2RegisteredClientMapperTest {
 
         final OAuth2Scope scope2 = OAuth2Scope.builder()
                 .applicationCode("tas2")
-                .code("users.write")
+                .code("openid")
                 .build();
 
         final RegisteredClient expected = RegisteredClient.withId(id.toString())
                 .clientId(clientId)
                 .clientSecret(clientSecretHash)
                 .clientAuthenticationMethod(CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("uri")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("uri1")
+                .redirectUri("uri2")
                 .scope("tas1:users.read")
-                .scope("tas2:users.write")
+                .scope("openid")
+                .tokenSettings(TOKEN_SETTINGS)
                 .build();
 
         assertEquals(expected, toRegisteredClient(client, List.of(scope1, scope2)));
