@@ -34,6 +34,7 @@ OIDC ajoute notamment :
 - le scope `openid` ;
 - l'ID Token ;
 - les claims utilisateur ;
+- le UserInfo Endpoint ;
 - la découverte automatique du fournisseur ;
 - les endpoints standardisés OIDC.
 
@@ -50,6 +51,8 @@ Le projet implémente les fonctionnalités suivantes :
 ✅ ID Token
 
 ✅ Refresh Token
+
+✅ UserInfo Endpoint
 
 ✅ Discovery Endpoint
 
@@ -108,7 +111,7 @@ OpenID Connect
 
 OpenID Connect est activé dans Spring Authorization Server via :
 
-```
+```java
 .oidc(Customizer.withDefaults())
 ```
 
@@ -308,6 +311,51 @@ permet au client de retrouver la clé publique utilisée pour signer le token.
 
 ---
 
+# UserInfo Endpoint
+
+Le serveur expose automatiquement :
+
+```text
+/userinfo
+```
+
+---
+
+## Objectif
+
+Le UserInfo Endpoint permet à un client OIDC de récupérer les informations de l'utilisateur authentifié à partir d'un Access Token.
+
+---
+
+## Exemple
+
+```http
+GET /userinfo
+Authorization: Bearer <access-token>
+```
+
+Réponse actuelle :
+
+```json
+{
+  "sub": "admin"
+}
+```
+
+---
+
+## Validation
+
+L'Access Token est validé avant l'émission des informations utilisateur.
+
+Le UserInfo Endpoint est découvert automatiquement via :
+
+```text
+/.well-known/openid-configuration
+```
+
+---
+
 # Claims
 
 ## Claims standard
@@ -357,6 +405,7 @@ Cet endpoint permet aux clients de découvrir automatiquement :
 - l'issuer ;
 - l'Authorization Endpoint ;
 - le Token Endpoint ;
+- le UserInfo Endpoint ;
 - le JWKS Endpoint ;
 - les fonctionnalités OIDC supportées.
 
@@ -375,6 +424,7 @@ Retour :
   "issuer": "http://auth-server.local:8080",
   "authorization_endpoint": "...",
   "token_endpoint": "...",
+  "userinfo_endpoint": "...",
   "jwks_uri": "..."
 }
 ```
@@ -614,6 +664,8 @@ Les mécanismes de sécurité actuellement utilisés sont :
 
 ✅ Refresh Token
 
+✅ UserInfo Endpoint
+
 ✅ Renouvellement automatique des Access Tokens
 
 ✅ Signature RSA des JWT
@@ -637,7 +689,7 @@ Les mécanismes de sécurité actuellement utilisés sont :
 Les fonctionnalités suivantes ne sont pas encore implémentées :
 
 ```text
-UserInfo Endpoint personnalisé
+Claims utilisateur enrichies
 OIDC Logout
 Federation
 Social Login
@@ -649,8 +701,8 @@ Social Login
 
 ## OpenID Connect
 
-- Endpoint UserInfo personnalisé
-- Claims enrichies
+- Enrichissement du UserInfo Endpoint
+- Claims personnalisées supplémentaires
 - OIDC Logout
 
 ## OAuth2
@@ -676,6 +728,7 @@ Les clients peuvent :
 - authentifier des utilisateurs ;
 - obtenir un ID Token ;
 - obtenir un Refresh Token ;
+- appeler le UserInfo Endpoint ;
 - renouveler automatiquement leurs Access Tokens ;
 - valider les signatures JWT ;
 - exploiter les claims de l'utilisateur connecté.
@@ -687,6 +740,7 @@ Le serveur supporte désormais :
 - OpenID Connect ;
 - Authorization Code + PKCE ;
 - Refresh Tokens ;
+- UserInfo Endpoint ;
 - ID Tokens JWT ;
 - JWKS multi-clés ;
 - keystore PKCS12 ;
